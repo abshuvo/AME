@@ -59779,16 +59779,23 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
       updateStudyStats();
     })();
 
-    /* ===== 4. OS RECALL LAB (MATH SANDBOX, FLASHCARDS, FLOW, HOOKS) ===== */
+    /* ===== 4. OS RECALL LAB (ALL OS MATH, ALL 71 QUESTIONS, FLOWS & HOOKS) ===== */
     let currentMathAns = 0;
+    let currentMathFormula = '';
+    let currentMathType = 'tlb';
     let cardIdx = 0;
+    let qaCardIdx = 0;
+    let allOsQas = [];
 
     const OS_FLASHCARDS = [
       { q: 'কোনটিতে External Fragmentation হয়, কিন্তু Internal Fragmentation হয় না?', ans: 'Segmentation', opts: ['Paging', 'Segmentation'] },
       { q: 'কোনটি CPU / Program জেনারেট করে?', ans: 'Logical Address', opts: ['Logical Address', 'Physical Address'] },
       { q: 'Belady\'s Anomaly কোন Page Replacement অ্যালগরিদমে দেখা যায়?', ans: 'FIFO', opts: ['FIFO', 'LRU', 'Optimal'] },
       { q: 'কোনটি নিজের আলাদা Address Space শেয়ার করে না?', ans: 'Process', opts: ['Process', 'Thread'] },
-      { q: 'Signaling-এর জন্য (Producer-Consumer) কোনটি বেশি উপযোগী?', ans: 'Semaphore', opts: ['Mutex', 'Semaphore'] }
+      { q: 'Signaling-এর জন্য (Producer-Consumer) কোনটি বেশি উপযোগী?', ans: 'Semaphore', opts: ['Mutex', 'Semaphore'] },
+      { q: 'কোনটি Starvation-এর শিকার হতে পারে?', ans: 'SJF / Priority Scheduling', opts: ['FCFS', 'Round Robin', 'SJF / Priority Scheduling'] },
+      { q: 'Page Table-এ কোনো Page RAM-এ আছে কি না তা কোন Bit দিয়ে বোঝা যায়?', ans: 'Valid-Invalid Bit', opts: ['Dirty Bit', 'Valid-Invalid Bit', 'Reference Bit'] },
+      { q: 'Page-টি Modify হয়েছে কি না (ডিস্কে Write-back লাগবে কি না) তা কোন Bit বলে?', ans: 'Dirty (Modified) Bit', opts: ['Dirty (Modified) Bit', 'Valid Bit', 'Protection Bit'] }
     ];
 
     const OS_FLOWS = [
@@ -59810,10 +59817,29 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
           '৩. TLB Hit হলে সাথে সাথে Frame Number f পাওয়া যায়; Miss হলে RAM-এর Page Table থেকে f নেয়।',
           '৪. Frame Number f-এর সাথে একই Offset d যুক্ত করে Physical Address (f, d) তৈরি হয়।'
         ]
+      },
+      {
+        title: 'Context Switch কীভাবে কাজ করে?',
+        steps: [
+          '১. বর্তমান Process P0-এর অবস্থা (PC, Registers, State) তার PCB0-তে সেভ করা হয়।',
+          '২. OS পরবর্তী Process P1 নির্বাচন করে (Scheduler)।',
+          '৩. P1-এর PCB1 থেকে তার আগের PC ও Registers লোড করা হয়।',
+          '৪. CPU এখন P1 চালানো শুরু করে (মাঝের এই সময়টুকু Pure Overhead)।'
+        ]
       }
     ];
 
     function openOsLab() {
+      if (!allOsQas.length) {
+        const qb1 = document.getElementById('qb1');
+        const qb2 = document.getElementById('qb2');
+        document.querySelectorAll('article.qa').forEach(qa => {
+          if (qb1 && qb2 && (qa.compareDocumentPosition(qb1) & Node.DOCUMENT_POSITION_PRECEDING) && (qa.compareDocumentPosition(qb2) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+            allOsQas.push(qa);
+          }
+        });
+        if (!allOsQas.length) allOsQas = Array.from(document.querySelectorAll('article.qa')).slice(0, 71);
+      }
       document.getElementById('osLabModal').classList.add('open');
       renderLabMath();
     }
@@ -59828,18 +59854,54 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
       else if (tab === 'hooks') renderLabHooks();
     }
 
-    function renderLabMath() {
-      const hit = [70, 75, 80, 85, 90, 95][Math.floor(Math.random() * 6)];
-      const tlb = [10, 15, 20, 25][Math.floor(Math.random() * 4)];
-      const mem = [80, 100, 120, 150][Math.floor(Math.random() * 4)];
-      const h = hit / 100;
-      currentMathAns = +(h * (tlb + mem) + (1 - h) * (tlb + 2 * mem)).toFixed(2);
+    function renderLabMath(type) {
+      if (type) currentMathType = type;
+      let qHtml = '';
+      if (currentMathType === 'tlb') {
+        const hit = [70, 75, 80, 85, 90, 95][Math.floor(Math.random() * 6)];
+        const tlb = [10, 15, 20, 25][Math.floor(Math.random() * 4)];
+        const mem = [80, 100, 120, 150][Math.floor(Math.random() * 4)];
+        const h = hit / 100;
+        currentMathAns = +(h * (tlb + mem) + (1 - h) * (tlb + 2 * mem)).toFixed(2);
+        currentMathFormula = 'h*(tlb+mem) + (1-h)*(tlb+2*mem)';
+        qHtml = `ধরা যাক, <strong>TLB hit ratio = ${hit}%</strong>, <strong>TLB access = ${tlb} ns</strong> এবং <strong>Memory access = ${mem} ns</strong>। Effective Access Time (ns) কত?`;
+      } else if (currentMathType === 'offset') {
+        const pageKB = [1, 2, 4][Math.floor(Math.random() * 3)];
+        const pageSize = pageKB * 1024;
+        const addr = Math.floor(Math.random() * 8000) + 1200;
+        currentMathAns = Math.floor(addr / pageSize);
+        const off = addr % pageSize;
+        currentMathFormula = `Page = floor(${addr}/${pageSize}) = ${currentMathAns}, Offset = ${off}`;
+        qHtml = `<strong>Page size = ${pageKB} KB (${pageSize} bytes)</strong> হলে Logical Address <strong>${addr}</strong>-এর <strong>Page Number</strong> কত? (শুধু Page Number লিখুন)`;
+      } else if (currentMathType === 'ptsize') {
+        const bits = [32, 32][0];
+        const pageKB = [4, 8, 16][Math.floor(Math.random() * 3)];
+        const entryB = [4, 8][Math.floor(Math.random() * 2)];
+        const pagesMB = Math.pow(2, bits) / (pageKB * 1024);
+        currentMathAns = +((pagesMB * entryB) / (1024 * 1024)).toFixed(2);
+        currentMathFormula = `(2^32 / (${pageKB}*1024)) * ${entryB} bytes = ${currentMathAns} MB`;
+        qHtml = `<strong>32-bit logical address space</strong>, <strong>${pageKB} KB page</strong> এবং প্রতিটি page-table entry <strong>${entryB} bytes</strong> হলে Page Table-এর সাইজ কত <strong>MB</strong>?`;
+      } else if (currentMathType === 'pfeat') {
+        const p = [0.001, 0.002, 0.0005][Math.floor(Math.random() * 3)];
+        const mem = [100, 200][Math.floor(Math.random() * 2)];
+        const pfMs = [8, 10, 12][Math.floor(Math.random() * 3)];
+        const pfNs = pfMs * 1000000;
+        currentMathAns = +((1 - p) * mem + p * pfNs).toFixed(2);
+        currentMathFormula = `(1-${p})*${mem} + ${p}*${pfNs} = ${currentMathAns} ns`;
+        qHtml = `<strong>Page fault rate = ${p}</strong>, <strong>Memory access = ${mem} ns</strong> এবং <strong>Page-fault service = ${pfMs} ms</strong> হলে Effective Access Time (<strong>ns</strong>-এ) কত?`;
+      }
 
       document.getElementById('osLabBody').innerHTML = `
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="s-btn ${currentMathType==='tlb'?'active':''}" type="button" onclick="renderLabMath('tlb')">TLB EAT</button>
+          <button class="s-btn ${currentMathType==='offset'?'active':''}" type="button" onclick="renderLabMath('offset')">Page &amp; Offset</button>
+          <button class="s-btn ${currentMathType==='ptsize'?'active':''}" type="button" onclick="renderLabMath('ptsize')">Page Table Size</button>
+          <button class="s-btn ${currentMathType==='pfeat'?'active':''}" type="button" onclick="renderLabMath('pfeat')">Page Fault EAT</button>
+        </div>
         <div class="lab-card">
-          <h4>🧮 Effective Access Time (EAT) প্র্যাকটিস</h4>
-          <p style="margin:8px 0">ধরা যাক, <strong>TLB hit ratio = ${hit}%</strong>, <strong>TLB access = ${tlb} ns</strong> এবং <strong>Memory access = ${mem} ns</strong>। তাহলে Effective Access Time (ns) কত?</p>
-          <input type="number" step="0.01" id="mathInput" class="lab-input" placeholder="উত্তর লিখুন (ns)" />
+          <h4>🧮 OS Math Sandbox</h4>
+          <p style="margin:8px 0">${qHtml}</p>
+          <input type="number" step="0.01" id="mathInput" class="lab-input" placeholder="উত্তর লিখুন" />
           <button class="s-btn active" type="button" onclick="checkLabMath()">Check Answer</button>
           <button class="s-btn" type="button" onclick="renderLabMath()">🔄 নতুন সংখ্যা</button>
           <p id="mathFeedback" style="margin-top:10px;font-weight:600;"></p>
@@ -59852,16 +59914,42 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
       if (isNaN(val)) { fb.textContent = '⚠️ একটি সংখ্যা লিখুন।'; return; }
       if (Math.abs(val - currentMathAns) < 0.5) {
         fb.style.color = '#166534';
-        fb.textContent = `✅ সঠিক! উত্তর: ${currentMathAns} ns`;
+        fb.textContent = `✅ সঠিক! (${currentMathFormula})`;
       } else {
         fb.style.color = '#991b1b';
-        fb.textContent = `❌ ভুল হয়েছে। সঠিক উত্তর: ${currentMathAns} ns (সূত্র: h*(tlb+mem) + (1-h)*(tlb+2*mem))`;
+        fb.textContent = `❌ ভুল হয়েছে। সঠিক উত্তর: ${currentMathAns} (${currentMathFormula})`;
       }
     }
 
-    function renderLabCards() {
+    function renderLabCards(mode) {
+      if (mode === 'all') {
+        const qa = allOsQas[qaCardIdx % allOsQas.length];
+        const qTitle = qa ? (qa.querySelector('h5')?.textContent || 'প্রশ্ন') : 'প্রশ্ন পাওয়া যায়নি';
+        const qAns = qa ? (qa.querySelector('.ans-bn')?.innerHTML || '') : '';
+        document.getElementById('osLabBody').innerHTML = `
+          <div style="display:flex;gap:6px;margin-bottom:12px">
+            <button class="s-btn" type="button" onclick="renderLabCards('quiz')">Comparison Quiz</button>
+            <button class="s-btn active" type="button" onclick="renderLabCards('all')">সব ${allOsQas.length}টি OS প্রশ্ন (Flashcard)</button>
+          </div>
+          <div class="lab-card">
+            <div style="font-size:12px;color:var(--muted)">প্রশ্ন ${(qaCardIdx % allOsQas.length) + 1} / ${allOsQas.length}</div>
+            <h4 style="margin:8px 0 14px">${qTitle}</h4>
+            <div id="qaCardAns" style="display:none;border-top:1px dashed var(--line);padding-top:10px;margin-top:10px">${qAns}</div>
+            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+              <button class="s-btn active" type="button" onclick="document.getElementById('qaCardAns').style.display='block'">📖 উত্তর দেখুন</button>
+              <button class="s-btn" type="button" onclick="qaCardIdx++;renderLabCards('all')">পরবর্তী প্রশ্ন →</button>
+              <button class="s-btn" type="button" onclick="qaCardIdx=Math.floor(Math.random()*allOsQas.length);renderLabCards('all')">🔀 Random</button>
+            </div>
+          </div>`;
+        return;
+      }
+
       const c = OS_FLASHCARDS[cardIdx % OS_FLASHCARDS.length];
       document.getElementById('osLabBody').innerHTML = `
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <button class="s-btn active" type="button" onclick="renderLabCards('quiz')">Comparison Quiz</button>
+          <button class="s-btn" type="button" onclick="renderLabCards('all')">সব ${allOsQas.length}টি OS প্রশ্ন (Flashcard)</button>
+        </div>
         <div class="lab-card">
           <div style="font-size:12px;color:var(--muted)">কার্ড ${(cardIdx % OS_FLASHCARDS.length) + 1} / ${OS_FLASHCARDS.length}</div>
           <h4 style="margin:8px 0 14px">${c.q}</h4>
@@ -59869,7 +59957,7 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
             ${c.opts.map(o => `<button class="s-btn" type="button" onclick="checkFlashcard('${o}','${c.ans}', this)">${o}</button>`).join('')}
           </div>
           <p id="cardFeedback" style="margin-top:12px;font-weight:600"></p>
-          <button class="s-btn" style="margin-top:10px" type="button" onclick="cardIdx++;renderLabCards()">পরবর্তী কার্ড →</button>
+          <button class="s-btn" style="margin-top:10px" type="button" onclick="cardIdx++;renderLabCards('quiz')">পরবর্তী কার্ড →</button>
         </div>`;
     }
 
