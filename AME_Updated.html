@@ -59795,17 +59795,41 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
     let allNetQas = [];
 
     const NET_FLASHCARDS = [
-      { q: 'কোনটি Connectionless এবং Reliable নয় (Fast)?', ans: 'UDP', opts: ['TCP', 'UDP'] },
-      { q: 'Router OSI মডেলের কোন লেয়ারে কাজ করে?', ans: 'Network Layer (Layer 3)', opts: ['Data Link (Layer 2)', 'Network Layer (Layer 3)', 'Transport (Layer 4)'] },
-      { q: 'Switch কোন অ্যাড্রেস ব্যবহার করে ফ্রেম ফরোয়ার্ড করে?', ans: 'MAC Address', opts: ['IP Address', 'MAC Address', 'Port Number'] },
-      { q: 'IP-কে MAC Address-এ রূপান্তর করে কোন প্রোটোকল?', ans: 'ARP', opts: ['DNS', 'ARP', 'DHCP', 'ICMP'] },
-      { q: 'Wi-Fi (IEEE 802.11)-এ Collision এড়াতে কোনটি ব্যবহৃত হয়?', ans: 'CSMA/CA', opts: ['CSMA/CD', 'CSMA/CA'] },
-      { q: 'HTTPS ডিফল্টভাবে কোন Port ব্যবহার করে?', ans: '443', opts: ['80', '443', '22', '53'] }
+      { q: '[২.১ OSI] Encryption ও Compression কোন লেয়ারের কাজ?', ans: 'Presentation Layer (Layer 6)', opts: ['Session (L5)', 'Presentation Layer (Layer 6)', 'Application (L7)'] },
+      { q: '[২.২ IP] 192.168.5.130/26 এবং 192.168.5.190/26 কি একই সাবনেটে?', ans: 'হ্যাঁ (দুটোই 192.168.5.128/26-এ)', opts: ['হ্যাঁ (দুটোই 192.168.5.128/26-এ)', 'না (আলাদা সাবনেট)'] },
+      { q: '[২.৩ DHCP] DHCP-এর DORA প্রসেসের সঠিক ক্রম কোনটি?', ans: 'Discover → Offer → Request → Acknowledge', opts: ['Discover → Offer → Request → Acknowledge', 'Offer → Discover → Request → Ack'] },
+      { q: '[২.৩ ARP] IP-কে MAC Address-এ রূপান্তর করে কোন প্রোটোকল?', ans: 'ARP', opts: ['DNS', 'ARP', 'DHCP', 'ICMP'] },
+      { q: '[২.৪ Switching] কোন সুইচিংয়ে ডেডিকেটেড পাথ আগে থেকেই রিজার্ভ থাকে?', ans: 'Circuit Switching', opts: ['Circuit Switching', 'Packet Switching', 'Message Switching'] },
+      { q: '[২.৫ Multiplexing] অপটিক্যাল ফাইবারে আলোর বিভিন্ন তরঙ্গদৈর্ঘ্য ব্যবহার করে কোনটি?', ans: 'WDM', opts: ['FDM', 'TDM', 'WDM', 'CDMA'] },
+      { q: '[২.৬ STP] Layer-2 সুইচিং লুপ বন্ধ করতে কোন প্রোটোকল ব্যবহৃত হয়?', ans: 'STP (Spanning Tree Protocol)', opts: ['VLAN', 'STP (Spanning Tree Protocol)', 'ARP'] },
+      { q: '[২.৭ Transport] কোনটি Connectionless এবং Reliable নয় (Fast)?', ans: 'UDP', opts: ['TCP', 'UDP'] },
+      { q: '[২.৮ Security] কোনটি শুধু প্যাসিভলি ট্রাফিক মনিটর করে অ্যালার্ট দেয় (ব্লক করে না)?', ans: 'IDS', opts: ['Firewall', 'IDS', 'IPS'] },
+      { q: '[২.৯ Routing] OSPF কোন ধরনের রাউটিং প্রোটোকল?', ans: 'Link-State (Dijkstra)', opts: ['Distance Vector', 'Link-State (Dijkstra)', 'Path Vector'] },
+      { q: '[২.১০ Troubleshoot] পিসিতে 169.254.x.x (APIPA) আইপি দেখালে কী সমস্যা হয়েছে?', ans: 'DHCP সার্ভার থেকে IP পাচ্ছে না', opts: ['DNS কাজ করছে না', 'DHCP সার্ভার থেকে IP পাচ্ছে না', 'Default Gateway ভুল'] }
     ];
 
     const NET_FLOWS = [
       {
-        title: 'TCP 3-Way Handshake কীভাবে কাজ করে?',
+        title: '২.১ Encapsulation (Sender-এ ডেটা কীভাবে নিচে নামে?)',
+        steps: [
+          '১. Application Layer: মূল Data তৈরি হয়।',
+          '২. Transport Layer: TCP/UDP Header যুক্ত হয়ে Segment / Datagram হয়।',
+          '৩. Network Layer: IP Header যুক্ত হয়ে Packet হয়।',
+          '৪. Data Link Layer: MAC Header + Trailer যুক্ত হয়ে Frame হয়।',
+          '৫. Physical Layer: Bits (0/1) আকারে ক্যাবল/ওয়্যারলেসে যায়।'
+        ]
+      },
+      {
+        title: '২.৩ DHCP DORA Process',
+        steps: [
+          '১. Discover (Client → Broadcast): "কোনো DHCP সার্ভার আছেন?"',
+          '২. Offer (Server → Client): "এই IP-টি নিতে পারো।"',
+          '৩. Request (Client → Broadcast): "হ্যাঁ, আমি এই IP-টিই নেব।"',
+          '৪. Acknowledge (Server → Client): "ঠিক আছে, Lease কনফার্ম হলো।"'
+        ]
+      },
+      {
+        title: '২.৭ TCP 3-Way Handshake',
         steps: [
           '১. Client → Server: SYN (seq = x) পাঠায় কানেকশন শুরু করার জন্য।',
           '২. Server → Client: SYN-ACK (seq = y, ack = x + 1) পাঠিয়ে সম্মতি জানায়।',
@@ -59813,12 +59837,13 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
         ]
       },
       {
-        title: 'ব্রাউজারে URL দিলে DNS ও HTTP কীভাবে কাজ করে?',
+        title: '২.১০ Network Troubleshooting (Step-by-Step)',
         steps: [
-          '১. ব্রাউজার Cache ও Local DNS Resolver-এর কাছে ডোমেইনের IP খোঁজে।',
-          '২. IP পেলে Client ও Server-এর মধ্যে TCP 3-Way Handshake হয়।',
-          '৩. Client HTTP/HTTPS GET রিকোয়েস্ট পাঠায়।',
-          '৪. Server HTTP Response (যেমন 200 OK + HTML) ফেরত পাঠায়।'
+          '১. ipconfig / ifconfig: নিজের IP, Subnet Mask ও Gateway ঠিক আছে কি না দেখা (169.254.x.x কি না)।',
+          '২. ping 127.0.0.1 ও ping Gateway: নিজের NIC ও লোকাল রাউটার পর্যন্ত কানেকশন চেক।',
+          '৩. tracert / traceroute: কোন হপ-এ গিয়ে প্যাকেট ড্রপ হচ্ছে তা দেখা।',
+          '৪. nslookup / dig: DNS নাম থেকে IP রেজলভ হচ্ছে কি না দেখা।',
+          '৫. netstat: কোন পোর্ট বা কানেকশন খোলা/Listening আছে তা দেখা।'
         ]
       }
     ];
@@ -59909,14 +59934,22 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
     function renderLabMath(type) {
       if (type) currentMathType = type;
       if (labSubject === 'net') {
-        if (!['subnet', 'tx', 'bdp', 'shannon'].includes(currentMathType)) currentMathType = 'subnet';
+        if (!['subnet', 'vlsm', 'tx', 'prop', 'bdp', 'shannon'].includes(currentMathType)) currentMathType = 'subnet';
         let qHtml = '';
         if (currentMathType === 'subnet') {
-          const cidr = [24, 25, 26, 27, 28, 29][Math.floor(Math.random() * 6)];
+          const cidr = [24, 25, 26, 27, 28, 29, 30][Math.floor(Math.random() * 7)];
           const hosts = Math.pow(2, 32 - cidr) - 2;
           currentMathAns = hosts;
           currentMathFormula = `2^(32-${cidr}) - 2 = ${hosts}`;
           qHtml = `একটি IPv4 নেটওয়ার্কের CIDR <strong>/${cidr}</strong> হলে এতে মোট কয়টি <strong>Usable Host IP</strong> পাওয়া যাবে?`;
+        } else if (currentMathType === 'vlsm') {
+          const needs = [50, 100, 250, 500, 1000][Math.floor(Math.random() * 5)];
+          let hBits = 1;
+          while (Math.pow(2, hBits) - 2 < needs) hBits++;
+          const cidr = 32 - hBits;
+          currentMathAns = cidr;
+          currentMathFormula = `2^${hBits}-2 >= ${needs} → /${cidr}`;
+          qHtml = `VLSM-এ একটি ডিপার্টমেন্টের জন্য <strong>${needs}টি Host</strong> দরকার হলে সর্বনিম্ন কত <strong>CIDR Prefix (যেমন 24)</strong> নিতে হবে?`;
         } else if (currentMathType === 'tx') {
           const kb = [500, 1000, 1500, 2000][Math.floor(Math.random() * 4)];
           const mbps = [10, 20, 50, 100][Math.floor(Math.random() * 4)];
@@ -59924,6 +59957,13 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
           currentMathAns = ms;
           currentMathFormula = `(${kb} KB * 8) / ${mbps} Mbps = ${ms} ms`;
           qHtml = `Packet size = <strong>${kb} KB</strong> (1 KB = 1000 B) এবং Bandwidth = <strong>${mbps} Mbps</strong> হলে <strong>Transmission Delay (ms)</strong> কত?`;
+        } else if (currentMathType === 'prop') {
+          const km = [100, 500, 1000, 2000][Math.floor(Math.random() * 4)];
+          const speed = 200000; // 2e8 m/s = 200,000 km/s
+          const ms = +((km / speed) * 1000).toFixed(2);
+          currentMathAns = ms;
+          currentMathFormula = `${km} km / 200,000 km/s = ${ms} ms`;
+          qHtml = `দূরত্ব = <strong>${km} km</strong> এবং সিগন্যালের গতি = <strong>2 × 10^8 m/s</strong> হলে <strong>Propagation Delay (ms)</strong> কত?`;
         } else if (currentMathType === 'bdp') {
           const mbps = [10, 20, 50, 100][Math.floor(Math.random() * 4)];
           const rtt = [20, 40, 50, 100][Math.floor(Math.random() * 4)];
@@ -59942,9 +59982,11 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
         document.getElementById('osLabBody').innerHTML = `
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
             <button class="s-btn ${currentMathType==='subnet'?'active':''}" type="button" onclick="renderLabMath('subnet')">Subnetting</button>
-            <button class="s-btn ${currentMathType==='tx'?'active':''}" type="button" onclick="renderLabMath('tx')">Transmission Delay</button>
+            <button class="s-btn ${currentMathType==='vlsm'?'active':''}" type="button" onclick="renderLabMath('vlsm')">VLSM</button>
+            <button class="s-btn ${currentMathType==='tx'?'active':''}" type="button" onclick="renderLabMath('tx')">Tx Delay</button>
+            <button class="s-btn ${currentMathType==='prop'?'active':''}" type="button" onclick="renderLabMath('prop')">Prop Delay</button>
             <button class="s-btn ${currentMathType==='bdp'?'active':''}" type="button" onclick="renderLabMath('bdp')">BDP</button>
-            <button class="s-btn ${currentMathType==='shannon'?'active':''}" type="button" onclick="renderLabMath('shannon')">Shannon Capacity</button>
+            <button class="s-btn ${currentMathType==='shannon'?'active':''}" type="button" onclick="renderLabMath('shannon')">Shannon</button>
           </div>
           <div class="lab-card">
             <h4>🌐 Network Math Sandbox</h4>
