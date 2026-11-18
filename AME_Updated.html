@@ -603,6 +603,137 @@
   .alloc3,.sem3,.dsk-sum{grid-template-columns:1fr}
 }
 
+    /* ===== ADDED STUDY & THEME FEATURES ===== */
+    /* 1. Theme Switcher */
+    .theme-menu { position: relative; display: inline-block; }
+    .theme-dropdown {
+      display: none; position: absolute; right: 0; top: calc(100% + 8px);
+      min-width: 195px; background: var(--navy-2);
+      border: 1px solid rgba(196, 163, 90, 0.45); border-radius: 8px;
+      padding: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.35); z-index: 1200;
+    }
+    .theme-dropdown.open { display: block; }
+    .theme-opt {
+      width: 100%; display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; background: transparent; border: 0; border-radius: 6px;
+      color: #e9eef5; font-family: inherit; font-size: 13.5px; text-align: left; cursor: pointer;
+    }
+    .theme-opt:hover { background: var(--gold-dim); color: var(--gold-2); }
+    .theme-swatch { width: 15px; height: 15px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.35); flex-shrink: 0; }
+    .theme-custom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 10px; margin-top: 4px; border-top: 1px solid rgba(196,163,90,0.25);
+      color: #e9eef5; font-size: 13px;
+    }
+    .theme-custom input[type="color"] { width: 28px; height: 24px; border: 0; background: transparent; cursor: pointer; }
+
+    /* 2. BN / EN Language Toggle (Default Bangla) */
+    .qa .ans-en { display: none; }
+    .qa.show-en .ans-bn { display: none; }
+    .qa.show-en .ans-en { display: block; }
+    .lang-switch { margin-left: auto; display: inline-flex; gap: 4px; }
+    .lang-btn {
+      padding: 3px 10px; font-size: 12px; font-weight: 600;
+      border: 1px solid var(--line); border-radius: 5px;
+      background: #ffffff; color: var(--muted); cursor: pointer;
+    }
+    .lang-btn.active { background: var(--navy); color: #ffffff; border-color: var(--navy); }
+
+    /* 3. Floating / Sticky Study Toolbar */
+    .study-bar {
+      position: sticky; top: calc(var(--header-h) + var(--tabs-h)); z-index: 90;
+      background: var(--paper); border-bottom: 1px solid var(--line);
+      padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .s-btn {
+      padding: 5px 11px; font-size: 12.5px; font-weight: 600; font-family: inherit;
+      border: 1px solid var(--line); border-radius: 6px; background: var(--card);
+      color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+      transition: all 0.15s;
+    }
+    .s-btn:hover { border-color: var(--gold); background: var(--gold-dim); }
+    .s-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .study-stats { margin-left: auto; font-size: 12.5px; color: var(--muted); font-weight: 600; }
+
+    /* 4. Active Recall Mode */
+    body.recall-mode .qa:not(.qa-revealed) .ans-bn,
+    body.recall-mode .qa:not(.qa-revealed) .ans-en { display: none !important; }
+    .recall-controls {
+      display: none; padding: 10px 18px; gap: 8px; flex-wrap: wrap;
+      background: rgba(196,163,90,0.07); border-top: 1px dashed var(--line);
+    }
+    body.recall-mode .qa .recall-controls { display: flex; }
+    .hint-box {
+      display: none; width: 100%; margin-top: 6px; padding: 10px 14px;
+      background: #fffbeb; border: 1px solid #f59e0b; border-radius: 6px;
+      font-size: 13.5px; color: #78350f;
+    }
+    .hint-box.open { display: block; }
+    .hint-chip {
+      display: inline-block; background: #fef3c7; border: 1px solid #fcd34d;
+      padding: 2px 8px; border-radius: 12px; margin: 2px 4px 2px 0; font-weight: 600; font-size: 12.5px;
+    }
+
+    /* 5. Keyword Blur / Spoiler */
+    body.blur-mode .qa .ans-bn strong,
+    body.blur-mode .qa .ans-en strong,
+    body.blur-mode .qa .ans-bn code,
+    body.blur-mode .qa .ans-en code {
+      filter: blur(5px); transition: filter 0.2s; cursor: pointer;
+      background: rgba(196,163,90,0.18); padding: 0 4px; border-radius: 3px;
+    }
+    body.blur-mode .qa .ans-bn strong:hover,
+    body.blur-mode .qa .ans-en strong:hover,
+    body.blur-mode .qa .ans-bn strong.unblurred,
+    body.blur-mode .qa .ans-en strong.unblurred,
+    body.blur-mode .qa .ans-bn code:hover,
+    body.blur-mode .qa .ans-en code:hover,
+    body.blur-mode .qa .ans-bn code.unblurred,
+    body.blur-mode .qa .ans-en code.unblurred { filter: blur(0); }
+
+    /* 6. Confidence Buttons */
+    .conf-bar {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      padding: 8px 18px 12px; border-top: 1px solid var(--line); background: rgba(0,0,0,0.015);
+    }
+    .conf-label { font-size: 12px; color: var(--muted); margin-right: 4px; font-weight: 600; }
+    .conf-btn {
+      padding: 3px 9px; font-size: 12px; border-radius: 5px; border: 1px solid var(--line);
+      background: var(--card); color: var(--ink); cursor: pointer; font-family: inherit;
+    }
+    .conf-btn.active-weak { background: #fee2e2; border-color: #ef4444; color: #991b1b; font-weight: 700; }
+    .conf-btn.active-review { background: #fef3c7; border-color: #f59e0b; color: #92400e; font-weight: 700; }
+    .conf-btn.active-mastered { background: #dcfce7; border-color: #22c55e; color: #166534; font-weight: 700; }
+    body.filter-weak .qa:not([data-conf="weak"]) { display: none !important; }
+
+    /* 7. Exam Night 1-Minute Mode */
+    body.quick-mode .qa .ans-bn p:not(:has(strong)):not(:first-of-type),
+    body.quick-mode .qa .ans-en p { display: none; }
+    body.quick-mode .qa .ans-bn ol,
+    body.quick-mode .qa .ans-bn ul { font-size: 14.5px; }
+
+    /* 8. OS Recall Lab Modal */
+    .os-modal-backdrop {
+      display: none; position: fixed; inset: 0; background: rgba(12,30,51,0.72);
+      z-index: 2000; align-items: center; justify-content: center; padding: 16px;
+    }
+    .os-modal-backdrop.open { display: flex; }
+    .os-modal {
+      background: var(--card); color: var(--ink); width: 100%; max-width: 720px;
+      max-height: 88vh; overflow-y: auto; border-radius: 12px;
+      border: 1px solid var(--gold); box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+    .os-modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; background: var(--navy); color: #fff; position: sticky; top: 0;
+    }
+    .os-modal-tabs { display: flex; gap: 6px; padding: 10px 20px; background: var(--paper); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    .os-modal-body { padding: 20px; }
+    .lab-card { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+    .lab-input { padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 14px; width: 160px; margin-right: 8px; }
+    .step-item { padding: 8px 12px; margin: 6px 0; background: var(--card); border-left: 3px solid var(--gold); border-radius: 4px; display: none; }
+    .step-item.shown { display: block; }
   </style>
 </head>
 <body>
@@ -615,10 +746,33 @@
       </div>
     </div>
     <div class="header-actions">
+      <button class="hbtn" type="button" onclick="openOsLab()">🧠 OS Recall Lab</button>
+      <div class="theme-menu" id="themeMenu">
+        <button class="hbtn" type="button" onclick="document.getElementById('themeDropdown').classList.toggle('open')">🎨 থিম</button>
+        <div class="theme-dropdown" id="themeDropdown">
+          <button class="theme-opt" type="button" onclick="setBgTheme('cream')"><span class="theme-swatch" style="background:#f4efe4"></span> ডিফল্ট (ক্রিম)</button>
+          <button class="theme-opt" type="button" onclick="setBgTheme('white')"><span class="theme-swatch" style="background:#ffffff"></span> সাদা (ক্লিন)</button>
+          <button class="theme-opt" type="button" onclick="setBgTheme('sepia')"><span class="theme-swatch" style="background:#efe3c8"></span> সেপিয়া (রিডিং)</button>
+          <button class="theme-opt" type="button" onclick="setBgTheme('mint')"><span class="theme-swatch" style="background:#eaf4ee"></span> সফট মিন্ট</button>
+          <button class="theme-opt" type="button" onclick="setBgTheme('dark')"><span class="theme-swatch" style="background:#121821"></span> ডার্ক মোড</button>
+          <label class="theme-custom">
+            <span>কাস্টম রঙ</span>
+            <input type="color" id="customBgPicker" value="#f4efe4" onchange="setCustomBg(this.value)" />
+          </label>
+        </div>
+      </div>
       <button class="hbtn" onclick="document.querySelector('.sidebar.active').classList.toggle('open')">মেনু</button>
       <button class="hbtn" onclick="window.print()">প্রিন্ট</button>
     </div>
   </header>
+
+  <div class="study-bar" id="studyBar">
+    <button class="s-btn" id="btnRecallMode" type="button" onclick="toggleStudyMode('recall-mode', this)">🙈 Active Recall</button>
+    <button class="s-btn" id="btnBlurMode" type="button" onclick="toggleStudyMode('blur-mode', this)">🕵️‍♂️ Keyword Blur</button>
+    <button class="s-btn" id="btnQuickMode" type="button" onclick="toggleStudyMode('quick-mode', this)">⚡ Quick Revision</button>
+    <button class="s-btn" id="btnWeakFilter" type="button" onclick="toggleStudyMode('filter-weak', this)">🔥 শুধু 🔴 Weak</button>
+    <span class="study-stats" id="studyStats">🔴 0 · 🟡 0 · 🟢 0</span>
+  </div>
 
   <nav class="part-tabs" id="partTabs">
     <button class="part-tab active" data-part="1">
@@ -59416,6 +59570,346 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
     }, { rootMargin: "-20% 0px -70% 0px", threshold: 0 });
 
     document.querySelectorAll("h3.sec, h4.sub").forEach(h => { if (h.id) observer.observe(h); });
+  </script>
+
+  <!-- OS Recall Lab Modal -->
+  <div class="os-modal-backdrop" id="osLabModal" onclick="if(event.target===this)closeOsLab()">
+    <div class="os-modal">
+      <div class="os-modal-head">
+        <strong>🧠 OS Recall Lab — প্র্যাকটিস ও মেমোরি টুলস</strong>
+        <button class="hbtn" type="button" onclick="closeOsLab()">✕ বন্ধ করুন</button>
+      </div>
+      <div class="os-modal-tabs">
+        <button class="s-btn active" type="button" onclick="switchLabTab('math', this)">🧮 Math Sandbox</button>
+        <button class="s-btn" type="button" onclick="switchLabTab('cards', this)">🃏 Comparison Flashcards</button>
+        <button class="s-btn" type="button" onclick="switchLabTab('flow', this)">🎬 Step-by-Step Flow</button>
+        <button class="s-btn" type="button" onclick="switchLabTab('hooks', this)">🔑 Memory Hooks</button>
+      </div>
+      <div class="os-modal-body" id="osLabBody"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== 1. THEME SWITCHER ===== */
+    const BG_THEMES = {
+      cream: { cream: '#f4efe4', paper: '#fbf8f2', card: '#ffffff', ink: '#1c2430', muted: '#5c6674', line: '#e4dccb' },
+      white: { cream: '#f8fafc', paper: '#ffffff', card: '#ffffff', ink: '#1c2430', muted: '#5c6674', line: '#e2e8f0' },
+      sepia: { cream: '#efe3c8', paper: '#f7eed9', card: '#fbf5e6', ink: '#2b2114', muted: '#6b5b45', line: '#dccbb0' },
+      mint:  { cream: '#eaf4ee', paper: '#f4faf6', card: '#ffffff', ink: '#182820', muted: '#4f685b', line: '#cfe3d7' },
+      dark:  { cream: '#121821', paper: '#18202c', card: '#1e2836', ink: '#e6edf5', muted: '#9fb0c4', line: '#2d3a4d' }
+    };
+
+    function applyThemeVars(vars) {
+      const root = document.documentElement.style;
+      Object.entries(vars).forEach(([k, v]) => root.setProperty('--' + k, v));
+    }
+
+    function setBgTheme(name) {
+      const theme = BG_THEMES[name];
+      if (!theme) return;
+      applyThemeVars(theme);
+      localStorage.setItem('ame_bg_theme', JSON.stringify({ type: 'preset', name }));
+      document.getElementById('themeDropdown').classList.remove('open');
+    }
+
+    function setCustomBg(hex) {
+      applyThemeVars({ cream: hex, paper: hex, card: '#ffffff', ink: '#1c2430', muted: '#5c6674', line: 'rgba(0,0,0,0.12)' });
+      localStorage.setItem('ame_bg_theme', JSON.stringify({ type: 'custom', hex }));
+    }
+
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('themeMenu');
+      const dd = document.getElementById('themeDropdown');
+      if (menu && dd && !menu.contains(e.target)) dd.classList.remove('open');
+    });
+
+    (function restoreTheme() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('ame_bg_theme'));
+        if (!saved) return;
+        if (saved.type === 'preset') setBgTheme(saved.name);
+        else if (saved.type === 'custom') {
+          setCustomBg(saved.hex);
+          const picker = document.getElementById('customBgPicker');
+          if (picker) picker.value = saved.hex;
+        }
+      } catch (_) {}
+    })();
+
+    /* ===== 2. STUDY MODES & STATS ===== */
+    function toggleStudyMode(cls, btn) {
+      document.body.classList.toggle(cls);
+      btn.classList.toggle('active');
+    }
+
+    function updateStudyStats() {
+      const confMap = JSON.parse(localStorage.getItem('ame_qa_conf') || '{}');
+      let w = 0, r = 0, m = 0;
+      Object.values(confMap).forEach(v => {
+        if (v === 'weak') w++;
+        else if (v === 'review') r++;
+        else if (v === 'mastered') m++;
+      });
+      const el = document.getElementById('studyStats');
+      if (el) el.textContent = `🔴 ${w} · 🟡 ${r} · 🟢 ${m}`;
+    }
+
+    /* ===== 3. PER-QUESTION ENHANCEMENTS (BN/EN + RECALL + CONFIDENCE) ===== */
+    (function initQuestions() {
+      const confMap = JSON.parse(localStorage.getItem('ame_qa_conf') || '{}');
+
+      document.querySelectorAll('article.qa').forEach((qa, idx) => {
+        const qId = qa.id || ('qa-auto-' + idx);
+        const bn = qa.querySelector('.ans-bn');
+        const en = qa.querySelector('.ans-en');
+
+        // A. BN / EN Toggle
+        if (bn && en) {
+          const metaRow = qa.querySelector('.qa-head .meta-row') || qa.querySelector('.qa-head');
+          if (metaRow) {
+            const wrap = document.createElement('div');
+            wrap.className = 'lang-switch';
+            const btnBn = document.createElement('button');
+            btnBn.type = 'button'; btnBn.className = 'lang-btn active'; btnBn.textContent = 'BN';
+            const btnEn = document.createElement('button');
+            btnEn.type = 'button'; btnEn.className = 'lang-btn'; btnEn.textContent = 'EN';
+
+            btnBn.addEventListener('click', () => {
+              qa.classList.remove('show-en');
+              btnBn.classList.add('active'); btnEn.classList.remove('active');
+            });
+            btnEn.addEventListener('click', () => {
+              qa.classList.add('show-en');
+              btnEn.classList.add('active'); btnBn.classList.remove('active');
+            });
+            wrap.appendChild(btnBn); wrap.appendChild(btnEn);
+            metaRow.appendChild(wrap);
+          }
+        }
+
+        // B. Active Recall Controls (Hint + Show Answer)
+        const recallDiv = document.createElement('div');
+        recallDiv.className = 'recall-controls';
+
+        const hintBtn = document.createElement('button');
+        hintBtn.type = 'button'; hintBtn.className = 's-btn';
+        hintBtn.textContent = '💡 Show 5 Keywords / Hint';
+
+        const ansBtn = document.createElement('button');
+        ansBtn.type = 'button'; ansBtn.className = 's-btn';
+        ansBtn.textContent = '📖 Show Full Answer';
+
+        const hintBox = document.createElement('div');
+        hintBox.className = 'hint-box';
+
+        hintBtn.addEventListener('click', () => {
+          if (!hintBox.dataset.built) {
+            const terms = Array.from(qa.querySelectorAll('.ans-bn strong, .ans-en strong'))
+              .map(el => el.textContent.trim().replace(/[:।]$/, ''))
+              .filter(t => t.length > 1 && t.length < 40);
+            const unique = [...new Set(terms)].slice(0, 5);
+            hintBox.innerHTML = unique.length
+              ? '<strong>মূল শব্দ (Hints):</strong> ' + unique.map(t => `<span class="hint-chip">${t}</span>`).join('')
+              : 'এই প্রশ্নের জন্য আলাদা কিওয়ার্ড পাওয়া যায়নি—সরাসরি উত্তর দেখুন।';
+            hintBox.dataset.built = '1';
+          }
+          hintBox.classList.toggle('open');
+        });
+
+        ansBtn.addEventListener('click', () => {
+          const revealed = qa.classList.toggle('qa-revealed');
+          ansBtn.textContent = revealed ? '🙈 Hide Answer' : '📖 Show Full Answer';
+        });
+
+        recallDiv.appendChild(hintBtn);
+        recallDiv.appendChild(ansBtn);
+        recallDiv.appendChild(hintBox);
+
+        // C. Confidence Bar
+        const confBar = document.createElement('div');
+        confBar.className = 'conf-bar';
+        confBar.innerHTML = '<span class="conf-label">মনে থাকার অবস্থা:</span>';
+
+        const levels = [
+          { key: 'weak', label: '🔴 ভুলে যাই (Weak)', cls: 'active-weak' },
+          { key: 'review', label: '🟡 মোটামুটি (Review)', cls: 'active-review' },
+          { key: 'mastered', label: '🟢 মুখস্থ (Mastered)', cls: 'active-mastered' }
+        ];
+
+        const savedConf = confMap[qId];
+        if (savedConf) qa.setAttribute('data-conf', savedConf);
+
+        levels.forEach(lv => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'conf-btn';
+          b.textContent = lv.label;
+          if (savedConf === lv.key) b.classList.add(lv.cls);
+
+          b.addEventListener('click', () => {
+            const current = qa.getAttribute('data-conf');
+            confBar.querySelectorAll('.conf-btn').forEach(x => x.className = 'conf-btn');
+            if (current === lv.key) {
+              qa.removeAttribute('data-conf');
+              delete confMap[qId];
+            } else {
+              qa.setAttribute('data-conf', lv.key);
+              b.classList.add(lv.cls);
+              confMap[qId] = lv.key;
+            }
+            localStorage.setItem('ame_qa_conf', JSON.stringify(confMap));
+            updateStudyStats();
+          });
+          confBar.appendChild(b);
+        });
+
+        // Insert recall controls before answers, confidence bar at end
+        const firstAns = qa.querySelector('.ans-bn, .ans-en');
+        if (firstAns) qa.insertBefore(recallDiv, firstAns);
+        else qa.appendChild(recallDiv);
+        qa.appendChild(confBar);
+      });
+
+      // Click to unblur individual keyword in blur-mode
+      document.addEventListener('click', (e) => {
+        if (document.body.classList.contains('blur-mode') && (e.target.tagName === 'STRONG' || e.target.tagName === 'CODE')) {
+          e.target.classList.toggle('unblurred');
+        }
+      });
+
+      updateStudyStats();
+    })();
+
+    /* ===== 4. OS RECALL LAB (MATH SANDBOX, FLASHCARDS, FLOW, HOOKS) ===== */
+    let currentMathAns = 0;
+    let cardIdx = 0;
+
+    const OS_FLASHCARDS = [
+      { q: 'কোনটিতে External Fragmentation হয়, কিন্তু Internal Fragmentation হয় না?', ans: 'Segmentation', opts: ['Paging', 'Segmentation'] },
+      { q: 'কোনটি CPU / Program জেনারেট করে?', ans: 'Logical Address', opts: ['Logical Address', 'Physical Address'] },
+      { q: 'Belady\'s Anomaly কোন Page Replacement অ্যালগরিদমে দেখা যায়?', ans: 'FIFO', opts: ['FIFO', 'LRU', 'Optimal'] },
+      { q: 'কোনটি নিজের আলাদা Address Space শেয়ার করে না?', ans: 'Process', opts: ['Process', 'Thread'] },
+      { q: 'Signaling-এর জন্য (Producer-Consumer) কোনটি বেশি উপযোগী?', ans: 'Semaphore', opts: ['Mutex', 'Semaphore'] }
+    ];
+
+    const OS_FLOWS = [
+      {
+        title: 'Page Fault হলে OS কী কী ধাপ নেয়?',
+        steps: [
+          '১. CPU-তে Page Table চেক করে দেখা যায় Valid-Invalid bit = Invalid (Page RAM-এ নেই)।',
+          '২. Hardware OS-কে একটি Trap (Page Fault Interrupt) পাঠায়।',
+          '৩. OS ডিস্ক (Swap Space) থেকে কাঙ্ক্ষিত Page-টি খুঁজে বের করে।',
+          '৪. RAM-এ একটি খালি Frame খোঁজে (না পেলে Page Replacement চালায়)।',
+          '৫. ডিস্ক থেকে Page-টি RAM-এর Frame-এ লোড করে, Page Table আপডেট করে (Valid=1) এবং Instruction-টি রিস্টার্ট করে।'
+        ]
+      },
+      {
+        title: 'MMU কীভাবে Logical থেকে Physical Address বানায় (Paging)?',
+        steps: [
+          '১. CPU একটি Logical Address জেনারেট করে: (Page Number p, Offset d)।',
+          '২. MMU প্রথমে TLB-তে (Translation Lookaside Buffer) Page Number p খোঁজে।',
+          '৩. TLB Hit হলে সাথে সাথে Frame Number f পাওয়া যায়; Miss হলে RAM-এর Page Table থেকে f নেয়।',
+          '৪. Frame Number f-এর সাথে একই Offset d যুক্ত করে Physical Address (f, d) তৈরি হয়।'
+        ]
+      }
+    ];
+
+    function openOsLab() {
+      document.getElementById('osLabModal').classList.add('open');
+      renderLabMath();
+    }
+    function closeOsLab() { document.getElementById('osLabModal').classList.remove('open'); }
+
+    function switchLabTab(tab, btn) {
+      document.querySelectorAll('.os-modal-tabs .s-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (tab === 'math') renderLabMath();
+      else if (tab === 'cards') renderLabCards();
+      else if (tab === 'flow') renderLabFlow();
+      else if (tab === 'hooks') renderLabHooks();
+    }
+
+    function renderLabMath() {
+      const hit = [70, 75, 80, 85, 90, 95][Math.floor(Math.random() * 6)];
+      const tlb = [10, 15, 20, 25][Math.floor(Math.random() * 4)];
+      const mem = [80, 100, 120, 150][Math.floor(Math.random() * 4)];
+      const h = hit / 100;
+      currentMathAns = +(h * (tlb + mem) + (1 - h) * (tlb + 2 * mem)).toFixed(2);
+
+      document.getElementById('osLabBody').innerHTML = `
+        <div class="lab-card">
+          <h4>🧮 Effective Access Time (EAT) প্র্যাকটিস</h4>
+          <p style="margin:8px 0">ধরা যাক, <strong>TLB hit ratio = ${hit}%</strong>, <strong>TLB access = ${tlb} ns</strong> এবং <strong>Memory access = ${mem} ns</strong>। তাহলে Effective Access Time (ns) কত?</p>
+          <input type="number" step="0.01" id="mathInput" class="lab-input" placeholder="উত্তর লিখুন (ns)" />
+          <button class="s-btn active" type="button" onclick="checkLabMath()">Check Answer</button>
+          <button class="s-btn" type="button" onclick="renderLabMath()">🔄 নতুন সংখ্যা</button>
+          <p id="mathFeedback" style="margin-top:10px;font-weight:600;"></p>
+        </div>`;
+    }
+
+    function checkLabMath() {
+      const val = parseFloat(document.getElementById('mathInput').value);
+      const fb = document.getElementById('mathFeedback');
+      if (isNaN(val)) { fb.textContent = '⚠️ একটি সংখ্যা লিখুন।'; return; }
+      if (Math.abs(val - currentMathAns) < 0.5) {
+        fb.style.color = '#166534';
+        fb.textContent = `✅ সঠিক! উত্তর: ${currentMathAns} ns`;
+      } else {
+        fb.style.color = '#991b1b';
+        fb.textContent = `❌ ভুল হয়েছে। সঠিক উত্তর: ${currentMathAns} ns (সূত্র: h*(tlb+mem) + (1-h)*(tlb+2*mem))`;
+      }
+    }
+
+    function renderLabCards() {
+      const c = OS_FLASHCARDS[cardIdx % OS_FLASHCARDS.length];
+      document.getElementById('osLabBody').innerHTML = `
+        <div class="lab-card">
+          <div style="font-size:12px;color:var(--muted)">কার্ড ${(cardIdx % OS_FLASHCARDS.length) + 1} / ${OS_FLASHCARDS.length}</div>
+          <h4 style="margin:8px 0 14px">${c.q}</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            ${c.opts.map(o => `<button class="s-btn" type="button" onclick="checkFlashcard('${o}','${c.ans}', this)">${o}</button>`).join('')}
+          </div>
+          <p id="cardFeedback" style="margin-top:12px;font-weight:600"></p>
+          <button class="s-btn" style="margin-top:10px" type="button" onclick="cardIdx++;renderLabCards()">পরবর্তী কার্ড →</button>
+        </div>`;
+    }
+
+    function checkFlashcard(pick, ans, btn) {
+      const fb = document.getElementById('cardFeedback');
+      if (pick === ans) { fb.style.color = '#166534'; fb.textContent = '✅ একদম সঠিক!'; }
+      else { fb.style.color = '#991b1b'; fb.textContent = `❌ সঠিক উত্তর হবে: ${ans}`; }
+    }
+
+    function renderLabFlow() {
+      document.getElementById('osLabBody').innerHTML = OS_FLOWS.map((f, fi) => `
+        <div class="lab-card">
+          <h4>${f.title}</h4>
+          <div id="flow-${fi}">
+            ${f.steps.map((s, si) => `<div class="step-item ${si === 0 ? 'shown' : ''}">${s}</div>`).join('')}
+          </div>
+          <button class="s-btn active" style="margin-top:10px" type="button" onclick="nextFlowStep(${fi})">Next Step →</button>
+        </div>`).join('');
+    }
+
+    function nextFlowStep(fi) {
+      const items = document.querySelectorAll(`#flow-${fi} .step-item`);
+      for (let el of items) {
+        if (!el.classList.contains('shown')) { el.classList.add('shown'); return; }
+      }
+      items.forEach((el, i) => el.classList.toggle('shown', i === 0));
+    }
+
+    function renderLabHooks() {
+      document.getElementById('osLabBody').innerHTML = `
+        <div class="lab-card">
+          <h4>🔑 Operating System Memory Hooks</h4>
+          <ul style="padding-left:18px;margin-top:8px;line-height:1.9">
+            <li><strong>Deadlock-এর ৪টি শর্ত (MHNC):</strong> <em>Mutual Exclusion, Hold &amp; Wait, No Preemption, Circular Wait</em>।</li>
+            <li><strong>Page Table-এর ৩টি Bit (VDR):</strong> <em>Valid, Dirty (Modified), Reference</em>।</li>
+            <li><strong>CPU Scheduling-এর লক্ষ্য:</strong> Max <em>CPU Utilization &amp; Throughput</em>; Min <em>Turnaround, Waiting &amp; Response Time</em>।</li>
+            <li><strong>Belady's Anomaly:</strong> শুধু <strong>FIFO</strong>-তে হয় (Frame বাড়ালেও Page Fault বাড়ে)।</li>
+          </ul>
+        </div>`;
+    }
   </script>
 </body>
 </html>
