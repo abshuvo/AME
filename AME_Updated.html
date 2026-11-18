@@ -59576,8 +59576,12 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
   <div class="os-modal-backdrop" id="osLabModal" onclick="if(event.target===this)closeOsLab()">
     <div class="os-modal">
       <div class="os-modal-head">
-        <strong>🧠 OS Recall Lab — প্র্যাকটিস ও মেমোরি টুলস</strong>
-        <button class="hbtn" type="button" onclick="closeOsLab()">✕ বন্ধ করুন</button>
+        <strong>🧠 Recall Lab — প্র্যাকটিস ও মেমোরি টুলস</strong>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="s-btn active" id="subjOsBtn" type="button" onclick="setLabSubject('os', this)">💻 OS</button>
+          <button class="s-btn" id="subjNetBtn" type="button" onclick="setLabSubject('net', this)">🌐 Network</button>
+          <button class="hbtn" type="button" onclick="closeOsLab()">✕ বন্ধ</button>
+        </div>
       </div>
       <div class="os-modal-tabs">
         <button class="s-btn active" type="button" onclick="switchLabTab('math', this)">🧮 Math Sandbox</button>
@@ -59779,13 +59783,57 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
       updateStudyStats();
     })();
 
-    /* ===== 4. OS RECALL LAB (ALL OS MATH, ALL 71 QUESTIONS, FLOWS & HOOKS) ===== */
+    /* ===== 4. RECALL LAB (OS + NETWORK: MATH, ALL QUESTIONS, FLOWS & HOOKS) ===== */
+    let labSubject = 'os';
+    let currentLabTab = 'math';
     let currentMathAns = 0;
     let currentMathFormula = '';
     let currentMathType = 'tlb';
     let cardIdx = 0;
     let qaCardIdx = 0;
     let allOsQas = [];
+    let allNetQas = [];
+
+    const NET_FLASHCARDS = [
+      { q: 'কোনটি Connectionless এবং Reliable নয় (Fast)?', ans: 'UDP', opts: ['TCP', 'UDP'] },
+      { q: 'Router OSI মডেলের কোন লেয়ারে কাজ করে?', ans: 'Network Layer (Layer 3)', opts: ['Data Link (Layer 2)', 'Network Layer (Layer 3)', 'Transport (Layer 4)'] },
+      { q: 'Switch কোন অ্যাড্রেস ব্যবহার করে ফ্রেম ফরোয়ার্ড করে?', ans: 'MAC Address', opts: ['IP Address', 'MAC Address', 'Port Number'] },
+      { q: 'IP-কে MAC Address-এ রূপান্তর করে কোন প্রোটোকল?', ans: 'ARP', opts: ['DNS', 'ARP', 'DHCP', 'ICMP'] },
+      { q: 'Wi-Fi (IEEE 802.11)-এ Collision এড়াতে কোনটি ব্যবহৃত হয়?', ans: 'CSMA/CA', opts: ['CSMA/CD', 'CSMA/CA'] },
+      { q: 'HTTPS ডিফল্টভাবে কোন Port ব্যবহার করে?', ans: '443', opts: ['80', '443', '22', '53'] }
+    ];
+
+    const NET_FLOWS = [
+      {
+        title: 'TCP 3-Way Handshake কীভাবে কাজ করে?',
+        steps: [
+          '১. Client → Server: SYN (seq = x) পাঠায় কানেকশন শুরু করার জন্য।',
+          '২. Server → Client: SYN-ACK (seq = y, ack = x + 1) পাঠিয়ে সম্মতি জানায়।',
+          '৩. Client → Server: ACK (ack = y + 1) পাঠালে কানেকশন Established হয়।'
+        ]
+      },
+      {
+        title: 'ব্রাউজারে URL দিলে DNS ও HTTP কীভাবে কাজ করে?',
+        steps: [
+          '১. ব্রাউজার Cache ও Local DNS Resolver-এর কাছে ডোমেইনের IP খোঁজে।',
+          '২. IP পেলে Client ও Server-এর মধ্যে TCP 3-Way Handshake হয়।',
+          '৩. Client HTTP/HTTPS GET রিকোয়েস্ট পাঠায়।',
+          '৪. Server HTTP Response (যেমন 200 OK + HTML) ফেরত পাঠায়।'
+        ]
+      }
+    ];
+
+    function setLabSubject(subj, btn) {
+      labSubject = subj;
+      document.getElementById('subjOsBtn').classList.toggle('active', subj === 'os');
+      document.getElementById('subjNetBtn').classList.toggle('active', subj === 'net');
+      currentMathType = subj === 'os' ? 'tlb' : 'subnet';
+      cardIdx = 0; qaCardIdx = 0;
+      if (currentLabTab === 'math') renderLabMath();
+      else if (currentLabTab === 'cards') renderLabCards();
+      else if (currentLabTab === 'flow') renderLabFlow();
+      else if (currentLabTab === 'hooks') renderLabHooks();
+    }
 
     const OS_FLASHCARDS = [
       { q: 'কোনটিতে External Fragmentation হয়, কিন্তু Internal Fragmentation হয় না?', ans: 'Segmentation', opts: ['Paging', 'Segmentation'] },
@@ -59833,9 +59881,12 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
       if (!allOsQas.length) {
         const qb1 = document.getElementById('qb1');
         const qb2 = document.getElementById('qb2');
+        const qb3 = document.getElementById('qb3');
         document.querySelectorAll('article.qa').forEach(qa => {
           if (qb1 && qb2 && (qa.compareDocumentPosition(qb1) & Node.DOCUMENT_POSITION_PRECEDING) && (qa.compareDocumentPosition(qb2) & Node.DOCUMENT_POSITION_FOLLOWING)) {
             allOsQas.push(qa);
+          } else if (qb2 && qb3 && (qa.compareDocumentPosition(qb2) & Node.DOCUMENT_POSITION_PRECEDING) && (qa.compareDocumentPosition(qb3) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+            allNetQas.push(qa);
           }
         });
         if (!allOsQas.length) allOsQas = Array.from(document.querySelectorAll('article.qa')).slice(0, 71);
@@ -59846,6 +59897,7 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
     function closeOsLab() { document.getElementById('osLabModal').classList.remove('open'); }
 
     function switchLabTab(tab, btn) {
+      currentLabTab = tab;
       document.querySelectorAll('.os-modal-tabs .s-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       if (tab === 'math') renderLabMath();
@@ -59856,6 +59908,54 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
 
     function renderLabMath(type) {
       if (type) currentMathType = type;
+      if (labSubject === 'net') {
+        if (!['subnet', 'tx', 'bdp', 'shannon'].includes(currentMathType)) currentMathType = 'subnet';
+        let qHtml = '';
+        if (currentMathType === 'subnet') {
+          const cidr = [24, 25, 26, 27, 28, 29][Math.floor(Math.random() * 6)];
+          const hosts = Math.pow(2, 32 - cidr) - 2;
+          currentMathAns = hosts;
+          currentMathFormula = `2^(32-${cidr}) - 2 = ${hosts}`;
+          qHtml = `একটি IPv4 নেটওয়ার্কের CIDR <strong>/${cidr}</strong> হলে এতে মোট কয়টি <strong>Usable Host IP</strong> পাওয়া যাবে?`;
+        } else if (currentMathType === 'tx') {
+          const kb = [500, 1000, 1500, 2000][Math.floor(Math.random() * 4)];
+          const mbps = [10, 20, 50, 100][Math.floor(Math.random() * 4)];
+          const ms = +((kb * 8000) / (mbps * 1000000) * 1000).toFixed(2);
+          currentMathAns = ms;
+          currentMathFormula = `(${kb} KB * 8) / ${mbps} Mbps = ${ms} ms`;
+          qHtml = `Packet size = <strong>${kb} KB</strong> (1 KB = 1000 B) এবং Bandwidth = <strong>${mbps} Mbps</strong> হলে <strong>Transmission Delay (ms)</strong> কত?`;
+        } else if (currentMathType === 'bdp') {
+          const mbps = [10, 20, 50, 100][Math.floor(Math.random() * 4)];
+          const rtt = [20, 40, 50, 100][Math.floor(Math.random() * 4)];
+          const kb = +((mbps * 1000000 * (rtt / 1000)) / 8000).toFixed(2);
+          currentMathAns = kb;
+          currentMathFormula = `(${mbps} Mbps * ${rtt} ms) / 8 = ${kb} KB`;
+          qHtml = `Bandwidth = <strong>${mbps} Mbps</strong> এবং RTT = <strong>${rtt} ms</strong> হলে Bandwidth-Delay Product কত <strong>KB</strong> (1 KB = 1000 B)?`;
+        } else if (currentMathType === 'shannon') {
+          const bw = [3, 4, 5, 10][Math.floor(Math.random() * 4)];
+          const snr = [7, 15, 31, 63][Math.floor(Math.random() * 4)];
+          const cap = +(bw * Math.log2(1 + snr)).toFixed(2);
+          currentMathAns = cap;
+          currentMathFormula = `${bw} * log2(1 + ${snr}) = ${cap} Mbps`;
+          qHtml = `Bandwidth = <strong>${bw} MHz</strong> এবং <strong>SNR = ${snr}</strong> (রৈখিক মান) হলে Shannon Channel Capacity কত <strong>Mbps</strong>?`;
+        }
+        document.getElementById('osLabBody').innerHTML = `
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+            <button class="s-btn ${currentMathType==='subnet'?'active':''}" type="button" onclick="renderLabMath('subnet')">Subnetting</button>
+            <button class="s-btn ${currentMathType==='tx'?'active':''}" type="button" onclick="renderLabMath('tx')">Transmission Delay</button>
+            <button class="s-btn ${currentMathType==='bdp'?'active':''}" type="button" onclick="renderLabMath('bdp')">BDP</button>
+            <button class="s-btn ${currentMathType==='shannon'?'active':''}" type="button" onclick="renderLabMath('shannon')">Shannon Capacity</button>
+          </div>
+          <div class="lab-card">
+            <h4>🌐 Network Math Sandbox</h4>
+            <p style="margin:8px 0">${qHtml}</p>
+            <input type="number" step="0.01" id="mathInput" class="lab-input" placeholder="উত্তর লিখুন" />
+            <button class="s-btn active" type="button" onclick="checkLabMath()">Check Answer</button>
+            <button class="s-btn" type="button" onclick="renderLabMath()">🔄 নতুন সংখ্যা</button>
+            <p id="mathFeedback" style="margin-top:10px;font-weight:600;"></p>
+          </div>`;
+        return;
+      }
       let qHtml = '';
       if (currentMathType === 'tlb') {
         const hit = [70, 75, 80, 85, 90, 95][Math.floor(Math.random() * 6)];
@@ -59963,36 +60063,40 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
     }
 
     function renderLabCards(mode) {
-      if (mode === 'all') {
-        const qa = allOsQas[qaCardIdx % allOsQas.length];
+      const qList = labSubject === 'net' ? allNetQas : allOsQas;
+      const cList = labSubject === 'net' ? NET_FLASHCARDS : OS_FLASHCARDS;
+      const subjLabel = labSubject === 'net' ? 'Network' : 'OS';
+
+      if (mode === 'all' && qList.length) {
+        const qa = qList[qaCardIdx % qList.length];
         const qTitle = qa ? (qa.querySelector('h5')?.textContent || 'প্রশ্ন') : 'প্রশ্ন পাওয়া যায়নি';
         const qAns = qa ? (qa.querySelector('.ans-bn')?.innerHTML || '') : '';
         document.getElementById('osLabBody').innerHTML = `
           <div style="display:flex;gap:6px;margin-bottom:12px">
             <button class="s-btn" type="button" onclick="renderLabCards('quiz')">Comparison Quiz</button>
-            <button class="s-btn active" type="button" onclick="renderLabCards('all')">সব ${allOsQas.length}টি OS প্রশ্ন (Flashcard)</button>
+            <button class="s-btn active" type="button" onclick="renderLabCards('all')">সব ${qList.length}টি ${subjLabel} প্রশ্ন (Flashcard)</button>
           </div>
           <div class="lab-card">
-            <div style="font-size:12px;color:var(--muted)">প্রশ্ন ${(qaCardIdx % allOsQas.length) + 1} / ${allOsQas.length}</div>
+            <div style="font-size:12px;color:var(--muted)">প্রশ্ন ${(qaCardIdx % qList.length) + 1} / ${qList.length}</div>
             <h4 style="margin:8px 0 14px">${qTitle}</h4>
             <div id="qaCardAns" style="display:none;border-top:1px dashed var(--line);padding-top:10px;margin-top:10px">${qAns}</div>
             <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
               <button class="s-btn active" type="button" onclick="document.getElementById('qaCardAns').style.display='block'">📖 উত্তর দেখুন</button>
               <button class="s-btn" type="button" onclick="qaCardIdx++;renderLabCards('all')">পরবর্তী প্রশ্ন →</button>
-              <button class="s-btn" type="button" onclick="qaCardIdx=Math.floor(Math.random()*allOsQas.length);renderLabCards('all')">🔀 Random</button>
+              <button class="s-btn" type="button" onclick="qaCardIdx=Math.floor(Math.random()*${qList.length});renderLabCards('all')">🔀 Random</button>
             </div>
           </div>`;
         return;
       }
 
-      const c = OS_FLASHCARDS[cardIdx % OS_FLASHCARDS.length];
+      const c = cList[cardIdx % cList.length];
       document.getElementById('osLabBody').innerHTML = `
         <div style="display:flex;gap:6px;margin-bottom:12px">
           <button class="s-btn active" type="button" onclick="renderLabCards('quiz')">Comparison Quiz</button>
-          <button class="s-btn" type="button" onclick="renderLabCards('all')">সব ${allOsQas.length}টি OS প্রশ্ন (Flashcard)</button>
+          <button class="s-btn" type="button" onclick="renderLabCards('all')">সব ${qList.length}টি ${subjLabel} প্রশ্ন (Flashcard)</button>
         </div>
         <div class="lab-card">
-          <div style="font-size:12px;color:var(--muted)">কার্ড ${(cardIdx % OS_FLASHCARDS.length) + 1} / ${OS_FLASHCARDS.length}</div>
+          <div style="font-size:12px;color:var(--muted)">কার্ড ${(cardIdx % cList.length) + 1} / ${cList.length}</div>
           <h4 style="margin:8px 0 14px">${c.q}</h4>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             ${c.opts.map(o => `<button class="s-btn" type="button" onclick="checkFlashcard('${o}','${c.ans}', this)">${o}</button>`).join('')}
@@ -60009,7 +60113,8 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
     }
 
     function renderLabFlow() {
-      document.getElementById('osLabBody').innerHTML = OS_FLOWS.map((f, fi) => `
+      const flows = labSubject === 'net' ? NET_FLOWS : OS_FLOWS;
+      document.getElementById('osLabBody').innerHTML = flows.map((f, fi) => `
         <div class="lab-card">
           <h4>${f.title}</h4>
           <div id="flow-${fi}">
@@ -60028,6 +60133,19 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
     }
 
     function renderLabHooks() {
+      if (labSubject === 'net') {
+        document.getElementById('osLabBody').innerHTML = `
+          <div class="lab-card">
+            <h4>🔑 Computer Network Memory Hooks</h4>
+            <ul style="padding-left:18px;margin-top:8px;line-height:1.9">
+              <li><strong>OSI 7 Layers (নিচ থেকে উপরে):</strong> <em>Please Do Not Throw Sausage Pizza Away</em> (Physical, Data Link, Network, Transport, Session, Presentation, Application)।</li>
+              <li><strong>গুরুত্বপূর্ণ Port নম্বর:</strong> FTP (20/21), SSH (22), Telnet (23), SMTP (25), DNS (53), HTTP (80), HTTPS (443)।</li>
+              <li><strong>Private IP রেঞ্জ:</strong> Class A (<code>10.0.0.0/8</code>), Class B (<code>172.16.0.0/12</code>), Class C (<code>192.168.0.0/16</code>)।</li>
+              <li><strong>Devices by Layer:</strong> Hub/Repeater (L1), Switch/Bridge (L2), Router (L3)।</li>
+            </ul>
+          </div>`;
+        return;
+      }
       document.getElementById('osLabBody').innerHTML = `
         <div class="lab-card">
           <h4>🔑 Operating System Memory Hooks</h4>
