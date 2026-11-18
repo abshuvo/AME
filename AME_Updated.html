@@ -59889,6 +59889,43 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
         currentMathAns = +((1 - p) * mem + p * pfNs).toFixed(2);
         currentMathFormula = `(1-${p})*${mem} + ${p}*${pfNs} = ${currentMathAns} ns`;
         qHtml = `<strong>Page fault rate = ${p}</strong>, <strong>Memory access = ${mem} ns</strong> এবং <strong>Page-fault service = ${pfMs} ms</strong> হলে Effective Access Time (<strong>ns</strong>-এ) কত?`;
+      } else if (currentMathType === 'cpu') {
+        const b1 = Math.floor(Math.random() * 8) + 3;
+        const b2 = Math.floor(Math.random() * 8) + 2;
+        const b3 = Math.floor(Math.random() * 8) + 2;
+        const sorted = [b1, b2, b3].sort((a, b) => a - b);
+        const avgSjf = +((0 + sorted[0] + (sorted[0] + sorted[1])) / 3).toFixed(2);
+        currentMathAns = avgSjf;
+        currentMathFormula = `SJF order [${sorted.join(', ')}] → WT: 0, ${sorted[0]}, ${sorted[0]+sorted[1]} → Avg = ${avgSjf}`;
+        qHtml = `তিনটি প্রসেস (P1, P2, P3) একসাথে (Arrival = 0) এসেছে, যাদের Burst Time যথাক্রমে <strong>${b1}, ${b2}, ${b3}</strong>। <strong>SJF (Non-preemptive)</strong>-এ Average Waiting Time কত?`;
+      } else if (currentMathType === 'pagerep') {
+        const frames = 3;
+        const refs = Array.from({length: 8}, () => Math.floor(Math.random() * 5) + 1);
+        let q = [], faults = 0;
+        refs.forEach(r => {
+          if (!q.includes(r)) {
+            faults++;
+            if (q.length === frames) q.shift();
+            q.push(r);
+          }
+        });
+        currentMathAns = faults;
+        currentMathFormula = `FIFO (${frames} frames) on [${refs.join(', ')}] = ${faults} page faults`;
+        qHtml = `<strong>${frames}টি Frame</strong>-এ <strong>FIFO</strong> অ্যালগরিদম ব্যবহার করলে Reference String <strong>[${refs.join(', ')}]</strong>-এর জন্য মোট কয়টি <strong>Page Fault</strong> হবে?`;
+      } else if (currentMathType === 'disk') {
+        const head = Math.floor(Math.random() * 40) + 40;
+        const reqs = Array.from({length: 4}, () => Math.floor(Math.random() * 150) + 10);
+        let cur = head, move = 0;
+        reqs.forEach(r => { move += Math.abs(cur - r); cur = r; });
+        currentMathAns = move;
+        currentMathFormula = `FCFS from ${head} → [${reqs.join(', ')}] = ${move} cylinders`;
+        qHtml = `Disk Head বর্তমানে <strong>${head}</strong> পজিশনে আছে। <strong>FCFS</strong> অ্যালগরিদমে রিকোয়েস্টগুলো <strong>[${reqs.join(', ')}]</strong> সার্ভিস করতে মোট কত Cylinder Head Movement হবে?`;
+      } else if (currentMathType === 'banker') {
+        const maxR = Math.floor(Math.random() * 6) + 5;
+        const allocR = Math.floor(Math.random() * 4) + 1;
+        currentMathAns = maxR - allocR;
+        currentMathFormula = `Need = Max (${maxR}) - Allocation (${allocR}) = ${currentMathAns}`;
+        qHtml = `Banker's Algorithm-এ একটি প্রসেসের কোনো রিসোর্সের <strong>Max = ${maxR}</strong> এবং <strong>Allocation = ${allocR}</strong> হলে, তার <strong>Need</strong> কত?`;
       }
 
       document.getElementById('osLabBody').innerHTML = `
@@ -59897,6 +59934,10 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
           <button class="s-btn ${currentMathType==='offset'?'active':''}" type="button" onclick="renderLabMath('offset')">Page &amp; Offset</button>
           <button class="s-btn ${currentMathType==='ptsize'?'active':''}" type="button" onclick="renderLabMath('ptsize')">Page Table Size</button>
           <button class="s-btn ${currentMathType==='pfeat'?'active':''}" type="button" onclick="renderLabMath('pfeat')">Page Fault EAT</button>
+          <button class="s-btn ${currentMathType==='cpu'?'active':''}" type="button" onclick="renderLabMath('cpu')">CPU Scheduling</button>
+          <button class="s-btn ${currentMathType==='pagerep'?'active':''}" type="button" onclick="renderLabMath('pagerep')">Page Replacement</button>
+          <button class="s-btn ${currentMathType==='disk'?'active':''}" type="button" onclick="renderLabMath('disk')">Disk Scheduling</button>
+          <button class="s-btn ${currentMathType==='banker'?'active':''}" type="button" onclick="renderLabMath('banker')">Banker's Need</button>
         </div>
         <div class="lab-card">
           <h4>🧮 OS Math Sandbox</h4>
