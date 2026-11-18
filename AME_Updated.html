@@ -60104,28 +60104,66 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
       }
     }
 
-    function renderLabCards(mode) {
-      const qList = labSubject === 'net' ? allNetQas : allOsQas;
+    let selectedSubId = 'all';
+
+    function getSubtopicsForSubject(qList) {
+      const subs = [];
+      const seen = new Set();
+      qList.forEach(qa => {
+        const sub = qa.closest('section, div')?.querySelector('h4.sub') ||
+          (() => {
+            let el = qa.previousElementSibling;
+            while (el && !el.matches('h4.sub')) el = el.previousElementSibling;
+            return el;
+          })();
+        if (sub && sub.id && !seen.has(sub.id)) {
+          seen.add(sub.id);
+          subs.push({ id: sub.id, title: sub.textContent.trim() });
+        }
+      });
+      return subs;
+    }
+
+    function filterQasBySub(qList, subId) {
+      if (subId === 'all') return qList;
+      return qList.filter(qa => {
+        let el = qa.previousElementSibling;
+        while (el && !el.matches('h4.sub')) el = el.previousElementSibling;
+        return el && el.id === subId;
+      });
+    }
+
+    function renderLabCards(mode, subId) {
+      if (subId !== undefined) { selectedSubId = subId; qaCardIdx = 0; }
+      const rawList = labSubject === 'net' ? allNetQas : allOsQas;
+      const qList = filterQasBySub(rawList, selectedSubId);
+      const subs = getSubtopicsForSubject(rawList);
       const cList = labSubject === 'net' ? NET_FLASHCARDS : OS_FLASHCARDS;
       const subjLabel = labSubject === 'net' ? 'Network' : 'OS';
 
-      if (mode === 'all' && qList.length) {
-        const qa = qList[qaCardIdx % qList.length];
-        const qTitle = qa ? (qa.querySelector('h5')?.textContent || 'প্রশ্ন') : 'প্রশ্ন পাওয়া যায়নি';
+      if (mode === 'all' && rawList.length) {
+        const qa = qList[qaCardIdx % Math.max(1, qList.length)];
+        const qTitle = qa ? (qa.querySelector('h5')?.textContent || 'প্রশ্ন') : 'এই টপিকে প্রশ্ন পাওয়া যায়নি';
         const qAns = qa ? (qa.querySelector('.ans-bn')?.innerHTML || '') : '';
+        const subOptions = `<option value="all" ${selectedSubId==='all'?'selected':''}>সব টপিক (${rawList.length}টি প্রশ্ন)</option>` +
+          subs.map(s => `<option value="${s.id}" ${selectedSubId===s.id?'selected':''}>${s.title}</option>`).join('');
+
         document.getElementById('osLabBody').innerHTML = `
-          <div style="display:flex;gap:6px;margin-bottom:12px">
+          <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
             <button class="s-btn" type="button" onclick="renderLabCards('quiz')">Comparison Quiz</button>
-            <button class="s-btn active" type="button" onclick="renderLabCards('all')">সব ${qList.length}টি ${subjLabel} প্রশ্ন (Flashcard)</button>
+            <button class="s-btn active" type="button" onclick="renderLabCards('all')">টপিক-ভিত্তিক প্রশ্ন (${subjLabel})</button>
+          </div>
+          <div style="margin-bottom:12px">
+            <select class="lab-input" style="width:100%;max-width:420px" onchange="renderLabCards('all', this.value)">${subOptions}</select>
           </div>
           <div class="lab-card">
-            <div style="font-size:12px;color:var(--muted)">প্রশ্ন ${(qaCardIdx % qList.length) + 1} / ${qList.length}</div>
+            <div style="font-size:12px;color:var(--muted)">প্রশ্ন ${qList.length ? (qaCardIdx % qList.length) + 1 : 0} / ${qList.length}</div>
             <h4 style="margin:8px 0 14px">${qTitle}</h4>
             <div id="qaCardAns" style="display:none;border-top:1px dashed var(--line);padding-top:10px;margin-top:10px">${qAns}</div>
             <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
               <button class="s-btn active" type="button" onclick="document.getElementById('qaCardAns').style.display='block'">📖 উত্তর দেখুন</button>
               <button class="s-btn" type="button" onclick="qaCardIdx++;renderLabCards('all')">পরবর্তী প্রশ্ন →</button>
-              <button class="s-btn" type="button" onclick="qaCardIdx=Math.floor(Math.random()*${qList.length});renderLabCards('all')">🔀 Random</button>
+              <button class="s-btn" type="button" onclick="qaCardIdx=Math.floor(Math.random()*${Math.max(1, qList.length)});renderLabCards('all')">🔀 Random</button>
             </div>
           </div>`;
         return;
@@ -60135,7 +60173,7 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
       document.getElementById('osLabBody').innerHTML = `
         <div style="display:flex;gap:6px;margin-bottom:12px">
           <button class="s-btn active" type="button" onclick="renderLabCards('quiz')">Comparison Quiz</button>
-          <button class="s-btn" type="button" onclick="renderLabCards('all')">সব ${qList.length}টি ${subjLabel} প্রশ্ন (Flashcard)</button>
+          <button class="s-btn" type="button" onclick="renderLabCards('all', 'all')">টপিক-ভিত্তিক প্রশ্ন (${rawList.length}টি)</button>
         </div>
         <div class="lab-card">
           <div style="font-size:12px;color:var(--muted)">কার্ড ${(cardIdx % cList.length) + 1} / ${cList.length}</div>
