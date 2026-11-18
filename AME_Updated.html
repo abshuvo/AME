@@ -60213,28 +60213,46 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
     }
 
     function renderLabHooks() {
+      const qList = labSubject === 'net' ? allNetQas : allOsQas;
+      const dynamicHooks = qList.map((qa, i) => {
+        const title = qa.querySelector('h5')?.textContent.trim() || `প্রশ্ন ${i + 1}`;
+        const terms = Array.from(qa.querySelectorAll('.ans-bn strong'))
+          .map(el => el.textContent.trim().replace(/[:।]$/, ''))
+          .filter(t => t.length > 1 && t.length < 45);
+        const unique = [...new Set(terms)].slice(0, 4).join(' · ');
+        return `<li style="margin-bottom:6px"><strong>${i + 1}. ${title}</strong><br><span style="color:var(--muted);font-size:13px">🔑 ${unique || 'মূল উত্তর দেখুন'}</span></li>`;
+      }).join('');
+
       if (labSubject === 'net') {
         document.getElementById('osLabBody').innerHTML = `
           <div class="lab-card">
-            <h4>🔑 Computer Network Memory Hooks</h4>
+            <h4>🔑 Computer Network Core Memory Hooks</h4>
             <ul style="padding-left:18px;margin-top:8px;line-height:1.9">
               <li><strong>OSI 7 Layers (নিচ থেকে উপরে):</strong> <em>Please Do Not Throw Sausage Pizza Away</em> (Physical, Data Link, Network, Transport, Session, Presentation, Application)।</li>
               <li><strong>গুরুত্বপূর্ণ Port নম্বর:</strong> FTP (20/21), SSH (22), Telnet (23), SMTP (25), DNS (53), HTTP (80), HTTPS (443)।</li>
               <li><strong>Private IP রেঞ্জ:</strong> Class A (<code>10.0.0.0/8</code>), Class B (<code>172.16.0.0/12</code>), Class C (<code>192.168.0.0/16</code>)।</li>
               <li><strong>Devices by Layer:</strong> Hub/Repeater (L1), Switch/Bridge (L2), Router (L3)।</li>
             </ul>
+          </div>
+          <div class="lab-card">
+            <h4>📌 সব ${qList.length}টি Network প্রশ্নের 1-Line Memory Hooks</h4>
+            <ul style="padding-left:18px;margin-top:8px;line-height:1.6">${dynamicHooks}</ul>
           </div>`;
         return;
       }
       document.getElementById('osLabBody').innerHTML = `
         <div class="lab-card">
-          <h4>🔑 Operating System Memory Hooks</h4>
+          <h4>🔑 Operating System Core Memory Hooks</h4>
           <ul style="padding-left:18px;margin-top:8px;line-height:1.9">
             <li><strong>Deadlock-এর ৪টি শর্ত (MHNC):</strong> <em>Mutual Exclusion, Hold &amp; Wait, No Preemption, Circular Wait</em>।</li>
             <li><strong>Page Table-এর ৩টি Bit (VDR):</strong> <em>Valid, Dirty (Modified), Reference</em>।</li>
             <li><strong>CPU Scheduling-এর লক্ষ্য:</strong> Max <em>CPU Utilization &amp; Throughput</em>; Min <em>Turnaround, Waiting &amp; Response Time</em>।</li>
             <li><strong>Belady's Anomaly:</strong> শুধু <strong>FIFO</strong>-তে হয় (Frame বাড়ালেও Page Fault বাড়ে)।</li>
           </ul>
+        </div>
+        <div class="lab-card">
+          <h4>📌 সব ${qList.length}টি OS প্রশ্নের 1-Line Memory Hooks</h4>
+          <ul style="padding-left:18px;margin-top:8px;line-height:1.6">${dynamicHooks}</ul>
         </div>`;
     }
   </script>
