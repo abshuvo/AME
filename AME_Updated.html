@@ -66775,15 +66775,1188 @@ Utilization
   <p class="one-line"><em>(Part 1-এর প্রথম ৮টি প্রশ্ন (<code>Q1–Q8</code>) এখানে শেষ হলো। আপনি বললেই আমি <strong>Part 2: Questions 9 to 17</strong>—অর্থাৎ <code>Circuit vs Packet Switching &amp; 1MB/8Mbps Math</code>, <code>MTBF/MTTR Availability Math</code>, <code>3 kW Heater at 230V Fuse Math</code>, <code>NAT &amp; PAT 200 Hosts</code>, <code>Symmetric vs Asymmetric Encryption</code>, <code>Fraud Pipeline + 10TB HDFS Math</code>, <code>Type 1 Hypervisor + vCPU Math</code>, <code>RTO/RPO 3 PM Failure Math</code>, এবং <code>3NF + SQL JOIN</code> একইভাবে তৈরি করে দেবো!)</em></p>
 </div>
 
-        <div class="q"><b>9.</b> Compare circuit and packet switching and compute the time to send 1 MB (10^6 bytes) over an 8 Mbps link, ignoring overheads.</div>
-        <div class="q"><b>10.</b> Explain availability and compute it for MTBF 720 h and MTTR 4 h.</div>
-        <div class="q"><b>11.</b> A 3 kW heater runs at 230 V. Find the fuse rating and name a protection device that can be reset.</div>
-        <div class="q"><b>12.</b> Define NAT and explain how PAT lets 200 internal hosts share one public IP address.</div>
-        <div class="q"><b>13.</b> Compare symmetric and asymmetric encryption and state which one protects data at rest in a database.</div>
-        <div class="q"><b>14.</b> Design a fraud-detection pipeline selecting five Hadoop components, and compute the raw storage needed for 10 TB of data with HDFS replication factor 3.</div>
-        <div class="q"><b>15.</b> Explain a Type 1 hypervisor and calculate how many 8-vCPU VMs fit on a 32-core host at 2:1 CPU overcommit.</div>
-        <div class="q"><b>16.</b> Explain RTO and RPO. If a bank takes backups at midnight and fails at 3 pm, how much data is lost in this case?</div>
-        <div class="q"><b>17.</b> Explain 3NF and write the SQL JOIN that lists account holders with their branch names.</div>
+<h4 class="sub" id="qb13-p2">প্রশ্নব্যাংক ১৩ (মিশ্র হাইব্রিড প্রশ্ন: ধারণা + হিসাব — Part 2: Q9–Q17)</h4>
+
+<div class="q"><b>9.</b> Compare circuit and packet switching and compute the time to send 1 MB (10<sup>6</sup> bytes) over an 8 Mbps link, ignoring overheads. <i>(10 Marks)</i></div>
+<div class="q"><b>10.</b> Explain availability and compute it for MTBF 720 h and MTTR 4 h. <i>(10 Marks)</i></div>
+<div class="q"><b>11.</b> A 3 kW heater runs at 230 V. Find the fuse rating and name a protection device that can be reset. <i>(10 Marks)</i></div>
+<div class="q"><b>12.</b> Define NAT and explain how PAT lets 200 internal hosts share one public IP address. <i>(10 Marks)</i></div>
+<div class="q"><b>13.</b> Compare symmetric and asymmetric encryption and state which one protects data at rest in a database. <i>(10 Marks)</i></div>
+<div class="q"><b>14.</b> Design a fraud-detection pipeline selecting five Hadoop components, and compute the raw storage needed for 10 TB of data with HDFS replication factor 3. <i>(10 Marks)</i></div>
+<div class="q"><b>15.</b> Explain a Type 1 hypervisor and calculate how many 8-vCPU VMs fit on a 32-core host at 2:1 CPU overcommit. <i>(10 Marks)</i></div>
+<div class="q"><b>16.</b> Explain RTO and RPO. If a bank takes backups at midnight and fails at 3 pm, how much data is lost in this case? <i>(10 Marks)</i></div>
+<div class="q"><b>17.</b> Explain 3NF and write the SQL JOIN that lists account holders with their branch names. <i>(10 Marks)</i></div>
+
+<!-- ===== INTRO & NO-CALCULATOR SHORTCUTS (Q9-Q17) ===== -->
+<div class="concept-box">
+  <div class="cb-title">⚡ প্রথমে কনসেপ্ট ও "No-Calculator" শর্টকাট ট্রিকস (প্রশ্ন ৯ থেকে ১৭)</div>
+  <p>এখানে <strong>প্রশ্নব্যাংক ১৩ (মিশ্র হাইব্রিড প্রশ্ন: ধারণা + হিসাব)</strong>-এর <strong>Part 2 (Questions 9 to 17)</strong> দেওয়া হলো।</p>
+  <p>প্রথমেই এই ৯টি প্রশ্নের অংকগুলো <strong>ক্যালকুলেটর ছাড়া ৫ সেকেন্ডে করার শর্টকাট ট্রিকস</strong> দেখে নিন, যাতে পরীক্ষার হলে অংক দেখামাত্রই আপনার মাথায় উত্তর চলে আসে!</p>
+
+  <div class="concept-item">
+    <span class="badge-n">১</span>
+    <div>
+      <strong>প্রশ্ন ৯-এর অংক (<code>1 MB</code> ফাইল <code>8 Mbps</code> লাইনে পাঠাতে কত সময় লাগবে?):</strong>
+      <ul>
+        <li><strong>ট্র্যাপ সতর্কতা:</strong> প্রশ্নে ডেটা দেওয়া আছে <strong>Byte (<code>MB</code>)</strong>-এ, আর স্পিড দেওয়া আছে <strong>bit (<code>Mbps</code>)</strong>-এ!</li>
+        <li><strong>ক্যালকুলেটর ছাড়া শর্টকাট:</strong> <i>1 Byte = 8 bits</i>। তাই <i>1 MB (10<sup>6</sup> Bytes) = <b>8 Megabits (8 &times; 10<sup>6</sup> bits)</b></i>। এবার <i>8 Mb</i>-কে <i>8 Mbps</i> দিয়ে ভাগ করলে <i>8 / 8 = <b>1 second</b></i>! (মাত্র ১ সেকেন্ড!)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept-item">
+    <span class="badge-n">২</span>
+    <div>
+      <strong>প্রশ্ন ১০-এর অংক (<code>MTBF = 720 h</code>, <code>MTTR = 4 h</code> হলে Availability কত?):</strong>
+      <ul>
+        <li><strong>দুটো সূত্রই খাতায় দেখাবেন (পূর্ণ নাম্বার নিশ্চিত করতে):</strong>
+          <ul>
+            <li><strong>সূত্র ১ (Standard MTBF সূত্র):</strong> <i>MTBF / (MTBF + MTTR) = 720 / (720 + 4) = 720 / 724 = 180 / 181 &approx; <b>99.45%</b></i>।</li>
+            <li><strong>সূত্র ২ (মোট সময় ৭২০ ঘণ্টা ধরলে):</strong> <i>(720 &minus; 4) / 720 = 716 / 720 = 179 / 180 &approx; <b>99.44%</b></i>।</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept-item">
+    <span class="badge-n">৩</span>
+    <div>
+      <strong>প্রশ্ন ১১-এর অংক (<code>3 kW</code> হিটার <code>230 V</code>-এ চললে Fuse কত লাগবে?):</strong>
+      <ul>
+        <li><i>I = P / V = 3000 W / 230 V = 300 / 23 = <b>13.04 A</b></i>।</li>
+        <li>যেহেতু কারেন্ট <i>13.04 A</i>, তাই ১৩ অ্যাম্পিয়ারের ফিউজ দিলে সাথে সাথেই গলে যাবে! ঠিক পরের স্ট্যান্ডার্ড সাইজ হলো <strong><code>15 A</code> (বা <code>16 A</code>) Fuse</strong>। আর যে ডিভাইস রিসেট করা যায় তার নাম <strong>Circuit Breaker (MCB)</strong>।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept-item">
+    <span class="badge-n">৪</span>
+    <div>
+      <strong>প্রশ্ন ১৪-এর অংক (<code>10 TB</code> ডেটা HDFS-এ <code>Replication Factor = 3</code>-এ রাখতে কত স্টোরেজ লাগবে?):</strong>
+      <ul>
+        <li>প্রতি ব্লকের ৩টি করে কপি থাকবে, তাই: <i>10 TB &times; 3 = <b>30 TB</b></i> Raw Storage!</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept-item">
+    <span class="badge-n">৫</span>
+    <div>
+      <strong>প্রশ্ন ১৫-এর অংক (<code>32-core</code> সার্ভারে <code>2:1</code> Overcommit দিলে কয়টি <code>8-vCPU</code> VM চলবে?):</strong>
+      <ul>
+        <li><code>2:1</code> ওভারকমিট মানে ১টি আসল কোর থেকে ২টি ভার্চুয়াল কোর দেওয়া যাবে &rArr; মোট <i>32 &times; 2 = <b>64 vCPUs</b></i>।</li>
+        <li>প্রতিটি VM নেবে ৮টি করে vCPU &rArr; <i>64 / 8 = <b>8 টি VM</b></i>!</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept-item">
+    <span class="badge-n">৬</span>
+    <div>
+      <strong>প্রশ্ন ১৬-এর অংক (রাত ১২টায় ব্যাকআপ নেওয়ার পর দুপুর ৩টায় সার্ভার ক্র্যাশ করলে কতটুকু ডেটা হারাবে?):</strong>
+      <ul>
+        <li>রাত ১২টা (Midnight) থেকে দুপুর ৩টা (3:00 PM) পর্যন্ত মোট <strong>১৫ ঘণ্টার ডেটা (<code>15 hours of transaction data</code>)</strong> চিরতরে হারিয়ে যাবে!</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="one-line"><strong>📝 PART 2: QUESTIONS 9 TO 17 (10-Mark Exam Standard Answers)</strong></p>
+</div>
+
+<!-- ===== Q9 ===== -->
+<article class="qa" id="qb13-q9">
+  <div class="qa-head">
+    <span class="qn-badge">৯</span>
+    <h5>Question 9: Compare circuit and packet switching and compute the time to send 1 MB (10<sup>6</sup> bytes) over an 8 Mbps link, ignoring overheads. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> <strong>Circuit Switching</strong> হলো পুরনো ল্যান্ডফোন কলের মতো—কথা বলার আগে পুরো তার রিজার্ভ করা হয় (কথা না বললেও লাইন দখল থাকে); আর <strong>Packet Switching</strong> হলো ডাকঘরের চিঠির মতো—ডেটা ছোট ছোট খামে (Packets) ভরে যে রাস্তা খালি পায় সেদিক দিয়েই চলে যায়! আর <code>1 MB</code> মানেই <code>8 Megabits</code>, তাই <code>8 Mbps</code> লাইনে যেতে সময় লাগে ঠিক <strong><code>1 second</code></strong>!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>Circuit = Dedicated Path + Setup Delay</code></strong> vs <strong><code>Packet = Store-and-Forward + Shared Bandwidth</code></strong>; <strong><code>1 MB = 8 Mb -&gt; 8/8 = 1 sec</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Dedicated Physical Path</code>, <code>Store-and-Forward Statistical Multiplexing</code>, <code>Call Setup Phase</code>, <code>Out-of-Order Arrival &amp; Queuing Delay</code>, <code>Transmission Delay (L/R = 1s)</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও অংক)</span>
+    <ul>
+      <li><strong>১ম অংশ (Circuit Switching বনাম Packet Switching):</strong>
+        <ul>
+          <li><strong>Circuit Switching:</strong> ডেটা পাঠানোর শুরুতেই প্রেরক ও প্রাপকের মাঝে একটি <strong>নির্দিষ্ট ফিজিক্যাল পথ (Dedicated Path)</strong> ও ব্যান্ডউইথ রিজার্ভ করে ফেলা হয় (যেমন পুরনো PSTN টেলিফোন নেটওয়ার্ক)। যতক্ষণ কল চলে, অন্য কেউ ওই লাইন ব্যবহার করতে পারে না—ফলে কথা না বললে ব্যান্ডউইথ নষ্ট হয়, কিন্তু ডেটায় কোনো জ্যাম বা সিরিয়াল ভাঙার ভয় থাকে না।</li>
+          <li><strong>Packet Switching:</strong> এখানে আগে থেকে কোনো লাইন রিজার্ভ করা হয় না। বড় মেসেজকে ছোট ছোট টুকরো বা <strong>Packet</strong>-এ ভাগ করে নেটওয়ার্কে ছেড়ে দেওয়া হয় (যেমন আধুনিক ইন্টারনেট)। প্রতিটি রাউটার <strong>Store-and-Forward</strong> পদ্ধতিতে যে পথ খালি পায় সেদিক দিয়েই প্যাকেট পাঠায়, ফলে লাইনের সর্বোচ্চ ব্যবহার হয়।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (<code>1 MB</code> ফাইল <code>8 Mbps</code> লিংকে পাঠানোর সময় হিসাব):</strong>
+        <ul>
+          <li><strong>দেওয়া আছে:</strong> ফাইলের সাইজ, <i>L = 1 MB = 10<sup>6</sup> Bytes</i>।</li>
+          <li>যেহেতু <i>1 Byte = 8 bits</i>, তাই মোট বিট সংখ্যা:
+            <p style="text-align:center"><i>L</i> = 8 &times; 10<sup>6</sup> bits</p>
+          </li>
+          <li>লিংক স্পিড (Bandwidth), <i>R = 8 Mbps = 8 &times; 10<sup>6</sup> bits/sec</i>।</li>
+          <li><strong>Transmission Time (<i>T</i><sub>trans</sub>):</strong>
+            <p style="text-align:center"><i>T</i><sub>trans</sub> = <i>L</i> / <i>R</i> = (8 &times; 10<sup>6</sup> bits) / (8 &times; 10<sup>6</sup> bits/sec) = <b>1 second</b></p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Comparison Between Circuit Switching and Packet Switching</strong></p>
+
+    <div class="trace-wrap">
+      <table class="mini">
+        <thead>
+          <tr>
+            <th>Comparison Parameter</th>
+            <th>Circuit Switching</th>
+            <th>Packet Switching</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Core Concept</strong></td>
+            <td>Establishes a dedicated, end-to-end physical or TDM/FDM communication path before any data transfer begins.</td>
+            <td>Divides messages into discrete <strong>Packets</strong> that travel independently across shared links using <strong>Store-and-Forward</strong> routing.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Connection Setup</strong></td>
+            <td><strong>Required:</strong> Mandatory 3-phase lifecycle (<em>Circuit Establishment &rarr; Data Transfer &rarr; Circuit Teardown</em>).</td>
+            <td><strong>Not Required</strong> in Datagram mode (connectionless); logical path used in Virtual-Circuit mode.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Resource Allocation</strong></td>
+            <td><strong>Fixed/Dedicated Bandwidth:</strong> Time slots or frequencies are reserved exclusively; wasted during silent periods.</td>
+            <td><strong>Dynamic/On-Demand (Statistical Multiplexing):</strong> Bandwidth is shared among active users, maximizing link utilization.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Path &amp; Ordering</strong></td>
+            <td>All bits follow the <strong>exact same path</strong> and always arrive in strict sequential order.</td>
+            <td>Packets may take <strong>different routes</strong> and arrive out of order (reordered by TCP at the destination).</td>
+          </tr>
+          <tr>
+            <td><strong>5. Delay &amp; Congestion</strong></td>
+            <td>Initial setup delay, followed by constant, guaranteed zero-jitter propagation delay.</td>
+            <td>No setup delay, but experiences variable <strong>Queuing Delay</strong> and potential packet loss during congestion.</td>
+          </tr>
+          <tr>
+            <td><strong>6. Fault Tolerance</strong></td>
+            <td>If any switch/link along the dedicated path fails, the entire call drops immediately.</td>
+            <td>Highly resilient; routers dynamically reroute packets around failed links via OSPF/BGP.</td>
+          </tr>
+          <tr>
+            <td><strong>7. Classic Example</strong></td>
+            <td>Traditional <strong>PSTN</strong> (Public Switched Telephone Network) and ISDN.</td>
+            <td>The modern <strong>Internet (IP)</strong>, Ethernet LANs, and 4G/5G data networks.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>Part B: Transmission Time Calculation (<code>1 MB</code> over an <code>8 Mbps</code> Link)</strong></p>
+
+    <p><strong>1. Given Parameters &amp; Unit Conversion</strong></p>
+    <ul>
+      <li><strong>File Size (<i>L</i>):</strong>
+        <p style="text-align:center"><i>L</i> = 1 MB = 10<sup>6</sup> Bytes</p>
+        Converting Bytes to bits (<i>1 Byte = 8 bits</i>):
+        <p style="text-align:center"><i>L</i> = 10<sup>6</sup> Bytes &times; 8 bits/Byte = <b>8 &times; 10<sup>6</sup> bits</b> &quad; (8 Megabits)</p>
+      </li>
+      <li><strong>Link Transmission Rate / Bandwidth (<i>R</i>):</strong>
+        <p style="text-align:center"><i>R</i> = 8 Mbps = <b>8 &times; 10<sup>6</sup> bits/second</b></p>
+      </li>
+    </ul>
+
+    <div class="unit-row">
+      <div class="unit-box"><strong>File Size (L)</strong>1 MB = 10<sup>6</sup> Bytes = 8 &times; 10<sup>6</sup> bits</div>
+      <span class="unit-arrow">&divide;</span>
+      <div class="unit-box"><strong>Link Rate (R)</strong>8 Mbps = 8 &times; 10<sup>6</sup> bits/sec</div>
+      <span class="unit-arrow">=</span>
+      <div class="unit-box"><strong>Transmission Time</strong><b>1.0 second</b></div>
+    </div>
+
+    <p><strong>2. Formula &amp; Step-by-Step Calculation</strong><br>
+    Ignoring protocol headers and propagation overheads, the transmission time (<i>d</i><sub>trans</sub>) is:</p>
+    <p style="text-align:center">
+      <i>d</i><sub>trans</sub> = Data Size in Bits (<i>L</i>) / Link Bandwidth (<i>R</i>)<br>
+      <i>d</i><sub>trans</sub> = (8 &times; 10<sup>6</sup> bits) / (8 &times; 10<sup>6</sup> bits/second) = <b>1 second</b>
+    </p>
+
+    <p><em>(Note: If binary Megabyte <i>1 MiB = 2<sup>20</sup> Bytes = 1,048,576 Bytes</i> were assumed, <i>d</i><sub>trans</sub> <i>= (8 &times; 1,048,576) / (8 &times; 10<sup>6</sup>) = <b>1.048576 seconds</b></i>; however, for the given <i>10<sup>6</sup> bytes</i>, the exact answer is <strong><code>1.0 second</code></strong>).</em></p>
+  </div>
+</article>
+
+<!-- ===== Q10 ===== -->
+<article class="qa" id="qb13-q10">
+  <div class="qa-head">
+    <span class="qn-badge">১০</span>
+    <h5>Question 10: Explain availability and compute it for MTBF 720 h and MTTR 4 h. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> একটি এটিএম মেশিন গড়ে ৭২০ ঘণ্টা একটানা ভালো চলে (<strong>MTBF = Uptime</strong>), আর নষ্ট হলে ঠিক করতে ৪ ঘণ্টা সময় লাগে (<strong>MTTR = Downtime</strong>)। তাহলে মোট ৭২৪ ঘণ্টার চক্রে এটি সচল ছিল ৭২০ ঘণ্টা (<i>720 / 724 = <b>99.45%</b></i>)!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>Availability = MTBF / (MTBF + MTTR)</code></strong> (অথবা ৭২০ ঘণ্টার মাস ধরলে <strong><code>(720 - 4) / 720 = 99.44%</code></strong>—খাতায় দুটোই লিখে দেবেন!)</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Operational Uptime Probability</code>, <code>MTBF (Mean Time Between Failures)</code>, <code>MTTR (Mean Time To Repair)</code>, <code>Five Nines (99.999%) High Availability</code>, <code>SLA Compliance</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও অংক)</span>
+    <ul>
+      <li><strong>১ম অংশ (Availability কী?):</strong>
+        <ul>
+          <li><strong>Availability (সচলতা বা প্রাপ্যতা)</strong> হলো একটি আইটি সিস্টেম (যেমন কোর ব্যাংকিং সার্ভার বা এটিএম নেটওয়ার্ক) একটি নির্দিষ্ট সময়ের মধ্যে কত শতাংশ সময় গ্রাহকদের সেবা দেওয়ার জন্য সচল (Operational &amp; Accessible) থাকে তার পরিমাপ।</li>
+          <li>এটি দুটি সূচকের ওপর নির্ভর করে:
+            <ol>
+              <li><strong>MTBF (Mean Time Between Failures):</strong> পরপর দুটি নষ্ট হওয়ার ঘটনার মাঝখানে সিস্টেমটি গড়ে কত ঘণ্টা একটানা ভালো চলে (Uptime)।</li>
+              <li><strong>MTTR (Mean Time To Repair):</strong> সিস্টেমটি নষ্ট হওয়ার পর সেটি মেরামত করে আবার চালু করতে গড়ে কত ঘণ্টা সময় লাগে (Downtime)।</li>
+            </ol>
+          </li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (Availability হিসাব: <code>MTBF = 720 h</code>, <code>MTTR = 4 h</code>):</strong>
+        <ul>
+          <li><strong>পদ্ধতি ১ (Standard Engineering Formula — মূল উত্তর):</strong>
+            <p style="text-align:center">
+              Availability (<i>A</i>) = [MTBF / (MTBF + MTTR)] &times; 100%<br>
+              <i>A</i> = [720 / (720 + 4)] &times; 100% = (720 / 724) &times; 100% = (180 / 181) &times; 100% &approx; <b>99.4475% &approx; 99.45%</b>
+            </p>
+          </li>
+          <li><strong>পদ্ধতি ২ (যদি ৭২০ ঘণ্টাকে ৩০ দিনের মাসের মোট সময় ধরা হয় — বিকল্প উত্তর):</strong>
+            <p style="text-align:center">
+              Availability (<i>A</i>) = [(Total Time &minus; Downtime) / Total Time] &times; 100% = [(720 &minus; 4) / 720] &times; 100% = (716 / 720) &times; 100% = (179 / 180) &times; 100% &approx; <b>99.444% &approx; 99.44%</b>
+            </p>
+          </li>
+        </ul>
+        <em>(পরীক্ষার খাতায় দুটো পদ্ধতিই পাশাপাশি দেখিয়ে দেবেন, তাহলে পরীক্ষক যেভাবেই খাতা দেখুন ১০-এ ১০ পাবেন!)</em>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Concept of System Availability</strong></p>
+    <ol class="steps">
+      <li><strong>Definition:</strong><br>
+      In system engineering and data center operations, <strong>Availability</strong> is the probability or percentage of time that a mission-critical system (such as a Core Banking Server, ATM switch, or Data Center) remains operational, accessible, and ready to perform its intended function when required by users.</li>
+    </ol>
+
+<pre class="diagram">|&lt;---------- MTBF (720 h Uptime) ----------&gt;|&lt;-- MTTR (4 h) --&gt;|&lt;---- Next MTBF ----
++-------------------------------------------+                  +--------------------
+|              SYSTEM UP (Normal)           |   SYSTEM DOWN    |     SYSTEM UP
++-------------------------------------------+------------------+--------------------
+|&lt;------------- One Complete Operational Cycle (724 h) -------&gt;|</pre>
+
+    <svg class="clock-svg" viewBox="0 0 680 110" role="img" aria-label="MTBF and MTTR Operational Cycle Diagram">
+      <rect x="5" y="5" width="670" height="100" rx="8" fill="#f7f4ee" stroke="#c4a35a" stroke-width="1.5"/>
+      <rect x="25" y="30" width="440" height="40" rx="5" fill="#0c1e33" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="245" y="48" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#e5d5a7">SYSTEM UP (Normal Operation)</text>
+      <text x="245" y="63" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">MTBF = 720 Hours Uptime</text>
+      <rect x="465" y="30" width="95" height="40" rx="5" fill="#7a1c1c" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="512" y="48" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#ffffff">DOWN</text>
+      <text x="512" y="63" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#e5d5a7">MTTR = 4 h</text>
+      <rect x="560" y="30" width="95" height="40" rx="5" fill="#1e3f66" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="607" y="54" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#ffffff">Next MTBF...</text>
+      <text x="292" y="90" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#0c1e33">&larr; One Complete Cycle = MTBF + MTTR = 720 + 4 = 724 Hours (A = 720/724 = 99.45%) &rarr;</text>
+    </svg>
+
+    <ol class="steps" start="2">
+      <li><strong>Key Reliability Metrics Governing Availability:</strong>
+        <ul>
+          <li><strong>MTBF (Mean Time Between Failures):</strong> The average elapsed time a repairable system operates continuously without failing (measures <strong>Reliability / Uptime</strong>).</li>
+          <li><strong>MTTR (Mean Time To Repair / Recovery):</strong> The average time required to diagnose, repair, and restore a failed system back to full operational status (measures <strong>Maintainability / Downtime</strong>).</li>
+          <li><strong>High Availability (HA) Benchmark:</strong> Enterprise banking systems typically target <strong>"Four Nines" (<code>99.99%</code>)</strong> to <strong>"Five Nines" (<code>99.999%</code>, only <code>5.26 minutes</code> of downtime per year)</strong> via redundant hardware, failover clustering, and load balancing.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <p><strong>Part B: Computation of Availability (<code>MTBF = 720 h</code>, <code>MTTR = 4 h</code>)</strong></p>
+
+    <p><strong>1. Method 1: Standard Steady-State Availability Formula (Exact Engineering Definition)</strong><br>
+    By definition, one complete failure-repair cycle has a total duration of <i>MTBF + MTTR</i>. Therefore, inherent steady-state availability is:</p>
+    <p style="text-align:center">Availability (<i>A</i>) = [MTBF / (MTBF + MTTR)] &times; 100%</p>
+    <p>Substituting <i>MTBF = 720 hours</i> and <i>MTTR = 4 hours</i>:</p>
+    <p style="text-align:center"><i>A</i> = [720 / (720 + 4)] &times; 100% = (720 / 724) &times; 100%</p>
+    <p>Dividing numerator and denominator by <i>4</i>:</p>
+    <p style="text-align:center"><i>A</i> = (180 / 181) &times; 100% = (1 &minus; 1/181) &times; 100% &approx; (1 &minus; 0.005525) &times; 100% = <b>99.4475% &approx; 99.45%</b></p>
+
+    <p><strong>2. Method 2: Monthly Observation Window Interpretation (If Total Period = 720 h)</strong><br>
+    <em>(Note: If the <code>720 hours</code> represents a 30-day calendar month (<i>30 &times; 24 = 720 h</i>) during which a single <code>4-hour</code> outage occurred)</em>:</p>
+    <p style="text-align:center">Availability (<i>A</i>) = [(Total Time &minus; Downtime) / Total Time] &times; 100% = [(720 &minus; 4) / 720] &times; 100% = (716 / 720) &times; 100% = (179 / 180) &times; 100% = <b>99.444% &approx; 99.44%</b></p>
+
+    <div class="fault-bars">
+      <div class="fb-row"><span>Method 1: 720 / 724</span><div class="fb"><i style="width:99.45%"></i></div><b>99.45%</b></div>
+      <div class="fb-row"><span>Method 2: 716 / 720</span><div class="fb"><i style="width:99.44%"></i></div><b>99.44%</b></div>
+    </div>
+
+    <div class="concept-box" style="margin-top:.6rem">
+      <div class="cb-title">Final Answer</div>
+      <ul>
+        <li><strong>Steady-State Availability (<i>MTBF / (MTBF + MTTR)</i>):</strong> <strong><code>99.45%</code></strong> (<code>0.9945</code>)</li>
+        <li><strong>Monthly Window Availability (<i>(720 &minus; 4) / 720</i>):</strong> <strong><code>99.44%</code></strong> (<code>0.9944</code>)</li>
+      </ul>
+    </div>
+  </div>
+</article>
+
+<!-- ===== Q11 ===== -->
+<article class="qa" id="qb13-q11">
+  <div class="qa-head">
+    <span class="qn-badge">১১</span>
+    <h5>Question 11: A 3 kW heater runs at 230 V. Find the fuse rating and name a protection device that can be reset. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> <code>3000 W</code> হিটার <code>230 V</code> লাইনে চালালে স্বাভাবিক অবস্থায় কারেন্ট টানে <i>3000 / 230 = <b>13.04 A</b></i>। তাই এর ঠিক পরের স্ট্যান্ডার্ড সাইজের <strong><code>15 A</code> (বা <code>16 A</code>) Fuse</strong> লাগাতে হবে। আর ফিউজ একবার গললে ফেলে দিতে হয়, কিন্তু <strong>MCB (Miniature Circuit Breaker)</strong> সুইচ তুলে দিলেই আবার রিসেট হয়ে চলে!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>I = P / V = 3000 / 230 = 13.04 A -&gt; 15 A / 16 A Fuse</code></strong>; <strong><code>Resettable = MCB / Circuit Breaker</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Operating Load Current (13.04 A)</code>, <code>Next Standard Fuse Rating (15 A / 16 A)</code>, <code>Sacrificial Thermal Melting</code>, <code>Miniature Circuit Breaker (MCB)</code>, <code>Bimetallic Thermal-Magnetic Trip</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও অংক)</span>
+    <ul>
+      <li><strong>১ম অংশ (<code>3 kW</code>, <code>230 V</code> হিটারের Fuse Rating নির্ণয়):</strong>
+        <ul>
+          <li><strong>দেওয়া আছে:</strong> ক্ষমতা <i>P = 3 kW = 3,000 Watts</i>, এবং ভোল্টেজ <i>V = 230 Volts</i>।</li>
+          <li><strong>স্বাভাবিক কারেন্ট (<i>I</i>):</strong>
+            <p style="text-align:center"><i>I</i> = <i>P</i> / <i>V</i> = 3000 / 230 = 300 / 23 = <b>13.04 Amperes (A)</b></p>
+          </li>
+          <li><strong>Fuse Rating কত হবে?</strong> ফিউজের রেটিং সবসময় যন্ত্রের স্বাভাবিক কারেন্টের (<i>13.04 A</i>) চেয়ে সামান্য বেশি হতে হয় (যাতে হিটার চলাকালীন ফিউজ না কাটে, কিন্তু শর্ট-সার্কিট বা ওভারলোড হলে কেটে যায়)। বাজারে প্রচলিত স্ট্যান্ডার্ড ফিউজগুলোর (<code>3A, 5A, 10A, 13A, 15A, 16A, 20A</code>) মধ্যে <i>13 A</i> দিলে তা <i>13.04 A</i> কারেন্টে গলে যাবে। তাই ঠিক পরের স্ট্যান্ডার্ড রেটিং <strong><code>15 A</code> (অথবা IEC স্ট্যান্ডার্ডে <code>16 A</code>) Fuse</strong> ব্যবহার করতে হবে। <em>(২০% সেফটি মার্জিন ধরলেও: <i>13.04 &times; 1.20 = 15.65 A &rArr; <b>16 A</b></i>)</em>।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (রিসেট করা যায় এমন সুরক্ষা ডিভাইসের নাম):</strong>
+        <ul>
+          <li><strong>Circuit Breaker</strong>—বিশেষ করে <strong>MCB (Miniature Circuit Breaker)</strong> অথবা <strong>MCCB (Molded Case Circuit Breaker)</strong>।</li>
+          <li>ফিউজের তার একবার গলে গেলে তা বদলাতে হয়, কিন্তু MCB ওভারলোডে ট্রিপ (Trip) করলে সমস্যার সমাধান করে শুধু সুইচটি হাত দিয়ে অন (Reset) করলেই আবার কাজ করে।</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Calculation of Operating Current and Fuse Rating</strong></p>
+
+    <p><strong>1. Given Electrical Parameters</strong></p>
+    <ul>
+      <li>Power rating of the heater, <i>P = 3 kW = 3 &times; 1000 W = <b>3,000 W</b></i></li>
+      <li>Supply voltage, <i>V = <b>230 V</b></i></li>
+      <li>Since a resistive heater has a unity power factor (<i>cos&phi; = 1</i>), the electrical power formula is:
+        <p style="text-align:center"><i>P</i> = <i>V</i> &times; <i>I</i></p>
+      </li>
+    </ul>
+
+    <p><strong>2. Step-by-Step Current Calculation</strong></p>
+    <p style="text-align:center"><i>I</i> = <i>P</i> / <i>V</i> = 3,000 W / 230 V = (300 / 23) A = <b>13.043 A &approx; 13.04 A</b></p>
+
+    <p><strong>3. Selecting the Appropriate Fuse Rating</strong></p>
+    <ul>
+      <li><strong>Engineering Rule:</strong> A fuse must be rated slightly higher than the full-load normal operating current (<i>13.04 A</i>) so that it does not blow during normal operation, typically applying a <strong><i>15%–25%</i> safety factor</strong> (<i>13.04 A &times; 1.15 &approx; 15.0 A</i>; <i>13.04 A &times; 1.25 &approx; 16.3 A</i>), or choosing the <strong>next higher standard fuse rating</strong>.</li>
+      <li>Notice that a standard British <code>13 A</code> plug fuse is slightly <em>below</em> <i>13.04 A</i> and would overheat/blow under continuous load.</li>
+      <li>Therefore, the correct next standard fuse rating is:
+        <ul>
+          <li><strong><code>15 A</code> Fuse</strong> (BS/North American standard) or <strong><code>16 A</code> Fuse</strong> (IEC European/Asian standard).</li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="fault-bars">
+      <div class="fb-row"><span>13 A Fuse (Too Low!)</span><div class="fb"><i style="width:65%"></i></div><b>13.00 A (Blows)</b></div>
+      <div class="fb-row"><span>Heater Load Current</span><div class="fb"><i style="width:65.2%"></i></div><b>13.04 A</b></div>
+      <div class="fb-row"><span>15 A / 16 A Fuse (Safe)</span><div class="fb"><i style="width:80%"></i></div><b>15 A – 16 A</b></div>
+    </div>
+
+    <p><strong>Part B: Resettable Overcurrent Protection Device</strong></p>
+
+    <div class="cmp-grid" style="margin-top:.5rem">
+      <div class="cmp-card phys">
+        <strong>1. Device Name: Circuit Breaker (MCB)</strong>
+        <strong>Circuit Breaker</strong> — specifically a <strong>Miniature Circuit Breaker (MCB)</strong> (or <strong>MCCB</strong> for higher industrial currents, and <strong>RCBO</strong> for combined overload + earth-leakage protection).
+      </div>
+      <div class="cmp-card virt">
+        <strong>2. Why It Can Be Reset (Unlike a Fuse)</strong>
+        <ul>
+          <li>A <strong>Fuse</strong> is a sacrificial, one-time thermal device containing a metal wire that permanently melts when current exceeds its rating, requiring physical replacement.</li>
+          <li>An <strong>MCB (Miniature Circuit Breaker)</strong> uses an electromechanical <strong>bimetallic strip</strong> (for slow thermal overloads) and a <strong>solenoid electromagnet</strong> (for instantaneous short-circuit trips) to mechanically flip a switch open. Once the fault is cleared, the operator simply flips the toggle switch back to the <strong><code>ON</code> position</strong> to reset the circuit with zero replacement cost and minimal downtime.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- ===== Q12 ===== -->
+<article class="qa" id="qb13-q12">
+  <div class="qa-head">
+    <span class="qn-badge">১২</span>
+    <h5>Question 12: Define NAT and explain how PAT lets 200 internal hosts share one public IP address. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> একটি বিশাল সরকারি অফিসে ২০০ জন কর্মকর্তা বসেন (<strong>200 Private IPs</strong>), কিন্তু অফিসের বাইরে কথা বলার জন্য ল্যান্ডফোন নাম্বার মাত্র ১টি (<strong>1 Public IP</strong>)! টেলিফোন অপারেটর (<strong>PAT Router</strong>) প্রত্যেকের নাম্বারের শেষে আলাদা একটি <strong>এক্সটেনশন নাম্বার (<code>16-bit Port Number: :40001, :40002...</code>)</strong> বসিয়ে খাতায় লিখে রাখে, ফলে বাইরে থেকে কল ফেরত এলে ঠিক যার যার টেবিলেই কলটি যায়!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>NAT = Private IP &lt;-&gt; Public IP</code></strong>; <strong><code>PAT (NAT Overload) = Private IP:Port &lt;-&gt; 1 Public IP:Unique Port (up to 65,535)</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>RFC 1918 Private IPv4 Conservation</code>, <code>PAT / NAPT (NAT Overload)</code>, <code>16-Bit Transport Port Numbers (TCP/UDP)</code>, <code>NAT Translation Table</code>, <code>Up to 65,535 Concurrent Sessions</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <ul>
+      <li><strong>১ম অংশ (NAT কী?):</strong>
+        <ul>
+          <li><strong>NAT (Network Address Translation — RFC 1631/3022)</strong> হলো রাউটার বা ফায়ারওয়ালের এমন একটি কৌশল, যা একটি লোকাল নেটওয়ার্কের (LAN) ভেতরের <strong>Private IP Address</strong> (যেমন <code>192.168.1.x</code>, যা ইন্টারনেটে সরাসরি চলতে পারে না) গুলোকে ইন্টারনেটে যাওয়ার সময় বৈধ <strong>Public IP Address</strong>-এ রূপান্তর করে দেয় এবং ফেরত আসার সময় আবার প্রাইভেট আইপিতে বদলে দেয়। এর প্রধান উদ্দেশ্য হলো IPv4 অ্যাড্রেসের ঘাটতি রোধ করা এবং ভেতরের নেটওয়ার্কের আসল আইপি লুকিয়ে রেখে নিরাপত্তা বাড়ানো।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (PAT কীভাবে ২০০টি হোস্টকে মাত্র ১টি Public IP শেয়ার করতে দেয়?):</strong>
+        <ul>
+          <li>সাধারণ Static NAT-এ ১টি প্রাইভেট আইপির জন্য ১টি করে পাবলিক আইপি লাগে। কিন্তু <strong>PAT (Port Address Translation)</strong>—যাকে <strong>NAT Overload</strong> বা <strong>NAPT</strong>-ও বলা হয়—OSI Layer 4-এর <strong>16-bit Port Number (TCP/UDP Source Port)</strong> ব্যবহার করে।</li>
+          <li><strong>কাজের ধাপ:</strong>
+            <ol class="steps">
+              <li>যখন ব্যাংকের ভেতরের ২০০টি পিসি (<code>192.168.1.1</code> থেকে <code>192.168.1.200</code>) একই সাথে ইন্টারনেটে যাওয়ার চেষ্টা করে, তখন রাউটার সবার Source IP বদলে নিজের <strong>১টি মাত্র Public IP (<code>203.0.113.5</code>)</strong> বসিয়ে দেয়।</li>
+              <li>কিন্তু কার প্যাকেট কোনটা তা চেনার জন্য রাউটার প্রতিটি পিসির রিকোয়েস্টে একটি করে <strong>আলাদা ও ইউনিক Source Port Number</strong> (যেমন পিসি-১ এর জন্য <code>:50001</code>, পিসি-২ এর জন্য <code>:50002</code>, ... পিসি-২০০ এর জন্য <code>:50200</code>) বসিয়ে নিজের <strong>NAT Translation Table</strong>-এ লিখে রাখে।</li>
+              <li>ইন্টারনেট থেকে যখন উত্তরটি <code>203.0.113.5:50002</code> ঠিকানায় ফেরত আসে, রাউটার টেবিল দেখে পোর্ট <code>:50002</code> মিলিয়ে সাথে সাথে সেটি ২ নম্বর পিসিতে (<code>192.168.1.2</code>) পাঠিয়ে দেয়!</li>
+              <li>যেহেতু পোর্ট নাম্বার ১৬ বিটের (<i>2<sup>16</sup> &minus; 1 = 65,535</i> টি পোর্ট), তাই মাত্র ১টি পাবলিক আইপি দিয়ে ২০০টি কেন, একসাথে <strong>প্রায় ৬৪,০০০+ কানেকশন</strong> চালানো সম্ভব!</li>
+            </ol>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Definition of NAT (Network Address Translation)</strong></p>
+    <ol class="steps">
+      <li><strong>Definition:</strong><br>
+      <strong>NAT (Network Address Translation)</strong> is a Layer 3/Layer 4 router or firewall mechanism that modifies IP address information in the IPv4 packet header while in transit across a traffic routing device. Specifically, it translates <strong>non-routable Private IPv4 addresses (RFC 1918)</strong> used inside an organization's LAN into <strong>globally routable Public IPv4 addresses</strong> before forwarding packets to the public Internet.</li>
+      <li><strong>Primary Benefits:</strong>
+        <ul>
+          <li><strong>IPv4 Address Conservation:</strong> Prevents exhaustion of the 32-bit IPv4 address space.</li>
+          <li><strong>Network Security (Topology Hiding):</strong> Masks internal host IP addresses from external attackers.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <p><strong>Part B: How PAT (Port Address Translation) Lets 200 Internal Hosts Share One Public IP</strong></p>
+
+    <p><strong>1. Concept of PAT / NAPT (NAT Overload)</strong><br>
+    While Basic NAT maps addresses on a <i>1 : 1</i> basis, <strong>PAT (Port Address Translation)</strong>—also known as <strong>NAPT (Network Address and Port Translation)</strong> or <strong>NAT Overload</strong>—maps <strong>multiple internal Private IP addresses to a single Public IP address (<i>N : 1</i> mapping)</strong> by multiplexing <strong>16-bit Layer 4 Transport Port Numbers (TCP/UDP)</strong>.</p>
+
+<pre class="diagram">INTERNAL LAN (200 Hosts)               PAT ROUTER (NAT Table)               PUBLIC INTERNET
++-----------------------+       +----------------------------------+       +----------------+
+| Host 1: 192.168.1.1   |------&gt;| 192.168.1.1:3345 -&gt; 203.0.113.5:50001 |--&gt;|                |
+| Host 2: 192.168.1.2   |------&gt;| 192.168.1.2:3345 -&gt; 203.0.113.5:50002 |--&gt;| Web Server     |
+|   ...                 |       |   ...                            |       | (8.8.8.8:443)  |
+| Host 200:192.168.1.200|------&gt;|192.168.1.200:4110-&gt; 203.0.113.5:50200 |--&gt;|                |
++-----------------------+       +----------------------------------+       +----------------+</pre>
+
+    <svg class="clock-svg" viewBox="0 0 680 155" role="img" aria-label="PAT Port Address Translation for 200 Hosts">
+      <rect x="5" y="5" width="670" height="145" rx="8" fill="#f7f4ee" stroke="#c4a35a" stroke-width="1.5"/>
+      <!-- Internal Hosts -->
+      <rect x="18" y="20" width="165" height="32" rx="5" fill="#142d4c" stroke="#c4a35a" stroke-width="1.2"/>
+      <text x="100" y="40" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">Host 1: 192.168.1.1:3345</text>
+      <rect x="18" y="60" width="165" height="32" rx="5" fill="#142d4c" stroke="#c4a35a" stroke-width="1.2"/>
+      <text x="100" y="80" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">Host 2: 192.168.1.2:3345</text>
+      <rect x="18" y="102" width="165" height="32" rx="5" fill="#142d4c" stroke="#c4a35a" stroke-width="1.2"/>
+      <text x="100" y="122" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">Host 200: 192.168.1.200:4110</text>
+      <!-- Arrows to PAT -->
+      <line x1="183" y1="36" x2="225" y2="55" stroke="#0c1e33" stroke-width="1.8"/>
+      <line x1="183" y1="76" x2="225" y2="76" stroke="#0c1e33" stroke-width="1.8"/>
+      <line x1="183" y1="118" x2="225" y2="98" stroke="#0c1e33" stroke-width="1.8"/>
+      <!-- PAT Router -->
+      <rect x="225" y="22" width="265" height="110" rx="7" fill="#0c1e33" stroke="#c4a35a" stroke-width="2"/>
+      <text x="357" y="42" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#e5d5a7">PAT Router (1 Public IP: 203.0.113.5)</text>
+      <text x="357" y="64" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">192.168.1.1:3345 &harr; 203.0.113.5 : 50001</text>
+      <text x="357" y="84" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">192.168.1.2:3345 &harr; 203.0.113.5 : 50002</text>
+      <text x="357" y="104" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">192.168.1.200:4110 &harr; 203.0.113.5 : 50200</text>
+      <text x="357" y="122" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#e5d5a7">(16-Bit Port Pool = Up to 65,535 Sessions)</text>
+      <!-- Arrow to Internet -->
+      <line x1="490" y1="76" x2="535" y2="76" stroke="#7a1c1c" stroke-width="2.5"/>
+      <!-- Web Server -->
+      <rect x="535" y="42" width="125" height="68" rx="6" fill="#2b547e" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="597" y="70" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#e5d5a7">Public Internet</text>
+      <text x="597" y="90" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">8.8.8.8 : 443</text>
+    </svg>
+
+    <p><strong>2. Step-by-Step Mechanism for 200 Internal Hosts</strong><br>
+    Suppose a bank branch has <strong>200 internal PCs</strong> (<code>192.168.1.1</code> to <code>192.168.1.200</code>) and a router with <strong>one single Public IP (<code>203.0.113.5</code>)</strong>:</p>
+
+    <ol class="steps">
+      <li><strong>Outbound Packet Interception:</strong><br>
+      All 200 hosts send HTTPS packets to an external server (<code>8.8.8.8:443</code>). Even if two internal hosts accidentally choose the exact same ephemeral source port (e.g., <code>3345</code>), their <code>(Private IP, Source Port)</code> sockets are distinct.</li>
+      <li><strong>Source IP &amp; Port Translation (Socket Mapping):</strong><br>
+      The PAT router replaces every host's private source IP with the single public IP <strong><code>203.0.113.5</code></strong> and assigns each connection a <strong>unique external source port number</strong> (e.g., ports <code>50001</code> through <code>50200</code>), recording the mapping in its dynamic <strong>NAT Translation Table</strong>:</li>
+    </ol>
+
+    <div class="trace-wrap">
+      <table class="mini">
+        <thead>
+          <tr>
+            <th>Internal Private Socket (Inside Local)</th>
+            <th>Translated Public Socket (Outside Global)</th>
+            <th>Destination Socket</th>
+            <th class="c">Protocol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>192.168.1.1 : 3345</code></td>
+            <td><strong><code>203.0.113.5 : 50001</code></strong></td>
+            <td><code>8.8.8.8 : 443</code></td>
+            <td class="c">TCP</td>
+          </tr>
+          <tr>
+            <td><code>192.168.1.2 : 3345</code></td>
+            <td><strong><code>203.0.113.5 : 50002</code></strong></td>
+            <td><code>8.8.8.8 : 443</code></td>
+            <td class="c">TCP</td>
+          </tr>
+          <tr>
+            <td>&vdots;</td>
+            <td>&vdots;</td>
+            <td>&vdots;</td>
+            <td class="c">&vdots;</td>
+          </tr>
+          <tr>
+            <td><code>192.168.1.200 : 4110</code></td>
+            <td><strong><code>203.0.113.5 : 50200</code></strong></td>
+            <td><code>8.8.8.8 : 443</code></td>
+            <td class="c">TCP</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ol class="steps" start="3">
+      <li><strong>Inbound Return Traffic Demultiplexing:</strong><br>
+      When the external web server replies to <code>203.0.113.5</code> on destination port <strong><code>50002</code></strong>, the PAT router looks up port <code>50002</code> in its NAT table, rewrites the destination IP/port back to <strong><code>192.168.1.2:3345</code></strong>, recalculates the IP/TCP checksums, and forwards the frame to Host 2.</li>
+      <li><strong>Scalability:</strong><br>
+      Because TCP/UDP port fields are <strong>16 bits wide</strong> (<i>2<sup>16</sup> = 65,536</i>, with ~<code>64,512</code> dynamic ports above <code>1024</code>), a single public IP via PAT can effortlessly support <strong>200 internal hosts</strong> (even if each host opens 100 simultaneous browser tabs = <i>20,000</i> sessions).</li>
+    </ol>
+  </div>
+</article>
+
+<!-- ===== Q13 ===== -->
+<article class="qa" id="qb13-q13">
+  <div class="qa-head">
+    <span class="qn-badge">১৩</span>
+    <h5>Question 13: Compare symmetric and asymmetric encryption and state which one protects data at rest in a database. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> <strong>Symmetric Encryption (<code>AES-256</code>)</strong> হলো বাড়ির সাধারণ তালার মতো—একই চাবি দিয়ে তালা লাগানো ও খোলা হয়, এবং এটি রকেটের মতো দ্রুত! আর <strong>Asymmetric Encryption (<code>RSA/ECC</code>)</strong> হলো ডাকবাক্সের মতো—সবার কাছে থাকা Public Key দিয়ে চিঠি ঢোকানো যায়, কিন্তু খুলতে পারে শুধু মালিকের গোপন Private Key! ডেটাবেসের লক্ষ লক্ষ রো (Data at Rest) দ্রুত এনক্রিপ্ট করতে <strong>Symmetric Encryption (<code>AES-256</code> / TDE)</strong> ব্যবহৃত হয়!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>Symmetric = 1 Shared Key + Fast (AES) -&gt; Data at Rest</code></strong>; <strong><code>Asymmetric = 2 Keys (Public/Private) + Slow (RSA) -&gt; Key Exchange &amp; Signatures</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Single Shared Secret Key vs Key Pair</code>, <code>AES-256 vs RSA/ECC</code>, <code>Computational Speed &amp; Bulk Data</code>, <code>Key Distribution Problem</code>, <code>Transparent Data Encryption (TDE) for Data at Rest</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <ul>
+      <li><strong>১ম অংশ (Symmetric বনাম Asymmetric Encryption তুলনা):</strong>
+        <ul>
+          <li><strong>Symmetric Encryption (প্রতিসম এনক্রিপশন):</strong> এনক্রিপ্ট (তালা লাগানো) এবং ডিক্রিপ্ট (তালা খোলা)—দুই কাজের জন্যই <strong>একই গোপন চাবি (Single Shared Secret Key)</strong> ব্যবহার করা হয়। এটি অত্যন্ত দ্রুতগতির এবং বিশাল ডেটা এনক্রিপ্ট করার উপযুক্ত, কিন্তু চাবিটি নিরাপদে অপর প্রান্তে পৌঁছানো (Key Distribution) কঠিন। <em>উদাহরণ:</em> <strong>AES (128/256-bit), ChaCha20, 3DES</strong>।</li>
+          <li><strong>Asymmetric Encryption (অপ্রতিসম / Public-Key এনক্রিপশন):</strong> এখানে <strong>২টি আলাদা গাণিতিক চাবি</strong> ব্যবহৃত হয়—একটি <strong>Public Key</strong> (সবাইকে দেওয়া যায়, যা দিয়ে এনক্রিপ্ট করা হয়) এবং অন্যটি <strong>Private Key</strong> (গোপন থাকে, যা দিয়ে ডিক্রিপ্ট করা হয়)। এটি চাবি আদান-প্রদানের সমস্যা দূর করে এবং Digital Signature দেয়, কিন্তু এটি Symmetric-এর চেয়ে ১০০–১০০০ গুণ ধীরগতির। <em>উদাহরণ:</em> <strong>RSA, ECC (Elliptic Curve), Diffie-Hellman</strong>।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (ডেটাবেসে Data at Rest সুরক্ষায় কোনটি ব্যবহৃত হয়?):</strong>
+        <ul>
+          <li>ডেটাবেসে সংরক্ষিত ডেটা (<strong>Data at Rest</strong>) সুরক্ষিত রাখতে <strong>Symmetric Encryption</strong>—বিশেষ করে <strong><code>AES-256</code> (Advanced Encryption Standard)</strong> এবং <strong>TDE (Transparent Data Encryption)</strong> ব্যবহৃত হয়।</li>
+          <li><strong>কেন?</strong> কারণ একটি ব্যাংকিং ডেটাবেসে কয়েক টেরাবাইট ডেটা থাকে যা প্রতি সেকেন্ডে হাজার বার পড়া ও লেখা হয়। Asymmetric (RSA) দিয়ে এত বিশাল ডেটা এনক্রিপ্ট করলে ডেটাবেস স্থবির হয়ে পড়বে; তাই ডেটা এনক্রিপ্ট করা হয় দ্রুতগতির <strong>Symmetric <code>AES-256</code> Data Encryption Key (DEK)</strong> দিয়ে!</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Comprehensive Comparison — Symmetric vs. Asymmetric Encryption</strong></p>
+
+    <div class="trace-wrap">
+      <table class="mini">
+        <thead>
+          <tr>
+            <th>Comparison Criteria</th>
+            <th>Symmetric Key Encryption</th>
+            <th>Asymmetric (Public-Key) Encryption</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Key Mechanism</strong></td>
+            <td>Uses a <strong>single shared secret key</strong> (<i>K</i>) for both encryption and decryption (<i>P = D<sub>K</sub>(E<sub>K</sub>(P))</i>).</td>
+            <td>Uses a mathematically linked <strong>Key Pair</strong>: a <strong>Public Key</strong> (<i>K</i><sub>pub</sub>) to encrypt and a <strong>Private Key</strong> (<i>K</i><sub>priv</sub>) to decrypt.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Execution Speed</strong></td>
+            <td><strong>Extremely Fast</strong> (uses bitwise XOR, substitution-permutation networks, and hardware AES-NI instructions).</td>
+            <td><strong>100x to 1,000x Slower</strong> (relies on heavy modular exponentiation or elliptic curve algebra).</td>
+          </tr>
+          <tr>
+            <td><strong>3. Key Distribution &amp; Scalability</strong></td>
+            <td>Difficult out-of-band key exchange; <i>n</i> users require <strong><i>n(n &minus; 1) / 2</i> keys</strong> (<i>O(n<sup>2</sup>)</i> problem).</td>
+            <td>Easy key distribution over public channels; <i>n</i> users require only <strong><i>2n</i> keys</strong> (<i>O(n)</i> scalability).</td>
+          </tr>
+          <tr>
+            <td><strong>4. Typical Key Lengths</strong></td>
+            <td>Short keys provide high security: <strong><code>128-bit</code> or <code>256-bit</code></strong> (AES).</td>
+            <td>Requires long keys: <strong><code>2048-bit</code> to <code>4096-bit</code></strong> (RSA) or <code>256–521 bit</code> (ECC).</td>
+          </tr>
+          <tr>
+            <td><strong>5. Security Services Provided</strong></td>
+            <td>Provides <strong>Confidentiality</strong> (and Integrity/Auth when used in GCM mode or HMAC).</td>
+            <td>Provides <strong>Confidentiality, Authentication, and Non-Repudiation</strong> (via Digital Signatures).</td>
+          </tr>
+          <tr>
+            <td><strong>6. Standard Algorithms</strong></td>
+            <td><strong>AES (Advanced Encryption Standard)</strong>, ChaCha20, 3DES, Blowfish.</td>
+            <td><strong>RSA</strong>, <strong>ECC (Elliptic Curve Cryptography)</strong>, Diffie-Hellman (DH), ElGamal.</td>
+          </tr>
+          <tr>
+            <td><strong>7. Primary Use Case</strong></td>
+            <td><strong>Bulk data encryption</strong> (Database encryption, disk encryption, TLS session payload).</td>
+            <td><strong>Digital Signatures, PKI Certificates, and TLS Key Exchange</strong> (encrypting the small symmetric session key).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>Part B: Which Encryption Protects Data at Rest in a Database?</strong></p>
+    <ol class="steps">
+      <li><strong>Selected Cryptography: <code>Symmetric Encryption</code> (specifically <code>AES-256</code>)</strong><br>
+      To protect <strong>Data at Rest</strong> inside an enterprise relational or NoSQL database (data files, tablespaces, redo logs, and backups on disk), <strong>Symmetric Encryption</strong> is universally used.</li>
+      <li><strong>Implementation Mechanism in Banking Databases:</strong>
+        <ul>
+          <li><strong>TDE (Transparent Data Encryption):</strong> Enterprise DBMS platforms (Oracle, MS SQL Server, PostgreSQL) implement TDE using <strong><code>AES-256</code></strong> (in <code>CBC</code> or <code>GCM/XTS</code> mode) to automatically encrypt database pages before writing them to disk and decrypt them when read into RAM.</li>
+          <li><strong>Why Symmetric Instead of Asymmetric?</strong> Databases store terabytes of records requiring microsecond read/write latency. Asymmetric algorithms like RSA cannot encrypt large data volumes and are computationally far too slow for bulk I/O.</li>
+          <li><em>(Best-Practice Envelope Architecture: The bulk database tables are encrypted with a symmetric <strong><code>AES-256</code> Data Encryption Key (DEK)</strong>, while that small DEK itself is wrapped/protected by an asymmetric or master <strong>Key Encryption Key (KEK)</strong> stored inside a Hardware Security Module — <strong>HSM</strong>).</em></li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+</article>
+
+<!-- ===== Q14 ===== -->
+<article class="qa" id="qb13-q14">
+  <div class="qa-head">
+    <span class="qn-badge">১৪</span>
+    <h5>Question 14: Design a fraud-detection pipeline selecting five Hadoop components, and compute the raw storage needed for 10 TB of data with HDFS replication factor 3. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> এটিএম ও অ্যাপ থেকে লেনদেন ঢুকছে (<strong>Flume/Sqoop</strong>), গোডাউনে ৩ কপি করে থাকছে (<strong>HDFS</strong>: <i>10 TB &times; 3 = <b>30 TB</b></i>), রিসোর্স ভাগ হচ্ছে (<strong>YARN</strong>), লাইভ ফ্রড প্রোফাইল চেক হচ্ছে (<strong>HBase</strong>), আর মেশিন লার্নিং দিয়ে জালিয়াতি ধরা পড়ছে (<strong>Mahout</strong>)!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>F-H-Y-H-M</code> Pipeline</strong> + <strong><code>Raw Storage = Usable (10 TB) * RF (3) = 30 TB</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Flume (Real-Time Ingestion)</code>, <code>HDFS (Distributed Storage)</code>, <code>YARN / MapReduce</code>, <code>HBase (Millisecond Lookup)</code>, <code>Mahout (Anomaly Detection)</code>, <code>30 TB Raw Disk Space</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও অংক)</span>
+    <ul>
+      <li><strong>১ম অংশ (৫টি Hadoop Component দিয়ে Fraud-Detection Pipeline ডিজাইন):</strong>
+        <ol class="steps">
+          <li><strong>Apache Flume (ডেটা সংগ্রহ / Ingestion):</strong> ব্যাংকের এটিএম, পিওএস ও মোবাইল অ্যাপ থেকে প্রতি সেকেন্ডে আসা লাইভ ট্রানজেকশন লগগুলো রিয়েল-টাইমে সংগ্রহ করে পাইপলাইনে ঢোকাবে। <em>(কোর ব্যাংকিং RDBMS থেকে ডেটা আনার জন্য <strong>Sqoop</strong> যুক্ত হতে পারে)</em>।</li>
+          <li><strong>HDFS — Hadoop Distributed File System (স্টোরেজ):</strong> ঐতিহাসিক ও নতুন সব ট্রানজেকশন লগ ব্লক আকারে (<code>128 MB</code>) ডিস্ট্রিবিউটেড সার্ভারে জমা রাখবে।</li>
+          <li><strong>Apache YARN &amp; MapReduce (রিসোর্স ম্যানেজমেন্ট ও ব্যাচ প্রসেসিং):</strong> ক্লাস্টারের CPU ও RAM বণ্টন করবে এবং বিগত বছরের লেনদেন বিশ্লেষণ করে গ্রাহকের স্বাভাবিক লেনদেনের গড় হিসাব বের করবে।</li>
+          <li><strong>Apache Mahout (মেশিন লার্নিং ফ্রড ইঞ্জিন):</strong> ঐতিহাসিক ডেটার ওপর ক্লাস্টারিং ও ক্লাসিফিকেশন (Anomaly Detection) চালিয়ে অস্বাভাবিক বা সন্দেহজনক লেনদেনের মডেল তৈরি করবে।</li>
+          <li><strong>Apache HBase (রিয়েল-টাইম ফ্রড চেকিং):</strong> কাস্টমারের লাইভ রিস্ক স্কোর ও শেষ ১০টি লেনদেনের তথ্য ধরে রাখবে, যাতে কার্ড সোয়াইপ করার কয়েক মিলিসেকেন্ডের মধ্যেই রিয়েল-টাইম লুকআপ করে ফ্রড ট্রানজেকশন ব্লক করা যায়।</li>
+        </ol>
+      </li>
+      <li><strong>২য় অংশ (<code>10 TB</code> ডেটার জন্য <code>Replication Factor = 3</code>-এ Raw Storage হিসাব):</strong>
+        <ul>
+          <li><strong>সূত্র:</strong> <i>Total Raw Storage = Actual Data Size &times; Replication Factor (RF)</i></li>
+          <li><strong>হিসাব:</strong> <i>10 TB &times; 3 = <b>30 TB</b></i>। (অর্থাৎ ১০ টেরাবাইট আসল ডেটা রাখার জন্য ডিস্কে মোট ৩০ টেরাবাইট জায়গা লাগবে)।</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Fraud-Detection Pipeline Using Five Hadoop Ecosystem Components</strong></p>
+
+<pre class="diagram">[Live ATM / POS / Card Streams]
+              |
+              v
+   1. [ Apache Flume ]      (Real-Time Transaction Log Ingestion)
+              |
+              v
+   2. [     HDFS     ]      (Fault-Tolerant Historical Log Storage)
+              |
+              v
+   3. [ Apache YARN  ]      (Cluster Resource Allocation &amp; Batch Processing)
+        /           \
+       v             v
+4. [Apache Mahout]  5. [Apache HBase]
+(ML Fraud Model     (Millisecond Real-Time Lookup of Customer
+ Training)           Velocity &amp; Instant Fraud Blocking)</pre>
+
+    <svg class="clock-svg" viewBox="0 0 680 120" role="img" aria-label="5-Component Hadoop Fraud Detection Pipeline">
+      <rect x="5" y="5" width="670" height="110" rx="8" fill="#f7f4ee" stroke="#c4a35a" stroke-width="1.5"/>
+      <rect x="18" y="38" width="110" height="45" rx="6" fill="#0c1e33" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="73" y="57" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#e5d5a7">1. Flume</text>
+      <text x="73" y="73" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">Log Ingestion</text>
+      <line x1="128" y1="60" x2="152" y2="60" stroke="#0c1e33" stroke-width="2"/>
+      <rect x="152" y="38" width="115" height="45" rx="6" fill="#142d4c" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="209" y="57" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#e5d5a7">2. HDFS (RF=3)</text>
+      <text x="209" y="73" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">10TB &rarr; 30TB Raw</text>
+      <line x1="267" y1="60" x2="291" y2="60" stroke="#0c1e33" stroke-width="2"/>
+      <rect x="291" y="38" width="115" height="45" rx="6" fill="#1e3f66" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="348" y="57" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#e5d5a7">3. YARN / MR</text>
+      <text x="348" y="73" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">Cluster Compute</text>
+      <line x1="406" y1="50" x2="445" y2="32" stroke="#0c1e33" stroke-width="2"/>
+      <line x1="406" y1="70" x2="445" y2="88" stroke="#0c1e33" stroke-width="2"/>
+      <rect x="445" y="14" width="215" height="40" rx="6" fill="#2b547e" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="552" y="32" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#e5d5a7">4. Apache Mahout</text>
+      <text x="552" y="46" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">ML Anomaly &amp; Fraud Training</text>
+      <rect x="445" y="66" width="215" height="40" rx="6" fill="#7a1c1c" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="552" y="84" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#e5d5a7">5. Apache HBase</text>
+      <text x="552" y="98" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">Sub-10ms Real-Time Fraud Block</text>
+    </svg>
+
+    <p><strong>Roles of the Five Selected Hadoop Components:</strong></p>
+    <ol class="steps">
+      <li><strong>Apache Flume (Ingestion Layer):</strong> Continuously collects, aggregates, and transports high-velocity streaming transaction logs from ATMs, POS terminals, and internet banking gateways into HDFS and HBase with transactional reliability.</li>
+      <li><strong>HDFS — Hadoop Distributed File System (Storage Layer):</strong> Stores multi-terabyte historical transaction archives across commodity DataNodes using <code>128 MB</code> blocks, providing high-throughput sequential access for model training and regulatory audits.</li>
+      <li><strong>Apache YARN (Resource &amp; Processing Management Layer):</strong> Acts as the cluster operating system (via ResourceManager and NodeManagers), dynamically allocating CPU and RAM containers to run batch feature extraction (<strong>MapReduce</strong>) alongside interactive fraud processes.</li>
+      <li><strong>Apache Mahout (Machine Learning Layer):</strong> Executes distributed classification (Random Forest/Logistic Regression) and clustering (K-Means anomaly detection) algorithms over historical HDFS data to discover fraudulent patterns and train predictive risk models.</li>
+      <li><strong>Apache HBase (Real-Time Serving &amp; Lookup Layer):</strong> A low-latency, column-family NoSQL database atop HDFS that stores each cardholder's live spending velocity, recent geolocation, and fraud risk score, enabling sub-10ms random read/write checks before authorizing a transaction.</li>
+    </ol>
+
+    <p><strong>Part B: HDFS Raw Storage Calculation (<code>10 TB</code> Data, <code>RF = 3</code>)</strong></p>
+
+    <p><strong>1. Formula</strong><br>
+    In HDFS, every data block of a file is replicated across multiple DataNodes according to the configured <strong>Replication Factor (<i>RF</i>)</strong> to guarantee fault tolerance:</p>
+    <p style="text-align:center">Total Raw Physical Storage Required = Logical Data Size &times; Replication Factor (<i>RF</i>)</p>
+
+    <p><strong>2. Step-by-Step Calculation</strong></p>
+    <ul>
+      <li><strong>Given:</strong>
+        <ul>
+          <li>Logical (usable) dataset size = <i>10 TB</i></li>
+          <li>HDFS Replication Factor (<i>RF</i>) = <i>3</i> (1 primary copy + 2 replica copies across racks)</li>
+        </ul>
+      </li>
+      <li><strong>Calculation:</strong>
+        <p style="text-align:center">Raw Storage Needed = 10 TB &times; 3 = <b>30 TB</b></p>
+      </li>
+    </ul>
+
+    <div class="fault-bars">
+      <div class="fb-row"><span>Logical Dataset (1x)</span><div class="fb"><i style="width:33.33%"></i></div><b>10 TB</b></div>
+      <div class="fb-row"><span>HDFS Raw Storage (RF=3)</span><div class="fb"><i style="width:100%"></i></div><b>30 TB</b></div>
+    </div>
+
+    <div class="concept-box" style="margin-top:.6rem">
+      <p class="one-line"><strong>Note for Production Capacity Planning:</strong> While <strong><code>30 TB</code></strong> is the exact raw HDFS block storage required for the <code>10 TB</code> dataset, data center architects typically provision an additional <i>20%–25%</i> buffer for intermediate MapReduce shuffle files, OS filesystems, and HDFS metadata (<i>&approx; 36–38 TB</i> total physical disk capacity).</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===== Q15 ===== -->
+<article class="qa" id="qb13-q15">
+  <div class="qa-head">
+    <span class="qn-badge">১৫</span>
+    <h5>Question 15: Explain a Type 1 hypervisor and calculate how many 8-vCPU VMs fit on a 32-core host at 2:1 CPU overcommit. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> <strong>Type 1 Hypervisor (<code>VMware ESXi / KVM</code>)</strong> হলো সরাসরি লোহার সার্ভারের (Bare Metal) ওপর বসানো অপারেটিং সিস্টেম—মাঝখানে উইন্ডোজের মতো কোনো দালাল (Host OS) নেই! আর <code>32-core</code> সার্ভারে <code>2:1</code> ওভারকমিট মানে মোট <i>32 &times; 2 = 64 টি vCPU</i> বানানো যাবে; প্রতি VM-এ ৮টি করে দিলে <i>64 / 8 = <b>8 টি VM</b></i> চলবে!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>Type 1 = Bare-Metal (ESXi, Hyper-V, KVM)</code></strong>; <strong><code>Total vCPUs = Cores (32) * Overcommit (2) = 64 -&gt; 64 / 8 = 8 VMs</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Bare-Metal / Native Hypervisor</code>, <code>Direct Hardware Virtualization (VT-x / AMD-V)</code>, <code>Zero Host OS Overhead</code>, <code>CPU Overcommitment Ratio (2:1)</code>, <code>vCPU-to-pCPU Scheduling</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও অংক)</span>
+    <ul>
+      <li><strong>১ম অংশ (Type 1 Hypervisor কী?):</strong>
+        <ul>
+          <li><strong>Type 1 Hypervisor</strong> (যাকে <strong>Bare-Metal</strong> বা <strong>Native Hypervisor</strong>-ও বলা হয়) হলো এমন এক ধরনের ভার্চুয়ালাইজেশন সফটওয়্যার যা কোনো হোস্ট অপারেটিং সিস্টেম (যেমন সাধারণ Windows বা Ubuntu ডেস্কটপ) ছাড়াই <strong>সরাসরি ফিজিক্যাল সার্ভারের হার্ডওয়্যারের (Bare Metal) ওপর ইনস্টল করা হয়</strong>।</li>
+          <li>এটি নিজেই একটি হালকা ও শক্তিশালী অপারেটিং সিস্টেম কার্নেলের মতো কাজ করে এবং হার্ডওয়্যারের CPU, RAM, ও NIC সরাসরি নিয়ন্ত্রণ করে একাধিক Virtual Machine (VM)-কে ভাগ করে দেয়। মাঝখানে কোনো Host OS না থাকায় এর পারফরম্যান্স, সিকিউরিটি ও স্ট্যাবিলিটি সবচেয়ে বেশি।</li>
+          <li><em>উদাহরণ:</em> <strong>VMware ESXi (vSphere), Microsoft Hyper-V, Linux KVM, Citrix Hypervisor (XenServer)</strong>। <em>(তুলনা: Type 2 Hypervisor যেমন VirtualBox বা VMware Workstation সাধারণ OS-এর ভেতরে অ্যাপের মতো চলে)</em>।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (<code>32-core</code> হোস্টে <code>2:1</code> Overcommit-এ কয়টি <code>8-vCPU</code> VM বসবে?):</strong>
+        <ul>
+          <li>ফিজিক্যাল কোর সংখ্যা (pCPU) <i>= 32</i>।</li>
+          <li>CPU Overcommit Ratio <i>= 2 : 1</i> (অর্থাৎ প্রতি ১টি ফিজিক্যাল কোরের বিপরীতে ২টি ভার্চুয়াল CPU বা vCPU বরাদ্দ দেওয়া যাবে)।</li>
+          <li><strong>মোট বরাদ্দযোগ্য vCPU:</strong>
+            <p style="text-align:center">Total Allocatable vCPUs = 32 cores &times; 2 = <b>64 vCPUs</b></p>
+          </li>
+          <li>প্রতিটি VM-এর প্রয়োজন <i>= 8 vCPUs</i>।</li>
+          <li><strong>মোট VM সংখ্যা:</strong>
+            <p style="text-align:center">Number of VMs = 64 vCPUs / 8 vCPUs per VM = <b>8 VMs</b></p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Explanation of a Type 1 (Bare-Metal) Hypervisor</strong></p>
+    <ol class="steps">
+      <li><strong>Definition:</strong><br>
+      A <strong>Type 1 Hypervisor</strong> (also known as a <strong>Bare-Metal</strong> or <strong>Native Hypervisor</strong>) is a virtualization layer that runs <strong>directly on the underlying physical server hardware</strong> without requiring any intermediary host operating system.</li>
+    </ol>
+
+<pre class="diagram">   +-----------+ +-----------+ +-----------+
+   |   VM 1    | |   VM 2    | |   VM 8    |
+   | (Guest OS)| | (Guest OS)| | (Guest OS)|
+   |  8 vCPUs  | |  8 vCPUs  | |  8 vCPUs  |
+   +-----------+ +-----------+ +-----------+
+   +---------------------------------------+
+   |     TYPE 1 HYPERVISOR (Bare-Metal)    |
+   |  (VMware ESXi / KVM / MS Hyper-V)     |
+   +---------------------------------------+
+   +---------------------------------------+
+   |   PHYSICAL SERVER HARDWARE (32 Cores) |
+   |     (CPU VT-x/AMD-V, RAM, NIC, SAN)   |
+   +---------------------------------------+</pre>
+
+    <svg class="clock-svg" viewBox="0 0 640 155" role="img" aria-label="Type 1 Bare-Metal Hypervisor Stack with 8 VMs">
+      <rect x="5" y="5" width="630" height="145" rx="8" fill="#f7f4ee" stroke="#c4a35a" stroke-width="1.5"/>
+      <!-- 8 VMs Row -->
+      <rect x="20" y="15" width="70" height="38" rx="4" fill="#2b547e" stroke="#c4a35a"/>
+      <text x="55" y="32" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="bold" fill="#e5d5a7">VM 1</text>
+      <text x="55" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#ffffff">8 vCPUs</text>
+      <rect x="96" y="15" width="70" height="38" rx="4" fill="#2b547e" stroke="#c4a35a"/>
+      <text x="131" y="32" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="bold" fill="#e5d5a7">VM 2</text>
+      <text x="131" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#ffffff">8 vCPUs</text>
+      <rect x="172" y="15" width="70" height="38" rx="4" fill="#2b547e" stroke="#c4a35a"/>
+      <text x="207" y="32" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="bold" fill="#e5d5a7">VM 3</text>
+      <text x="207" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#ffffff">8 vCPUs</text>
+      <rect x="248" y="15" width="70" height="38" rx="4" fill="#2b547e" stroke="#c4a35a"/>
+      <text x="283" y="32" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="bold" fill="#e5d5a7">VM 4</text>
+      <text x="283" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#ffffff">8 vCPUs</text>
+      <rect x="324" y="15" width="70" height="38" rx="4" fill="#2b547e" stroke="#c4a35a"/>
+      <text x="359" y="32" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="bold" fill="#e5d5a7">VM 5</text>
+      <text x="359" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#ffffff">8 vCPUs</text>
+      <rect x="400" y="15" width="70" height="38" rx="4" fill="#2b547e" stroke="#c4a35a"/>
+      <text x="435" y="32" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="bold" fill="#e5d5a7">VM 6</text>
+      <text x="435" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#ffffff">8 vCPUs</text>
+      <rect x="476" y="15" width="70" height="38" rx="4" fill="#2b547e" stroke="#c4a35a"/>
+      <text x="511" y="32" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="bold" fill="#e5d5a7">VM 7</text>
+      <text x="511" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#ffffff">8 vCPUs</text>
+      <rect x="552" y="15" width="68" height="38" rx="4" fill="#2b547e" stroke="#c4a35a"/>
+      <text x="586" y="32" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="bold" fill="#e5d5a7">VM 8</text>
+      <text x="586" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#ffffff">8 vCPUs</text>
+      <!-- Hypervisor Layer -->
+      <rect x="20" y="60" width="600" height="36" rx="5" fill="#142d4c" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="320" y="82" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#e5d5a7">TYPE 1 BARE-METAL HYPERVISOR (VMware ESXi / KVM) — 2:1 Overcommit = 64 vCPUs</text>
+      <!-- Hardware Layer -->
+      <rect x="20" y="103" width="600" height="36" rx="5" fill="#0c1e33" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="320" y="125" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#ffffff">PHYSICAL BARE-METAL SERVER HARDWARE (32 Physical CPU Cores, RAM, SAN)</text>
+    </svg>
+
+    <ol class="steps" start="2">
+      <li><strong>Key Architectural Advantages in Data Centers:</strong>
+        <ul>
+          <li><strong>Zero Host OS Overhead:</strong> Because there is no underlying desktop/server OS consuming CPU cycles or RAM, nearly <i>100%</i> of hardware resources are available for guest VMs.</li>
+          <li><strong>Hardware-Assisted Virtualization:</strong> Directly leverages CPU hardware extensions (<strong>Intel VT-x</strong> / <strong>AMD-V</strong>) and I/O memory management units (IOMMU) for near-native execution speed.</li>
+          <li><strong>Smaller Attack Surface &amp; High Isolation:</strong> Minimal microkernel footprint prevents host-level malware from compromising guest VMs.</li>
+          <li><strong>Enterprise Examples:</strong> <strong>VMware ESXi</strong>, <strong>Microsoft Hyper-V</strong>, <strong>Linux KVM (Kernel-based Virtual Machine)</strong>, and <strong>Citrix XenServer</strong>.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <p><strong>Part B: VM Capacity Calculation (<code>32-Core</code> Host at <code>2:1</code> CPU Overcommit)</strong></p>
+
+    <p><strong>1. Given Parameters</strong></p>
+    <ul>
+      <li>Physical CPU cores on the host (<i>N</i><sub>cores</sub>) = <i>32 cores</i></li>
+      <li>CPU Overcommit Ratio = <i>2 : 1</i> (2 virtual CPUs allocated per 1 physical core)</li>
+      <li>vCPU requirement per Virtual Machine (<i>vCPU</i><sub>VM</sub>) = <i>8 vCPUs</i></li>
+    </ul>
+
+    <p><strong>2. Step-by-Step Calculation</strong></p>
+    <ul>
+      <li><strong>Step 1 (Calculate Total Available vCPU Pool):</strong>
+        <p style="text-align:center">
+          Total vCPUs = Physical Cores &times; Overcommit Ratio<br>
+          Total vCPUs = 32 &times; 2 = <b>64 vCPUs</b>
+        </p>
+      </li>
+      <li><strong>Step 2 (Calculate Maximum Number of 8-vCPU VMs):</strong>
+        <p style="text-align:center">Number of VMs = Total vCPUs / vCPUs per VM = 64 vCPUs / (8 vCPUs/VM) = <b>8 VMs</b></p>
+      </li>
+    </ul>
+
+    <div class="concept-box" style="margin-top:.6rem">
+      <p class="one-line"><strong>Final Answer:</strong> Exactly <strong><code>8</code> Virtual Machines</strong> (each configured with <code>8 vCPUs</code>) can run concurrently on the 32-core host at a <i>2 : 1</i> CPU overcommit ratio.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===== Q16 ===== -->
+<article class="qa" id="qb13-q16">
+  <div class="qa-head">
+    <span class="qn-badge">১৬</span>
+    <h5>Question 16: Explain RTO and RPO. If a bank takes backups at midnight and fails at 3 pm, how much data is lost in this case? <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> দুর্ঘটনাস্থলের একটি টাইমলাইন কল্পনা করুন: দুর্ঘটনার <strong>বাম দিকে (অতীতে)</strong> কয় ঘণ্টার ডেটা হারাল তা মাপে <strong>RPO (<code>P = Point in Past = Data Loss</code>)</strong>; আর দুর্ঘটনার <strong>ডান দিকে (ভবিষ্যতে)</strong> সার্ভার আবার চালু করতে কত ঘণ্টা লাগল তা মাপে <strong>RTO (<code>T = Time to Recover = Downtime</code>)</strong>! রাত ১২টা থেকে দুপুর ৩টা মানে পাক্কা <strong>১৫ ঘণ্টার ডেটা (<code>15 hours of data</code>)</strong> উধাও!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>RPO = Past (Data Loss Tolerance)</code></strong> vs <strong><code>RTO = Future (Downtime Tolerance)</code></strong>; <strong><code>12:00 AM to 3:00 PM = 15 Hours Lost</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Recovery Point Objective (Data Loss)</code>, <code>Recovery Time Objective (Service Downtime)</code>, <code>Backup Frequency vs Replication</code>, <code>Failover Automation</code>, <code>15 Hours of Unbacked-Up Transactions</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও অংক)</span>
+    <ul>
+      <li><strong>১ম অংশ (RTO এবং RPO কী?):</strong>
+        <ul>
+          <li>দুর্যোগ ব্যবস্থাপনায় (Disaster Recovery) এই দুটি সবচেয়ে গুরুত্বপূর্ণ সূচক:
+            <ol>
+              <li><strong>RPO (Recovery Point Objective — কতটুকু ডেটা লস সহ্য করা যাবে?):</strong> এটি সময়ের এককে মাপে যে কোনো সার্ভার ক্র্যাশ করলে <strong>অতীতের সর্বোচ্চ কতটুকু সময়ের ডেটা হারালে</strong> ব্যাংকটি টিকে থাকতে পারবে। এটি নির্ভর করে <strong>কত ঘনঘন ব্যাকআপ বা রেপ্লিকেশন নেওয়া হচ্ছে</strong> তার ওপর।</li>
+              <li><strong>RTO (Recovery Time Objective — কতক্ষণ ডাউনটাইম সহ্য করা যাবে?):</strong> এটি মাপে যে সার্ভার ক্র্যাশ করার <strong>পর থেকে সর্বোচ্চ কত সময়ের মধ্যে</strong> সিস্টেমটি মেরামত করে আবার গ্রাহকদের জন্য চালু করতে হবে। এটি নির্ভর করে <strong>ফেইলওভার এবং রিস্টোর স্পিডের</strong> ওপর।</li>
+            </ol>
+          </li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (রাত ১২টায় ব্যাকআপ নেওয়ার পর দুপুর ৩টায় ফেইল করলে কতটুকু ডেটা লস হবে?):</strong>
+        <ul>
+          <li>শেষ ব্যাকআপ নেওয়া হয়েছে: <strong>রাত ১২:০০টায় (12:00 AM / Midnight)</strong>।</li>
+          <li>সিস্টেম ক্র্যাশ করেছে: <strong>দুপুর ৩:০০টায় (3:00 PM / 15:00 hours)</strong>।</li>
+          <li>যদি মাঝখানে আর কোনো ট্রানজেকশন লগ ব্যাকআপ বা রিয়েল-টাইম রেপ্লিকেশন না থেকে থাকে, তবে রাত ১২:০০টা থেকে দুপুর ৩:০০টা পর্যন্ত সম্পন্ন হওয়া <strong>মোট ১৫ ঘণ্টার (<code>15 hours</code>) সমস্ত ডেটা বা লেনদেন হারিয়ে যাবে!</strong></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Explanation of RPO and RTO in Disaster Recovery</strong></p>
+    <p>In Business Continuity and Disaster Recovery (BCDR) planning, <strong>RPO</strong> and <strong>RTO</strong> define the strict time boundaries around a disaster event:</p>
+
+<pre class="diagram">   Last Backup                 DISASTER STRIKES!               System Restored
+   (12:00 AM)                     (3:00 PM)                      (e.g., 5:00 PM)
+-------+------------------------------*------------------------------+-------&gt; Time
+       |&lt;------- RPO Window ---------&gt;|&lt;-------- RTO Window --------&gt;|
+       |   (Backward in Time:         |   (Forward in Time:          |
+       |    Max Acceptable DATA LOSS) |    Max Acceptable DOWNTIME)  |
+       |    = 15 Hours Lost Here!     |                              |</pre>
+
+    <svg class="clock-svg" viewBox="0 0 680 125" role="img" aria-label="RPO and RTO Disaster Recovery Timeline">
+      <rect x="5" y="5" width="670" height="115" rx="8" fill="#f7f4ee" stroke="#c4a35a" stroke-width="1.5"/>
+      <!-- Timeline Axis -->
+      <line x1="40" y1="62" x2="640" y2="62" stroke="#0c1e33" stroke-width="3"/>
+      <!-- RPO Box -->
+      <rect x="80" y="34" width="260" height="56" rx="6" fill="#7a1c1c" fill-opacity="0.15" stroke="#7a1c1c" stroke-width="1.8"/>
+      <text x="210" y="52" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#7a1c1c">&larr; RPO (Data Loss in Past)</text>
+      <text x="210" y="78" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#7a1c1c">15 Hours Data Lost (00:00 &rarr; 15:00)</text>
+      <!-- RTO Box -->
+      <rect x="340" y="34" width="240" height="56" rx="6" fill="#1e3f66" fill-opacity="0.15" stroke="#1e3f66" stroke-width="1.8"/>
+      <text x="460" y="52" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#0c1e33">RTO (Downtime in Future) &rarr;</text>
+      <text x="460" y="78" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#0c1e33">Time to Restore Service</text>
+      <!-- Markers -->
+      <circle cx="80" cy="62" r="6" fill="#0c1e33" stroke="#c4a35a" stroke-width="2"/>
+      <text x="80" y="23" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#0c1e33">12:00 AM (Backup)</text>
+      <circle cx="340" cy="62" r="7" fill="#7a1c1c" stroke="#ffffff" stroke-width="2"/>
+      <text x="340" y="23" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#7a1c1c">3:00 PM (FAILURE!)</text>
+      <circle cx="580" cy="62" r="6" fill="#2b547e" stroke="#c4a35a" stroke-width="2"/>
+      <text x="580" y="23" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#0c1e33">System Restored</text>
+    </svg>
+
+    <div class="trace-wrap">
+      <table class="mini">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Full Form</th>
+            <th>Core Definition &amp; Focus</th>
+            <th>Determined By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>RPO</strong></td>
+            <td><strong>Recovery Point Objective</strong></td>
+            <td>The maximum acceptable <strong>age of data that can be lost</strong> when a disaster occurs (looks <strong>backward in time</strong> to the last valid backup point).</td>
+            <td>Backup frequency, transaction log shipping interval, or synchronous/asynchronous replication.</td>
+          </tr>
+          <tr>
+            <td><strong>RTO</strong></td>
+            <td><strong>Recovery Time Objective</strong></td>
+            <td>The maximum acceptable <strong>duration of service downtime</strong> after a disaster before business operations must be restored (looks <strong>forward in time</strong>).</td>
+            <td>Restore bandwidth, DR site readiness (Hot/Warm/Cold site), and automated failover orchestration.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>Part B: Calculation of Data Loss (Midnight Backup to 3:00 PM Failure)</strong></p>
+
+    <p><strong>1. Timeline Analysis</strong></p>
+    <ul>
+      <li><strong>Timestamp of Last Successful Backup (<i>T</i><sub>backup</sub>):</strong> <code>12:00 AM</code> (Midnight / <code>00:00 hours</code>)</li>
+      <li><strong>Timestamp of System Failure (<i>T</i><sub>failure</sub>):</strong> <code>3:00 PM</code> (<code>15:00 hours</code> in 24-hour clock)</li>
+    </ul>
+
+    <p><strong>2. Data Loss Calculation</strong><br>
+    Assuming no intermediate incremental backups, Write-Ahead Log (WAL) archiving, or real-time replication occurred between midnight and the crash, restoring from the midnight backup rolls the database state back to <code>00:00</code>:</p>
+    <p style="text-align:center">Actual Data Loss Duration = <i>T</i><sub>failure</sub> &minus; <i>T</i><sub>backup</sub> = 15:00 &minus; 00:00 = <b>15 hours</b></p>
+
+    <div class="concept-box" style="margin-top:.6rem">
+      <div class="cb-title">Final Answer &amp; Banking Impact</div>
+      <ul>
+        <li><strong>Data Lost:</strong> Exactly <strong><code>15 hours</code> of data</strong> (all transactions, deposits, and withdrawals processed between <strong>12:00 AM midnight and 3:00 PM</strong> are lost).</li>
+        <li><strong>Remediation Note:</strong> For a commercial bank, a 15-hour data loss is catastrophic; hence Bangladesh Bank ICT guidelines mandate <strong>near-zero RPO</strong> using synchronous/real-time database replication (e.g., Oracle Data Guard) to a Disaster Recovery (DR) site alongside continuous archive-log backups.</li>
+      </ul>
+    </div>
+  </div>
+</article>
+
+<!-- ===== Q17 ===== -->
+<article class="qa" id="qb13-q17">
+  <div class="qa-head">
+    <span class="qn-badge">১৭</span>
+    <h5>Question 17: Explain 3NF and write the SQL JOIN that lists account holders with their branch names. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> <strong>3NF (Third Normal Form)</strong>-এর শপথ হলো: <em>"পাইরেট ছাড়া কেউ কাউকে অর্ডার দেবে না!"</em>—অর্থাৎ <strong>Primary Key ছাড়া অন্য কোনো সাধারণ কলামের ওপর আরেকটি সাধারণ কলাম নির্ভর করতে পারবে না (<code>No Transitive Dependency: A -&gt; B -&gt; C নিষিদ্ধ</code>)</strong>! আর দুই টেবিল থেকে নাম ও ব্রাঞ্চ মেলানোর জন্য লাগবে <strong><code>INNER JOIN ... ON a.branch_id = b.branch_id</code></strong>।</li>
+      <li><strong>Mnemonic:</strong> <strong><code>3NF = 2NF + No Transitive Dependency (Every Non-Key depends ONLY on the Whole Key)</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Third Normal Form (3NF)</code>, <code>Second Normal Form (2NF)</code>, <code>No Transitive Functional Dependency</code>, <code>Insertion/Update/Deletion Anomalies</code>, <code>INNER JOIN ... ON Foreign Key</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও SQL)</span>
+    <ul>
+      <li><strong>১ম অংশ (3NF বা Third Normal Form কী?):</strong>
+        <ul>
+          <li>একটি রিলেশনাল ডেটাবেস টেবিল তখনই <strong>3NF (Third Normal Form)</strong>-এ থাকবে যখন সেটি দুটি শর্ত পূরণ করবে:
+            <ol>
+              <li>টেবিলটি অবশ্যই <strong>2NF (Second Normal Form)</strong>-এ থাকতে হবে (অর্থাৎ 1NF-এ আছে এবং কোনো Partial Dependency নেই)।</li>
+              <li>টেবিলটিতে কোনো <strong>Transitive Dependency (সংক্রমণশীল নির্ভরশীলতা) থাকতে পারবে না</strong>।</li>
+            </ol>
+          </li>
+          <li><strong>Transitive Dependency মানে কী?</strong> ধরুন একটি <code>Accounts</code> টেবিলে <code>acc_no</code> (Primary Key), <code>branch_id</code>, এবং <code>branch_name</code> একসাথে রাখা আছে। এখানে <code>acc_no</code> থেকে <code>branch_id</code> পাওয়া যায় (<i>acc_no &rarr; branch_id</i>), আবার <code>branch_id</code> থেকে <code>branch_name</code> পাওয়া যায় (<i>branch_id &rarr; branch_name</i>)। অর্থাৎ একটি নন-কি কলাম (<code>branch_name</code>) আরেকটি নন-কি কলামের (<code>branch_id</code>) ওপর নির্ভর করছে! এর ফলে একই ব্রাঞ্চের নাম ১০,০০০ কাস্টমারের রো-তে বারবার লিখতে হয় (Redundancy)।</li>
+          <li><strong>3NF সমাধান:</strong> <code>branch_id</code> ও <code>branch_name</code>-কে ভেঙে আলাদা একটি <code>Branches</code> টেবিলে নিয়ে যাওয়া!</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (Account Holder-দের নামের সাথে তাদের Branch Name দেখানোর SQL JOIN):</strong>
+        <ul>
+          <li>আমরা <code>Accounts</code> টেবিল এবং <code>Branches</code> টেবিলকে <code>branch_id</code> দিয়ে <code>INNER JOIN</code> করব:</li>
+        </ul>
+<pre class="diagram">SELECT a.holder_name, b.branch_name
+FROM Accounts a
+INNER JOIN Branches b ON a.branch_id = b.branch_id;</pre>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Explanation of Third Normal Form (3NF)</strong></p>
+    <ol class="steps">
+      <li><strong>Definition of 3NF:</strong><br>
+      A relational database table is in <strong>Third Normal Form (3NF)</strong> if and only if:
+        <ol>
+          <li>It is already in <strong>Second Normal Form (2NF)</strong> (i.e., atomic values in 1NF and no partial functional dependency on a composite primary key), <strong>AND</strong></li>
+          <li>It contains <strong>no Transitive Functional Dependencies</strong> for non-prime attributes.</li>
+        </ol>
+        <ul>
+          <li><strong>Formal Rule:</strong> For every non-trivial functional dependency <i>X &rarr; Y</i>, either <i>X</i> is a <strong>Superkey</strong> or <i>Y</i> is a <strong>Prime Attribute</strong> (part of a candidate key). Informally: <em>"Every non-key attribute must depend on the key, the whole key (2NF), and nothing but the key (3NF)."</em></li>
+        </ul>
+      </li>
+      <li><strong>Understanding Transitive Dependency &amp; 3NF Decomposition (Banking Example):</strong>
+        <ul>
+          <li><strong>Violation (Unnormalized / 2NF Table):</strong><br>
+          Suppose a single table <code>Account_Details(acc_id, holder_name, branch_id, branch_name, branch_city)</code> has <code>acc_id</code> as its Primary Key.<br>
+          Here:
+            <p style="text-align:center">acc_id &rarr; branch_id &quad; and &quad; branch_id &rarr; (branch_name, branch_city)</p>
+          Because non-key attributes <code>branch_name</code> and <code>branch_city</code> depend on another non-key attribute (<code>branch_id</code>), a <strong>Transitive Dependency</strong> exists, causing severe update, insertion, and deletion anomalies.</li>
+          <li><strong>3NF Conversion:</strong><br>
+          We eliminate the transitive dependency by decomposing the table into two 3NF tables linked via a Foreign Key (<code>branch_id</code>):
+            <ol>
+              <li><strong><code>Branches (branch_id [PK], branch_name, branch_city)</code></strong></li>
+              <li><strong><code>Accounts (acc_id [PK], holder_name, balance, branch_id [FK])</code></strong></li>
+            </ol>
+          </li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="cmp-grid" style="margin-top:.5rem">
+      <div class="cmp-card phys">
+        <strong>Before 3NF (Transitive Dependency Violation)</strong>
+        <code>Account_Details (<u>acc_id</u>, holder_name, branch_id, branch_name, branch_city)</code><br>
+        <em>Problem:</em> <code>acc_id &rarr; branch_id &rarr; branch_name</code> (Non-key determines non-key).
+      </div>
+      <div class="cmp-card virt">
+        <strong>After 3NF Decomposition (2 Clean Tables)</strong>
+        1. <code>Branches (<u>branch_id</u> [PK], branch_name, branch_city)</code><br>
+        2. <code>Accounts (<u>acc_id</u> [PK], holder_name, balance, branch_id [FK])</code>
+      </div>
+    </div>
+
+    <p style="margin-top:.6rem"><strong>Part B: SQL <code>JOIN</code> Query to List Account Holders with Their Branch Names</strong></p>
+    <p>Assuming the 3NF schema above (<code>Accounts</code> and <code>Branches</code> linked by <code>branch_id</code>), the SQL query to retrieve all account holders alongside their respective branch names is:</p>
+
+<pre class="diagram">SELECT 
+    a.acc_id       AS Account_Number,
+    a.holder_name  AS Account_Holder_Name,
+    b.branch_name  AS Branch_Name
+FROM 
+    Accounts a
+INNER JOIN 
+    Branches b ON a.branch_id = b.branch_id
+ORDER BY 
+    b.branch_name ASC, a.holder_name ASC;</pre>
+
+    <p><em>(Note: If the relational schema uses three tables—<code>Customers</code>, <code>Accounts</code>, and <code>Branches</code>—the 3-table join can also be written as)</em>:</p>
+
+<pre class="diagram">SELECT 
+    c.customer_name AS Account_Holder_Name,
+    a.acc_id        AS Account_Number,
+    b.branch_name   AS Branch_Name
+FROM 
+    Customers c
+INNER JOIN Accounts a ON c.customer_id = a.customer_id
+INNER JOIN Branches b ON a.branch_id = b.branch_id;</pre>
+  </div>
+</article>
+
+<!-- ===== COMPLETION SUMMARY BOX ===== -->
+<div class="concept-box">
+  <div class="cb-title">🎉 প্রশ্নব্যাংক ১৩ (<code>Q1</code> থেকে <code>Q17</code>) সম্পূর্ণ শেষ!</div>
+  <p>এই ১৭টি প্রশ্ন আপনার ২০২৬ সালের পরীক্ষার নতুন হাইব্রিড প্যাটার্নের (Concept + Math/SQL) একদম মূল প্রাণভোমরা।</p>
+  <p class="one-line">এরপর কি আপনি <strong>Hadoop Ecosystem (<code>৮.২</code>)-এর বাকি ৮টি প্রশ্ন (<code>Q9–Q16</code>)</strong> দেখতে চান, নাকি অন্য কোনো সেকশন রিভিশন দেবেন? বলুন!</p>
+</div>
+
 
                 <!-- ==================== প্রশ্নব্যাংক ১৪ ==================== -->
         <h3 class="sec" id="qb14">প্রশ্নব্যাংক ১৪: Software Engineering, System Design ও Testing (ধারা ১৬.১৪)</h3>
