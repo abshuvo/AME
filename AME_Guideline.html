@@ -1,0 +1,1000 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>৩ দিনের ক্র্যাশ গাইডলাইন: Combined Bank AE(IT) / AME</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --primary: #2563eb;
+      --primary-light: #dbeafe;
+      --secondary: #0f766e;
+      --secondary-light: #ccfbf1;
+      --accent: #d97706;
+      --accent-light: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding-bottom: 60px;
+    }
+
+    code, .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9em;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #be123c;
+    }
+
+    /* Header & Sticky Progress */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #fff;
+      padding: 32px 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: #cbd5e1;
+      max-width: 750px;
+      margin: 0 auto 16px;
+      font-size: 1.05rem;
+    }
+
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .sticky-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .sticky-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .progress-wrap {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2563eb, #10b981);
+      transition: width 0.3s ease;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.9; }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 28px auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Cards & Sections */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .golden-box {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 2px solid #f59e0b;
+      border-radius: 12px;
+      padding: 22px;
+    }
+
+    .golden-box h2 {
+      color: #b45309;
+      font-size: 1.35rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    /* Bar Chart Styles */
+    .chart-row {
+      margin-bottom: 12px;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .chart-bar-bg {
+      width: 100%;
+      height: 14px;
+      background: #f1f5f9;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .chart-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+    }
+
+    /* Day Plan Cards */
+    .day-card {
+      border-top: 5px solid var(--primary);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .day-card.day-2 { border-top-color: var(--secondary); }
+    .day-card.day-3 { border-top-color: var(--purple); }
+
+    .day-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      background: var(--primary-light);
+      color: var(--primary);
+      width: fit-content;
+    }
+    .day-2 .day-badge { background: var(--secondary-light); color: var(--secondary); }
+    .day-3 .day-badge { background: var(--purple-light); color: var(--purple); }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .check-item:hover { background: #f1f5f9; }
+    .check-item input[type="checkbox"] {
+      margin-top: 5px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .check-item.done span {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+
+    /* Tables */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+    th, td {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5f9;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    tr:nth-child(even) { background: #f8fafc; }
+
+    /* Visual Architecture Diagrams */
+    .flow-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      background: #f8fafc;
+      padding: 18px;
+      border-radius: 10px;
+      border: 1px dashed #94a3b8;
+      margin-top: 10px;
+    }
+    .flow-box {
+      flex: 1;
+      min-width: 130px;
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+    .flow-box strong {
+      display: block;
+      color: var(--primary);
+      font-size: 0.95rem;
+    }
+    .flow-box small {
+      color: var(--muted);
+      font-size: 0.8rem;
+      display: block;
+      margin-top: 4px;
+    }
+    .flow-arrow {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #64748b;
+    }
+
+    /* K-Map Grid */
+    .kmap-table {
+      width: auto;
+      margin: 12px auto;
+      text-align: center;
+    }
+    .kmap-table th, .kmap-table td {
+      width: 58px;
+      height: 52px;
+      text-align: center;
+      vertical-align: middle;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .kmap-1 {
+      background: #dcfce7 !important;
+      font-weight: 700;
+      color: #166534;
+      font-size: 1.1rem;
+    }
+    .kmap-0 {
+      color: #94a3b8;
+    }
+
+    /* Framework Cards */
+    .fw-card {
+      border-left: 5px solid var(--primary);
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+    }
+    .fw-card.sec { border-left-color: var(--danger); }
+    .fw-card.cloud { border-left-color: var(--secondary); }
+
+    .fw-step {
+      margin-top: 8px;
+      padding-left: 18px;
+    }
+    .fw-step li {
+      margin-bottom: 6px;
+    }
+
+    @media print {
+      .sticky-bar { display: none; }
+      body { background: #fff; padding: 0; }
+      .card { box-shadow: none; border: 1px solid #cbd5e1; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO HEADER -->
+  <header>
+    <h1>🎯 ৩ দিনের ক্র্যাশ গাইডলাইন: Combined Bank AE(IT) / AME</h1>
+    <p>বিগত ৫টি পরীক্ষার (২০২১–২০২৬) প্রশ্ন বিশ্লেষণ করে তৈরি কমন ও আনকমন টেকনিক্যাল প্রশ্নের সম্পূর্ণ মাস্টারপ্ল্যান, ফর্মুলা শিট ও ডায়াগ্রাম</p>
+    <div class="badge-row">
+      <span class="badge">⏱️ সময়: ৩ দিন</span>
+      <span class="badge">📊 ফোকাস: ১০০% টেকনিক্যাল</span>
+      <span class="badge">🔥 প্যাটার্ন: সংক্ষিপ্ত থিওরি + ম্যাথ + ব্যাংকিং সিনারিও</span>
+    </div>
+  </header>
+
+  <!-- STICKY PROGRESS BAR -->
+  <div class="sticky-bar">
+    <div class="sticky-inner">
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>আপনার ৩ দিনের প্রস্তুতির অগ্রগতি (টপিকগুলোতে টিক দিন)</span>
+          <span id="progress-text">0% সম্পন্ন</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="resetProgress()">রিসেট করুন</button>
+        <button class="btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- GOLDEN PRIORITY SECTION -->
+    <div class="golden-box">
+      <h2>⚡ গোল্ডেন সাজেশন: শুরুতেই "প্রশ্নব্যাংক ১৩ (হাইব্রিড প্রশ্ন ১–১৭)" শেষ করুন!</h2>
+      <p>২০২৬ সালের দুটি পরীক্ষার প্রশ্ন বিশ্লেষণ করে দেখা গেছে, প্রশ্নগুলো এখন <strong>"১টি সংক্ষিপ্ত ধারণা + ১টি ছোট ম্যাথ বা SQL/CIDR"</strong> আকারে আসে। আপনার দেওয়া তালিকার <strong>প্রশ্নব্যাংক ১৩-এর ১ থেকে ১৭ নম্বর প্রশ্ন</strong> হলো ২০২৬ সালের প্রশ্নের হুবহু প্রতিচ্ছবি। তাই ৩ দিনের শুরুতেই নিচের ফর্মুলা টেবিল ও চিটশিটের সাহায্যে এই ১৭টি প্রশ্ন ঠোঁটস্থ করে ফেলুন।</p>
+    </div>
+
+    <!-- EXAM TREND & TOPIC WEIGHTAGE CHART -->
+    <div class="card">
+      <h2 class="section-title">📊 বিগত বছরের প্রশ্ন বিশ্লেষণ ও টপিক গুরুত্ব (২০২১–২০২৬)</h2>
+      <div class="grid-2">
+        <div>
+          <div class="chart-row">
+            <div class="chart-header"><span>১. Data Center, RAID, Maintenance & Electrical</span><span>২২% (সর্বোচ্চ গুরুত্ব)</span></div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 92%; background: #2563eb;"></div></div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-header"><span>২. Computer Network (Subnetting, OSI, NAT, Delay)</span><span>১৮%</span></div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 82%; background: #0f766e;"></div></div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-header"><span>৩. Computer Security (CIA, Attacks, Zero-Day, OTP)</span><span>১৬%</span></div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 75%; background: #dc2626;"></div></div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-header"><span>৪. Operating System (Deadlock, Paging, Scheduling)</span><span>১৪%</span></div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 68%; background: #7c3aed;"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="chart-row">
+            <div class="chart-header"><span>৫. Big Data & Hadoop Pipeline (একই প্রশ্ন বারবার আসে!)</span><span>১০%</span></div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 55%; background: #d97706;"></div></div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-header"><span>৬. Web Tech (HTTP Codes, Cookies, Responsive CSS)</span><span>৮%</span></div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 48%; background: #0284c7;"></div></div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-header"><span>৭. Digital Logic (K-Map & Boolean Gate) + Comp. Arch</span><span>৭%</span></div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 44%; background: #16a34a;"></div></div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-header"><span>৮. DBMS (ACID, SQL Constraints, ER) & OOP</span><span>৫%</span></div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 38%; background: #db2777;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3-DAY INTERACTIVE STUDY PLAN -->
+    <div class="card">
+      <h2 class="section-title">🗓️ ৩ দিনের বাছাইকৃত প্রশ্ন তালিকা (চেকলিস্ট)</h2>
+      <div class="grid-3">
+        
+        <!-- DAY 1 -->
+        <div class="card day-card">
+          <span class="day-badge">১ম দিন: ছক্কা মারার দিন (Math, Logic, Network & OS)</span>
+          <p style="font-size: 0.9rem; color: var(--muted);">ছোট অংক ও লজিক্যাল প্রশ্ন—বেসিক কম থাকলেও শুধু সূত্র দিয়ে ১০০% নম্বর তোলা সম্ভব।</p>
+          
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>প্রশ্নব্যাংক ১৩ (১–১৭):</strong> সবকটি হাইব্রিড প্রশ্ন ও ম্যাথ সমাধান।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>DLD (৩.৩ এর 1, 2 ও ৩.৪ এর 1):</strong> ৪-ভেরিয়েবল K-Map এবং লজিক সার্কিট ড্রয়িং ও মান নির্ণয়।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Network (২.১ এর 1, 3):</strong> OSI/TCP-IP লেয়ারের কাজ, প্রোটোকল, ডিভাইস ও PDU।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Subnetting (২.২ এর 1, 2, 5):</strong> CIDR সাবনেটিং, Net/Host ID এবং Route Summarization।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>IPv6, NAT & Firewall (২.৩ এর 1, 4 ও ২.৮ এর 1, 2):</strong> IPv4 vs IPv6, NAT/PAT এবং NGFW-এর সুবিধা।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Switching & Multiplexing (২.৪ এর 1, 2, 4 ও ২.৫ এর 1):</strong> Packet Switching Delay ম্যাথ, TDM ম্যাথ এবং FDM/TDM/WDM।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>OS Memory (১.১ এর 1, 4, 11 ও ১.২ এর 1, 4):</strong> Logical vs Physical, Page Table Size ম্যাথ, Virtual Memory ও Swapping।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>OS Deadlock & Scheduling (১.৪ এর 3, 5 ও ১.৫ এর 1, 2):</strong> Deadlock-এর ৪ শর্ত, Circular Wait, RAG Cycle এবং Round Robin অংক।</span></label>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="card day-card day-2">
+          <span class="day-badge">২য় দিন: পদের মূল ফোকাস (DC, Electrical, Arch & DB)</span>
+          <p style="font-size: 0.9rem; color: var(--muted);">Assistant Engineer (IT) / AME পদের জন্য ডেটা সেন্টার, মেইনটেন্যান্স ও আর্কিটেকচার সবচেয়ে গুরুত্বপূর্ণ।</p>
+
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Data Center & Power (৬.১ এর 1 ও ৬.২ এর 1, 2):</strong> ব্যাংকিং ডেটা সেন্টারের ফ্যাক্টর, জেনারেটর নির্বাচন (ডিজেল), UPS প্রকারভেদ।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>RAID & Storage (৬.৪ এর 1, 2, 3):</strong> RAID কী, কেন জরুরি এবং RAID 0, 1, 5, 6, 10 এর ক্যাপাসিটি ম্যাথ।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Reliability & Maintenance (৬.৫ এর 1, 4, 5 ও ৬.৬ এর 1):</strong> Preventive vs Corrective, Series/Parallel Reliability ও ATM Availability ম্যাথ।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Cloud & DR (৬.৭ এর 1, 5, 11, 14):</strong> RTO vs RPO, Type-1 vs Type-2 Hypervisor, Cloud Migration প্ল্যান ও ৫টি মূল প্রযুক্তি।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Hardware & Electrical (৬.৮ এর 1 ও ৬.১০ এর 1, 2):</strong> Impact vs Non-impact প্রিন্টার, Fuse কারেন্ট রেটিং ম্যাথ এবং Fuse vs Circuit Breaker।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Comp. Architecture (৫.১ এর 1, 2; ৫.২ এর 1, 3; ৫.৩ এর 1):</strong> Pipelining কেন দরকার, Memory Hierarchy, Hit Ratio ম্যাথ, SRAM vs DRAM।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>DBMS (৭.১ এর 7, ৭.২ এর 1, ৭.৪ এর 1, 2):</strong> ফান্ড ট্রান্সফারে Atomicity ও Consistency, SQL CHECK Constraint এবং ER Schema।</span></label>
+        </div>
+
+        <!-- DAY 3 -->
+        <div class="card day-card day-3">
+          <span class="day-badge">৩য় দিন: Security, Big Data, Web, OOP ও ফ্রেমওয়ার্ক</span>
+          <p style="font-size: 0.9rem; color: var(--muted);">বড় সিনারিও প্রশ্ন, সাইবার সিকিউরিটি, হ্যাডুপ পাইপলাইন এবং ওয়েব টেকনোলজি প্রস্তুতি।</p>
+
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Security Core (৪.১ এর 1, 2 ও ৪.৩ এর 1):</strong> CIA Triad (Confidentiality ছাড়া Integrity), Data in Transit vs Data at Rest।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Cyber Attacks (৪.৪ এর 1, 2):</strong> Top 10 Cyber Attacks এবং Zero-Day Vulnerability ও অ্যান্টিভাইরাসের ব্যর্থতা।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Security Scenarios (৪.৫ এর 1, ৪.৬ এর 1, ৪.৭ এর 2, ৪.৮ এর 13):</strong> OTP ছাড়াও অতিরিক্ত নিরাপত্তা, সার্ভারের অস্বাভাবিক ট্রাফিক, অডিট পলিসি ভঙ্গ।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Big Data & Hadoop (৮.২ এর 1, 2):</strong> ই-কমার্স ও ফিন্যান্সিয়াল লগ প্রসেসিংয়ে ৫টি Hadoop কম্পোনেন্টের ভূমিকা (১০০% কমন!)।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Web HTTP & Cookies (৯.১ এর 1, 3 ও ৯.২ এর 1):</strong> HTTP Status Codes (2xx, 4xx, 5xx; 204, 400, 403, 503) এবং Cookies ও এর ঝুঁকি।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>Responsive CSS (৯.৩ এর 1):</strong> CSS Media Queries, Viewport Meta Tag এবং Mobile-First Approach।</span></label>
+          <label class="check-item"><input type="checkbox" class="topic-check"><span><strong>OOP & Banking ICT (১১ এর 1, 3, 11 ও ১০ এর 1, 16):</strong> OOP vs POP, Overloading vs Overriding, Merge Sort, Digital Banking ও Audit Risk।</span></label>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ALL-IN-ONE FORMULA & SOLVED MATH TABLE -->
+    <div class="card">
+      <h2 class="section-title">🧮 মাস্টার ফর্মুলা ও বিগত বছরের ম্যাথ সমাধান টেবিল (এক নজরে)</h2>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>টপিক / প্রশ্নের ধরন</th>
+              <th>মূল সূত্র (Formula) ও লজিক</th>
+              <th>বিগত বছরের প্রশ্নের সমাধান (Solved Example)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>১. RAID Usable Capacity</strong><br><small>(2026 Exam 1)</small></td>
+              <td>
+                • <strong>RAID 0:</strong> $N \times S$ (No fault tolerance)<br>
+                • <strong>RAID 1 / 10:</strong> $(N / 2) \times S$<br>
+                • <strong>RAID 5:</strong> $(N - 1) \times S$ (১টি ডিস্কের সমপরিমাণ জায়গা Distributed Parity-তে যায়)<br>
+                • <strong>RAID 6:</strong> $(N - 2) \times S$ (২টি প্যারিটি)
+              </td>
+              <td>
+                <strong>প্রশ্ন:</strong> ৫টি 4 TB হার্ডড্রাইভে RAID 5 করলে Usable Capacity কত?<br>
+                <strong>উত্তর:</strong> $(5 - 1) \times 4\text{ TB} = \mathbf{16\text{ TB}}$।<br>
+                <em>কেন 20 TB নয়?</em> কারণ সিঙ্গেল ড্রাইভ ফেইলিউর রিকভার করার জন্য ১টি ড্রাইভের সমপরিমাণ (4 TB) জায়গা সব ড্রাইভে <strong>Distributed Parity</strong> হিসেবে ব্যবহৃত হয়।
+              </td>
+            </tr>
+            <tr>
+              <td><strong>২. System Reliability</strong><br><small>(2026 Exam 1)</small></td>
+              <td>
+                • <strong>Series (শ্রেণি):</strong> $R_s = R_1 \times R_2 \times \dots \times R_n$<br>
+                • <strong>Parallel (সমান্তরাল):</strong> $R_p = 1 - [(1 - R_1)(1 - R_2)]$
+              </td>
+              <td>
+                <strong>প্রশ্ন:</strong> ৩টি কম্পোনেন্ট (Power, Motherboard, Storage) সিরিজে যুক্ত, প্রতিটির রিলায়েবিলিটি $0.95$ হলে মোট রিলায়েবিলিটি কত?<br>
+                <strong>উত্তর:</strong> $R_{\text{total}} = 0.95 \times 0.95 \times 0.95 = \mathbf{0.857375}$ (বা <strong>85.74%</strong>)।
+              </td>
+            </tr>
+            <tr>
+              <td><strong>৩. Availability & Revenue Loss</strong><br><small>(2026 Exam 2)</small></td>
+              <td>
+                • $\text{Availability} = \frac{\text{Total Time} - \text{Downtime}}{\text{Total Time}} \times 100\%$<br>
+                • $\text{Availability} = \frac{\text{MTBF}}{\text{MTBF} + \text{MTTR}} \times 100\%$
+              </td>
+              <td>
+                <strong>প্রশ্ন:</strong> ৩০ দিনে ৪ ঘণ্টা ডাউনটাইম। ঘণ্টায় ৫০০ ট্রানজেকশন (প্রতিটি ০.৫০ টাকা ফি)। Availability ও ক্ষতি কত?<br>
+                <strong>উত্তর:</strong> ৩০ দিন $= 30 \times 24 = 720$ ঘণ্টা। Uptime $= 720 - 4 = 716$ ঘণ্টা।<br>
+                • $\text{Availability} = (716 / 720) \times 100 = \mathbf{99.44\%}$<br>
+                • $\text{Revenue Loss} = 4 \times 500 \times 0.50 = \mathbf{1,000\text{ Taka}}$।
+              </td>
+            </tr>
+            <tr>
+              <td><strong>৪. Electrical Fuse Current Rating</strong><br><small>(2026 Exam 2)</small></td>
+              <td>
+                • পাওয়ার $P = V \times I \implies I = \frac{P}{V}$<br>
+                • মিনিমাম ফিউজ রেটিং কারেন্টের চেয়ে সামান্য উপরে (যেমন $1.25 \times I$ বা পরবর্তী স্ট্যান্ডার্ড মান) হতে হয়।
+              </td>
+              <td>
+                <strong>প্রশ্ন:</strong> $2.4\text{ kW}$ হিটার $240\text{ V}$ লাইনে চলছে। মিনিমাম ফিউজ রেটিং কত?<br>
+                <strong>উত্তর:</strong> $P = 2400\text{ W}$। কারেন্ট $I = \frac{2400}{240} = \mathbf{10\text{ A}}$।<br>
+                অতএব, মিনিমাম স্ট্যান্ডার্ড ফিউজ রেটিং হবে <strong>13 A (বা 12.5 A)</strong> (যাতে স্বাভাবিক 10A কারেন্টে ফিউজ কেটে না যায়)।
+              </td>
+            </tr>
+            <tr>
+              <td><strong>৫. Subnetting & Route Summarization</strong><br><small>(2026 Exam 1 & 2)</small></td>
+              <td>
+                • <strong>Subnets</strong> $= 2^b$ ($b$ = ধার করা বিট)<br>
+                • <strong>Usable Hosts</strong> $= 2^h - 2$ ($h$ = বাকি হোস্ট বিট)<br>
+                • <strong>Summarization:</strong> $2^k$ সংখ্যক কনটিগুয়াস রুট একত্র করলে প্রিফিক্স $k$ বিট কমে যায়।
+              </td>
+              <td>
+                <strong>উত্তর ১ (192.168.10.0/24, $b=3$):</strong> নতুন মাস্ক $= /27$। সাবনেট $= 2^3 = \mathbf{8}$টি। বাকি হোস্ট বিট $= 32 - 27 = 5$। প্রতি সাবনেটে হোস্ট $= 2^5 - 2 = \mathbf{30}$টি।<br>
+                <strong>উত্তর ২ (Route Summary):</strong> <code>10.1.0.0/24</code> থেকে <code>10.1.3.0/24</code> (মোট ৪টি বা $2^2$টি নেটওয়ার্ক) একত্র করলে মাস্ক হবে $24 - 2 = 22 \implies$ <strong><code>10.1.0.0/22</code></strong>।
+              </td>
+            </tr>
+            <tr>
+              <td><strong>৬. Packet Switching End-to-End Delay</strong><br><small>(2026 Exam 2)</small></td>
+              <td>
+                • $N$ সংখ্যক রাউটার থাকলে মধ্যবর্তী লিংক সংখ্যা $= (N + 1)$টি।<br>
+                • $\text{Total Delay} = (N \times d_{\text{proc}}) + (N + 1) \times d_{\text{trans}}$
+              </td>
+              <td>
+                <strong>প্রশ্ন:</strong> ৪টি রাউটার (প্রতিটির প্রসেসিং ডিলে $2\text{ ms}$), প্রতি লিংকের ট্রান্সমিশন ডিলে $5\text{ ms}$। মোট ডিলে কত?<br>
+                <strong>উত্তর:</strong> ৪টি রাউটার মানে লিংক $= 4 + 1 = 5$টি।<br>
+                $\text{Total Delay} = (4 \times 2\text{ ms}) + (5 \times 5\text{ ms}) = 8 + 25 = \mathbf{33\text{ ms}}$।
+              </td>
+            </tr>
+            <tr>
+              <td><strong>৭. Circuit Switching TDM File Transfer</strong><br><small>(2021 Exam 5)</small></td>
+              <td>
+                • প্রতি স্লটের ব্যান্ডউইথ $= \frac{\text{Link Rate}}{\text{No. of Slots}}$<br>
+                • মোট সময় $= \text{Setup Time} + \frac{\text{File Size}}{\text{Channel Rate}}$
+              </td>
+              <td>
+                <strong>প্রশ্ন:</strong> ফাইল $= 640,000\text{ bits}$, লিংক $= 1.536\text{ Mbps}$, ২৪টি TDM স্লট, সেটআপ $= 500\text{ ms}$।<br>
+                <strong>উত্তর:</strong> ১টি চ্যানেলের রেট $= 1,536,000 / 24 = 64,000\text{ bps}$ ($64\text{ kbps}$)।<br>
+                ট্রান্সমিশন সময় $= 640,000 / 64,000 = 10\text{ sec}$।<br>
+                মোট সময় $= 10\text{ s} + 0.5\text{ s} = \mathbf{10.5\text{ seconds}}$।
+              </td>
+            </tr>
+            <tr>
+              <td><strong>৮. OS Page Table Size</strong><br><small>(2021 Exam 5)</small></td>
+              <td>
+                • $\text{No. of Pages} = \frac{2^{\text{Virtual Address Bits}}}{\text{Page Size}}$<br>
+                • $\text{Table Size} = \text{No. of Pages} \times \text{PTE Size (4 Bytes)}$
+              </td>
+              <td>
+                <strong>প্রশ্ন:</strong> 64 MB RAM, 32-bit Virtual Address, 4 KB ($2^{12}$) Page Size।<br>
+                <strong>উত্তর:</strong> পেজ সংখ্যা $= 2^{32} / 2^{12} = 2^{20}$ (বা 1M পেজ)।<br>
+                প্রতিটি এন্ট্রি ৪ বাইট হলে Page Table Size $= 2^{20} \times 4\text{ Bytes} = \mathbf{4\text{ MB}}$।
+              </td>
+            </tr>
+            <tr>
+              <td><strong>৯. Effective Memory Access Time (EMAT)</strong><br><small>(2021 Exam 5)</small></td>
+              <td>
+                • $T_{\text{avg}} = H \times T_{\text{fast}} + (1 - H) \times T_{\text{slow}}$<br>
+                (একক অবশ্যই এক করে নিতে হবে: $1\text{ ms} = 10^6\text{ ns}$)
+              </td>
+              <td>
+                <strong>প্রশ্ন:</strong> Hit ratio $75\%$, RAM $= 10\text{ ns}$, SSD $= 10\text{ ms}$ ($10^7\text{ ns}$)।<br>
+                <strong>উত্তর:</strong> $T_{\text{avg}} = (0.75 \times 10\text{ ns}) + (0.25 \times 10\text{ ms}) = 7.5\text{ ns} + 2.5\text{ ms} \approx \mathbf{2.5000075\text{ ms}}$।
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SOLVED K-MAP & BOOLEAN LOGIC SECTION -->
+    <div class="card">
+      <h2 class="section-title">🧩 Digital Logic Design: ২০২৬ সালে দুইবার আসা K-Map ও লজিক গেট সমাধান</h2>
+      <div class="grid-2">
+        <div>
+          <h3 style="font-size: 1.05rem; margin-bottom: 6px; color: var(--primary);">প্রশ্ন ১: $F(A,B,C,D) = \Sigma m(0,3,5,7,8,10,11,12,13,14,15)$ সরলীকরণ</h3>
+          <p style="font-size: 0.9rem; color: var(--muted);">নিচের ৪-ভেরিয়েবল K-Map টেবিলটি সরাসরি পরীক্ষার খাতায় এঁকে গ্রুপিংগুলো লিখে দেবেন:</p>
+          <table class="kmap-table">
+            <thead>
+              <tr>
+                <th>AB \ CD</th>
+                <th>00 ($C'D'$)</th>
+                <th>01 ($C'D$)</th>
+                <th>11 ($CD$)</th>
+                <th>10 ($CD'$)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>00 ($A'B'$)</th>
+                <td class="kmap-1">1 <small>(0)</small></td>
+                <td class="kmap-0">0 <small>(1)</small></td>
+                <td class="kmap-1">1 <small>(3)</small></td>
+                <td class="kmap-0">0 <small>(2)</small></td>
+              </tr>
+              <tr>
+                <th>01 ($A'B$)</th>
+                <td class="kmap-0">0 <small>(4)</small></td>
+                <td class="kmap-1">1 <small>(5)</small></td>
+                <td class="kmap-1">1 <small>(7)</small></td>
+                <td class="kmap-0">0 <small>(6)</small></td>
+              </tr>
+              <tr>
+                <th>11 ($AB$)</th>
+                <td class="kmap-1">1 <small>(12)</small></td>
+                <td class="kmap-1">1 <small>(13)</small></td>
+                <td class="kmap-1">1 <small>(15)</small></td>
+                <td class="kmap-1">1 <small>(14)</small></td>
+              </tr>
+              <tr>
+                <th>10 ($AB'$)</th>
+                <td class="kmap-1">1 <small>(8)</small></td>
+                <td class="kmap-0">0 <small>(9)</small></td>
+                <td class="kmap-1">1 <small>(11)</small></td>
+                <td class="kmap-1">1 <small>(10)</small></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; flex-direction: column; justify-content: center; gap: 10px;">
+          <div class="fw-card">
+            <strong>K-Map গ্রুপিং ব্যাখ্যা:</strong>
+            <ul class="fw-step" style="font-size: 0.92rem;">
+              <li><strong>Quad 1 $(m_{12}, m_{13}, m_{14}, m_{15})$:</strong> ৩য় সারি সম্পূর্ণ $\rightarrow \mathbf{AB}$</li>
+              <li><strong>Quad 2 $(m_8, m_{10}, m_{12}, m_{14})$:</strong> নিচের ২ সারির ১ম ও ৪র্থ কলাম $\rightarrow \mathbf{AD'}$</li>
+              <li><strong>Quad 3 $(m_3, m_7, m_{11}, m_{15})$:</strong> ৩য় কলাম সম্পূর্ণ $\rightarrow \mathbf{CD}$</li>
+              <li><strong>Quad 4 $(m_5, m_7, m_{13}, m_{15})$:</strong> মাঝের চারটি ১ $\rightarrow \mathbf{BD}$</li>
+              <li><strong>Pair 1 $(m_0, m_8)$:</strong> ১ম কলামের ১ম ও ৪র্থ সারি $\rightarrow \mathbf{B'C'D'}$</li>
+            </ul>
+            <p style="margin-top: 8px; font-weight: 700; color: var(--primary);">চূড়ান্ত উত্তর: $F = AB + AD' + BD + CD + B'C'D'$</p>
+          </div>
+          <div class="fw-card" style="border-left-color: var(--secondary);">
+            <strong>প্রশ্ন ২ (2024 Exam): $Q = (A'B + BC(B + C)')'$ এবং $(A,B,C)=(1,0,1)$ হলে $Q$ কত?</strong>
+            <p style="font-size: 0.9rem; margin-top: 4px;">
+              মান বসিয়ে: $A=1 \implies A'=0$, $B=0$, $C=1$।<br>
+              • $A'B = 0 \cdot 0 = 0$<br>
+              • $BC(B+C)' = 0 \cdot 1 \cdot (0+1)' = 0$<br>
+              • অতএব, $Q = (0 + 0)' = 0' = \mathbf{1}$।
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISUAL BLOCK DIAGRAMS FOR REPEATED BIG QUESTIONS -->
+    <div class="card">
+      <h2 class="section-title">🏗️ ভিজ্যুয়াল আর্কিটেকচার ডায়াগ্রাম (পরীক্ষার খাতায় আঁকার জন্য)</h2>
+      
+      <!-- Diagram 1: Hadoop Pipeline -->
+      <h3 style="font-size: 1.1rem; color: var(--accent);">১. Big Data & Hadoop Analytics Pipeline (২০২৬ সালে ৪ বার এসেছে!)</h3>
+      <p style="font-size: 0.92rem; color: var(--muted);">ই-কমার্স বা ব্যাংকের রিয়েল-টাইম লগ, পেটাবাইট স্টোরেজ, রিকমেন্ডেশন ও মেশিন লার্নিং পাইপলাইনের প্রশ্ন আসলে নিচের ডায়াগ্রামটি এঁকে ৫টি কম্পোনেন্টের বর্ণনা দেবেন:</p>
+      
+      <div class="flow-container">
+        <div class="flow-box">
+          <strong>1. Apache Flume / Sqoop</strong>
+          <small>Data Ingestion<br>(Real-time Web/ATM Logs & DB)</small>
+        </div>
+        <span class="flow-arrow">➔</span>
+        <div class="flow-box">
+          <strong>2. HDFS</strong>
+          <small>Distributed Storage<br>(Petabyte-scale Fault-Tolerant)</small>
+        </div>
+        <span class="flow-arrow">➔</span>
+        <div class="flow-box">
+          <strong>3. Apache YARN</strong>
+          <small>Resource Mgmt<br>& Job Scheduling</small>
+        </div>
+        <span class="flow-arrow">➔</span>
+        <div class="flow-box">
+          <strong>4. MapReduce / Hive</strong>
+          <small>Batch Analytics<br>& Historical Query</small>
+        </div>
+        <span class="flow-arrow">➔</span>
+        <div class="flow-box">
+          <strong>5. HBase + Mahout</strong>
+          <small>Real-time Recommendation<br>& Scalable ML / Fraud</small>
+        </div>
+      </div>
+
+      <!-- Diagram 2: E-Banking Secure Web Server in DC -->
+      <h3 style="font-size: 1.1rem; color: var(--secondary); margin-top: 22px;">২. ব্যাংক ডেটা সেন্টারে E-Banking Web Server Security Architecture</h3>
+      <p style="font-size: 0.92rem; color: var(--muted);">ই-ব্যাংকিং সিকিউর করা বা DMZ/Firewall/WAF প্লেসমেন্টের প্রশ্ন আসলে এই ডায়াগ্রামটি আঁকবেন:</p>
+
+      <div class="flow-container">
+        <div class="flow-box" style="border-color: #64748b;">
+          <strong>Customer Browser</strong>
+          <small>HTTPS (TLS 1.3)<br>+ MFA / Token</small>
+        </div>
+        <span class="flow-arrow">➔</span>
+        <div class="flow-box" style="border-color: var(--danger);">
+          <strong>Edge NGFW + DDoS</strong>
+          <small>IPS/IDS & Traffic<br>Filtering</small>
+        </div>
+        <span class="flow-arrow">➔</span>
+        <div class="flow-box" style="border-color: var(--accent);">
+          <strong>WAF + Reverse Proxy</strong>
+          <small>DMZ Zone (Blocks<br>SQLi, XSS, CSRF)</small>
+        </div>
+        <span class="flow-arrow">➔</span>
+        <div class="flow-box" style="border-color: var(--primary);">
+          <strong>Internal Firewall</strong>
+          <small>VLAN Segmentation<br>& App Server</small>
+        </div>
+        <span class="flow-arrow">➔</span>
+        <div class="flow-box" style="border-color: var(--secondary);">
+          <strong>Core DB + SIEM</strong>
+          <small>AES-256 / TDE<br>& Daily 3-2-1 Backup</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNCOMMON / SCENARIO QUESTION FRAMEWORKS -->
+    <div class="card">
+      <h2 class="section-title">🛡️ আনকমন বা সিনারিও-ভিত্তিক প্রশ্নের উত্তর করার ৩টি মাস্টার ফ্রেমওয়ার্ক</h2>
+      <p style="margin-bottom: 16px; font-size: 0.95rem; color: var(--muted);">পরীক্ষায় অপরিচিত কোনো ব্যাংকিং সমস্যা বা সিনারিও প্রশ্ন আসলে ঘাবড়ে না গিয়ে নিচের প্রস্তুতকৃত পয়েন্টগুলো সাজিয়ে লিখে দেবেন:</p>
+
+      <div class="grid-3">
+        <!-- Framework 1 -->
+        <div class="fw-card sec">
+          <h3 style="font-size: 1.05rem; color: var(--danger);">ফ্রেমওয়ার্ক ১: সার্ভার থেকে অস্বাভাবিক ট্রাফিক বা সাইবার অ্যাটাক (Incident Response)</h3>
+          <ul class="fw-step" style="font-size: 0.9rem;">
+            <li><strong>সম্ভাব্য কারণ (Causes):</strong> Botnet/C2 ইনফেকশন, Data Exfiltration (ডেটা চুরি), Compromised Superuser Account বা Zero-Day Exploit।</li>
+            <li><strong>১. Containment (বিচ্ছিন্নকরণ):</strong> সার্ভারটি পাওয়ার অফ না করে (ফরেনসিক প্রমাণের জন্য) দ্রুত ফায়ারওয়াল/VLAN দিয়ে নেটওয়ার্ক থেকে Isolate করা।</li>
+            <li><strong>২. Investigation:</strong> SIEM, Firewall log, <code>netstat</code> ও প্রসেস চেক করে ক্ষতিকর IP ও পোর্ট শনাক্ত করা।</li>
+            <li><strong>৩. Eradication & Reset:</strong> ম্যালওয়্যার রিমুভ করা, সব অ্যাডমিন পাসওয়ার্ড/কী রিসেট করা ও সিকিউরিটি প্যাচ দেওয়া।</li>
+            <li><strong>৪. Recovery:</strong> সর্বশেষ ক্লিন ব্যাকআপ থেকে সিস্টেম রিস্টোর ও মনিটর করা।</li>
+          </ul>
+        </div>
+
+        <!-- Framework 2 -->
+        <div class="fw-card">
+          <h3 style="font-size: 1.05rem; color: var(--primary);">ফ্রেমওয়ার্ক ২: বায়োমেট্রিক ছাড়া অনলাইন ব্যাংকিং/OTP আরও নিরাপদ করার কৌশল</h3>
+          <ul class="fw-step" style="font-size: 0.9rem;">
+            <li><strong>SMS/Email OTP-এর দুর্বলতা:</strong> SIM Swapping, Phishing, SS7 অ্যাটাক ও ফিশিং লিংক।</li>
+            <li><strong>১. App-Based TOTP / Hardware Token:</strong> SMS-এর বদলে Google Authenticator বা RSA SecurID ব্যবহার করা।</li>
+            <li><strong>২. Device Binding & PKI:</strong> গ্রাহকের নির্দিষ্ট ডিভাইসের ক্রিপ্টোগ্রাফিক কী-এর সাথে অ্যাকাউন্ট বাইন্ড করা।</li>
+            <li><strong>৩. Risk-Based / Adaptive Auth:</strong> নতুন লোকেশন, নতুন IP বা বড় অংকের লেনদেনে অতিরিক্ত ভেরিফিকেশন চাওয়া।</li>
+            <li><strong>৪. Transaction Signing & Out-of-Band Push:</strong> অ্যাপের ভেতর এনক্রিপ্টেড পুশ নোটিফিকেশনে অ্যামাউন্ট ও প্রাপক দেখিয়ে অ্যাপ্রুভাল নেওয়া।</li>
+          </ul>
+        </div>
+
+        <!-- Framework 3 -->
+        <div class="fw-card cloud">
+          <h3 style="font-size: 1.05rem; color: var(--secondary);">ফ্রেমওয়ার্ক ৩: ব্যাংকের ডেটা সেন্টার ক্লাউডে মাইগ্রেশন প্ল্যান (Cloud Migration)</h3>
+          <ul class="fw-step" style="font-size: 0.9rem;">
+            <li><strong>১. Assessment & Compliance:</strong> অ্যাপ্লিকেশন অডিট, TCO হিসাব এবং বাংলাদেশ ব্যাংকের Data Residency ও কমপ্লায়েন্স যাচাই।</li>
+            <li><strong>২. Cloud Model & 6R Strategy:</strong> কোর ব্যাংকিংয়ের জন্য <strong>Hybrid/Private Cloud</strong> নির্বাচন এবং Rehost (Lift & Shift) বা Refactor ঠিক করা।</li>
+            <li><strong>৩. Security & Connectivity:</strong> IPsec VPN/Direct Connect, IAM (Least Privilege), KMS এনক্রিপশন ও WAF সেটআপ।</li>
+            <li><strong>৪. Phased Migration & Testing:</strong> প্রথমে Non-critical অ্যাপ সরানো, ডেটাবেস রেপ্লিকেশন, UAT ও DR Drill সম্পন্ন করা।</li>
+            <li><strong>৫. Cutover & Rollback Plan:</strong> মেইনটেন্যান্স উইন্ডোতে ফাইনাল সুইচওভার এবং ব্যর্থ হলে ফেরার জন্য <strong>Rollback Plan</strong> রাখা।</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK COMPARISON & SHORT THEORY TABLES -->
+    <div class="card">
+      <h2 class="section-title">⚡ এক নজরে শর্ট নোটস ও পার্থক্য (হুবহু কমন উপযোগী)</h2>
+      <div class="grid-2">
+        
+        <!-- Table 1: HTTP Status Codes -->
+        <div>
+          <h3 style="font-size: 1.05rem; margin-bottom: 8px; color: var(--primary);">১. Web Technology: HTTP Status Codes</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>কোড / ক্যাটাগরি</th>
+                <th>অর্থ ও রিয়েল-ওয়ার্ল্ড ব্যাংকিং/ওয়েব সিনারিও</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>2xx (Success)</strong><br><code>200</code>, <code>201</code>, <code>204</code></td>
+                <td>রিকোয়েস্ট সফল। <strong><code>204 No Content</code>:</strong> DELETE রিকোয়েস্ট সফল হয়েছে কিন্তু রেসপন্স বডিতে পাঠানোর মতো কোনো ডেটা নেই।</td>
+              </tr>
+              <tr>
+                <td><strong>3xx (Redirection)</strong><br><code>301</code>, <code>302</code></td>
+                <td><strong><code>301 Moved Permanently</code>:</strong> ওয়েবপেজ স্থায়ীভাবে নতুন URL-এ স্থানান্তরিত হয়েছে।</td>
+              </tr>
+              <tr>
+                <td><strong>4xx (Client Error)</strong><br><code>400</code>, <code>401</code>, <code>403</code>, <code>404</code></td>
+                <td>
+                  • <strong><code>400 Bad Request</code>:</strong> ক্লায়েন্টের পাঠানো JSON পেলোডে ব্র্যাকেট মিসিং বা সিনট্যাক্স ভুল।<br>
+                  • <strong><code>401 Unauthorized</code>:</strong> ইউজার লগইন বা অথেনটিকেট করেনি।<br>
+                  • <strong><code>403 Forbidden</code>:</strong> ইউজার লগইন করা আছে, কিন্তু সাধারণ ইউজার হয়ে <code>/admin/settings</code> অ্যাক্সেস করতে চাচ্ছে।
+                </td>
+              </tr>
+              <tr>
+                <td><strong>5xx (Server Error)</strong><br><code>500</code>, <code>502</code>, <code>503</code></td>
+                <td><strong><code>503 Service Unavailable</code>:</strong> সার্ভার ওভারলোডেড বা ডাউন/মেইনটেন্যান্সে আছে।</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table 2: Security & DB Quick Notes -->
+        <div>
+          <h3 style="font-size: 1.05rem; margin-bottom: 8px; color: var(--secondary);">২. Security, DBMS ও Maintenance মাস্টার কি-পয়েন্টস</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>বিষয়</th>
+                <th>পরীক্ষায় যা লিখতে হবে (Key Answer)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Data in Transit vs Data at Rest</strong></td>
+                <td>
+                  • <strong>In Transit (নেটওয়ার্কে চলাচলরত):</strong> ব্যবহৃত প্রযুক্তি হলো <code>TLS 1.3</code>, <code>HTTPS</code>, <code>IPsec VPN</code>, <code>SSH</code>।<br>
+                  • <strong>At Rest (ডিস্ক/ডাটাবেসে সংরক্ষিত):</strong> ব্যবহৃত প্রযুক্তি হলো <code>AES-256</code>, <code>TDE (Transparent Data Encryption)</code>, <code>BitLocker/LUKS</code>।
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Zero-Day Vulnerability</strong></td>
+                <td>সফটওয়্যারের এমন একটি দুর্বলতা যা ডেভেলপার/ভেন্ডরের কাছে এখনো অজানা এবং যার কোনো অফিসিয়াল প্যাচ (Fix) বের হয়নি। <strong>কেন Antivirus ব্যর্থ হয়?</strong> কারণ প্রচলিত অ্যান্টিভাইরাস <em>Known Malware Signature</em> মিলিয়ে কাজ করে, আর Zero-Day অ্যাটাকের কোনো পূর্বপরিচিত সিগনেচার ডাটাবেসে থাকে না।</td>
+              </tr>
+              <tr>
+                <td><strong>ACID & SQL Constraint</strong></td>
+                <td>
+                  • <strong>Atomicity:</strong> "All or Nothing"—আন্তঃব্যাংক ট্রান্সফারে এক ব্যাংক থেকে টাকা কাটলে অন্য ব্যাংকে জমা হতেই হবে, নাহলে পুরোটা Rollback হবে।<br>
+                  • <strong>Consistency:</strong> ট্রানজেকশনের আগে ও পরে মোট ব্যালেন্স সমান থাকবে ও স্কিমা রুল ভাঙবে না।<br>
+                  • <strong>SQL:</strong> <code>ALTER TABLE Savings_Accounts ADD CONSTRAINT chk_bal CHECK (current_balance >= 0);</code>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Preventive vs Corrective Maintenance</strong></td>
+                <td>
+                  • <strong>Preventive (প্রতিরোধমূলক):</strong> সমস্যা হওয়ার আগেই নিয়মিত চেকআপ (যেমন: প্রতি মাসে ডেটা সেন্টারের UPS ব্যাটারি টেস্ট, AC ফিল্টার পরিষ্কার ও সার্ভার প্যাচিং)।<br>
+                  • <strong>Corrective (সংশোধনমূলক):</strong> নষ্ট হওয়ার পর মেরামত করা (যেমন: RAID অ্যারের একটি নষ্ট হার্ডড্রাইভ বদলে নতুন ড্রাইভ লাগানো)।
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Audit Policy Violation (2026 Exam)</strong></td>
+                <td>
+                  • <strong>Superuser পাসওয়ার্ড শেয়ারিং:</strong> এটি <em>Non-repudiation, Accountability ও Least Privilege (RBAC)</em> পলিসির লঙ্ঘন।<br>
+                  • <strong>Daily-এর বদলে Weekly Backup:</strong> এটি <em>RPO (Recovery Point Objective) ও Business Continuity Policy</em>-র লঙ্ঘন (যার ফলে ৭ দিনের ডেটা হারানোর ঝুঁকি তৈরি হয়)।
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const checkboxes = document.querySelectorAll('.topic-check');
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+    const STORAGE_KEY = 'bank_it_3day_progress_v1';
+
+    function loadProgress() {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      checkboxes.forEach((cb, index) => {
+        if (saved.includes(index)) {
+          cb.checked = true;
+          cb.closest('.check-item').classList.add('done');
+        }
+      });
+      updateProgressBar();
+    }
+
+    function updateProgressBar() {
+      const total = checkboxes.length;
+      let checkedCount = 0;
+      const checkedIndices = [];
+
+      checkboxes.forEach((cb, index) => {
+        if (cb.checked) {
+          checkedCount++;
+          checkedIndices.push(index);
+          cb.closest('.check-item').classList.add('done');
+        } else {
+          cb.closest('.check-item').classList.remove('done');
+        }
+      });
+
+      const percent = Math.round((checkedCount / total) * 100);
+      progressFill.style.width = percent + '%';
+      progressText.textContent = `${percent}% সম্পন্ন (${checkedCount}/${total} টপিক)`;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(checkedIndices));
+    }
+
+    function resetProgress() {
+      if (confirm('আপনি কি আপনার চেকলিস্টের অগ্রগতি রিসেট করতে চান?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        checkboxes.forEach(cb => {
+          cb.checked = false;
+          cb.closest('.check-item').classList.remove('done');
+        });
+        updateProgressBar();
+      }
+    }
+
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', updateProgressBar);
+    });
+
+    loadProgress();
+  </script>
+</body>
+</html>

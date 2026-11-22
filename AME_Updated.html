@@ -64222,15 +64222,1349 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
         <div class="q"><b>6.</b> Explain Kafka and the publish–subscribe model. Where does it fit in a pipeline?</div>
         <div class="q"><b>7.</b> What are the challenges of Big Data (quality, storage, security, cost)?</div>
 
-        <h4 class="sub" id="qb8-2">৮.২ Hadoop Ecosystem</h4>
-        <div class="q"><b>1.</b> A financial services provider must handle massive streaming and historical log data for fraud analytics and ML-driven maintenance prediction. Identify five Hadoop ecosystem technologies and describe their roles.</div>
-        <div class="q"><b>2.</b> Design a scalable big data analytics pipeline for an e-commerce platform (real-time logs, petabyte-scale storage, batch and stream processing, near real-time recommendations, large-scale ML). From MapReduce, HDFS, YARN, HBase, ZooKeeper, Pig, Hive, Mahout, Chukwa, Cassandra, Avro, Oozie, Flume and Sqoop select five and explain the role of each.</div>
-        <div class="q"><b>3.</b> Explain HDFS architecture: NameNode, DataNode, Secondary NameNode, block size, replication and fault tolerance.</div>
-        <div class="q"><b>4.</b> Explain MapReduce with the word-count example and describe its phases.</div>
-        <div class="q"><b>5.</b> Explain YARN: ResourceManager, NodeManager and ApplicationMaster.</div>
-        <div class="q"><b>6.</b> What is the role of ZooKeeper?</div>
-        <div class="q"><b>7.</b> Compare Hive, Pig and HBase and say when to use each.</div>
-        <div class="q"><b>8.</b> Compare HBase and Cassandra.</div>
+        <!-- ==================== 8.2 HADOOP ECOSYSTEM (PART 1: Q1 - Q8) ==================== -->
+<h4 class="sub" id="qb8-2">৮.২ Hadoop Ecosystem</h4>
+
+<div class="q"><b>1.</b> A financial services provider must handle massive streaming and historical log data for fraud analytics and ML-driven maintenance prediction. Identify five Hadoop ecosystem technologies and describe their roles. <i>(10 Marks)</i></div>
+<div class="q"><b>2.</b> Design a scalable big data analytics pipeline for an e-commerce platform (real-time logs, petabyte-scale storage, batch and stream processing, near real-time recommendations, large-scale ML). From MapReduce, HDFS, YARN, HBase, ZooKeeper, Pig, Hive, Mahout, Chukwa, Cassandra, Avro, Oozie, Flume and Sqoop select five and explain the role of each. <i>(10 Marks — 2026-A &amp; 2026-B Exact Repeat!)</i></div>
+<div class="q"><b>3.</b> Explain HDFS architecture: NameNode, DataNode, Secondary NameNode, block size, replication and fault tolerance. <i>(10 Marks)</i></div>
+<div class="q"><b>4.</b> Explain MapReduce with the word-count example and describe its phases. <i>(10 Marks)</i></div>
+<div class="q"><b>5.</b> Explain YARN: ResourceManager, NodeManager and ApplicationMaster. <i>(10 Marks)</i></div>
+<div class="q"><b>6.</b> What is the role of ZooKeeper? <i>(10 Marks)</i></div>
+<div class="q"><b>7.</b> Compare Hive, Pig and HBase and say when to use each. <i>(10 Marks)</i></div>
+<div class="q"><b>8.</b> Compare HBase and Cassandra. <i>(10 Marks)</i></div>
+
+<!-- ===== INTRO & CONCEPT FOUNDATION ===== -->
+<div class="concept-box">
+  <p style="margin-bottom:.6rem">এই সেকশনটি (<code>৮.২ Hadoop Ecosystem</code>) আপনার পরীক্ষার জন্য <strong>সবচেয়ে গুরুত্বপূর্ণ "Luck-Factor" সেকশন</strong>—কারণ ২০২৬ সালের দুটি ব্যাংক আইটি পরীক্ষাতেই (<strong>2026-A এবং 2026-B</strong>) এখানকার <strong>১ ও ২ নম্বর প্রশ্নটি হুবহু রিপিট</strong> হয়েছে!</p>
+  <p style="margin-bottom:.8rem">আপনি যেহেতু প্রথমবার পড়ছেন এবং নামগুলো অচেনা লাগতে পারে, তাই আগে <strong>মাত্র ৫ মিনিটে একটি গল্পের মাধ্যমে পুরো ১৪টি Hadoop টুলের কাজ</strong> মাথার ভেতর গেঁথে নিন। এই গল্পটা বুঝলে পরের ১৬টি প্রশ্নের উত্তর আপনি নিজেই বানিয়ে লিখতে পারবেন!</p>
+
+  <div class="cb-title">💡 প্রথমে মূল কনসেপ্ট বুঝুন (গল্পের ছলে পুরো Hadoop Ecosystem)</div>
+
+  <div class="concept-item">
+    <span class="badge-n">১</span>
+    <div>
+      <strong>Hadoop জিনিসটা আসলে কী? (ব্যাংকের ভাউচার গোনার উদাহরণ)</strong>
+      <p style="margin:.3rem 0">ধরুন, বাংলাদেশ ব্যাংক হঠাৎ বলল—আজ রাতের মধ্যে ব্যাংকের <strong>১০ কোটি লেনদেনের রসিদ (Vouchers)</strong> গুনে বের করতে হবে কোন শাখায় কত টাকা জমা পড়েছে।</p>
+      <ul>
+        <li><strong>পুরনো পদ্ধতি (Supercomputer):</strong> আপনি বিশ্বের সবচেয়ে দ্রুতগতির ১ জন সুপার-হিসাবরক্ষককে আনলেন। কিন্তু একা ১০ কোটি রসিদ গুনতে তার ৭ দিন লেগে যাবে, আবার হঠাৎ তার মাথাব্যথা হলে (Server Crash) পুরো কাজ বন্ধ!</li>
+        <li><strong>Hadoop পদ্ধতি (Distributed Computing):</strong> আপনি ১ জন জিনিয়াসের বদলে <strong>১,০০০ জন সাধারণ কলেজ ছাত্রকে (Commodity Hardware/Servers)</strong> ভাড়া করলেন।
+          <ol class="steps" style="margin-top:.3rem">
+            <li>১০ কোটি রসিদকে ছোট ছোট বান্ডিলে (<strong>128 MB Blocks</strong>) ভাগ করে ১,০০০ ছাত্রের টেবিলে রেখে দিলেন। কোনো ছাত্র যাতে রসিদ হারিয়ে না ফেলে, তাই প্রতিটি বান্ডিলের <strong>৩টি করে ফটোকপি (Replication Factor = 3)</strong> ৩ জন আলাদা ছাত্রের কাছে রাখলেন। এই গোডাউন ব্যবস্থার নামই হলো <strong>HDFS (Hadoop Distributed File System)</strong>।</li>
+            <li>রুমের সামনে ১ জন <strong>হেড ক্লার্ক (NameNode)</strong> খাতা নিয়ে বসে থাকল—সে নিজে কোনো রসিদ রাখে না, শুধু খাতায় লিখে রাখে কোন বান্ডিল কোন ছাত্রের কাছে আছে (<strong>Metadata</strong>)। আর সাধারণ ছাত্রদের নাম হলো <strong>DataNode</strong>।</li>
+            <li>এবার প্রত্যেক ছাত্র নিজের টেবিলের বান্ডিল গুনল (<strong>Map Phase</strong>), আর শেষে সবাই মিলে শাখা অনুযায়ী মোট যোগফল বের করল (<strong>Reduce Phase</strong>)। এই প্রসেসিং কৌশলের নাম <strong>MapReduce</strong>!</li>
+          </ol>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept-item">
+    <span class="badge-n">২</span>
+    <div>
+      <strong>১৪টি Hadoop টুলের নাম মনে রাখার "৫ তলা ব্যাংক ভবন" কৌশল</strong>
+      <p style="margin:.3rem 0">পরীক্ষায় ১৪টি অদ্ভুত নাম দেখে যাতে মাথা না ঘোরে, তাই এদেরকে একটি <strong>৫ তলা ভবনের কর্মচারী</strong> হিসেবে কল্পনা করুন:</p>
+
+<pre class="diagram">+-----------------------------------------------------------------------+
+| 5th Floor: BRAIN &amp; MANAGERS (মেশিন লার্নিং, রুটিন ও পুলিশ)            |
+| • Mahout (ML/AI Brain) • Oozie (Routine Scheduler) • ZooKeeper (Police)|
++-----------------------------------------------------------------------+
+                                   ^
++-----------------------------------------------------------------------+
+| 4th Floor: ANALYSTS (রিপোর্ট ও কুয়েরি করার মানুষ)                      |
+| • Hive (SQL যারা জানে - HiveQL)   • Pig (যারা স্ক্রিপ্ট লেখে - Pig Latin)|
++-----------------------------------------------------------------------+
+                                   ^
++-----------------------------------------------------------------------+
+| 3rd Floor: FACTORY &amp; HR (প্রসেসিং ও রিসোর্স বণ্টন)                     |
+| • YARN (HR Manager: CPU/RAM দেয়) • MapReduce (Batch Processing শ্রমিক)|
++-----------------------------------------------------------------------+
+                                   ^
++-----------------------------------------------------------------------+
+| 2nd Floor: GODOWN / STORAGE (ডেটা জমা রাখার জায়গা)                     |
+| • HDFS (ফাইল গোডাউন) • HBase / Cassandra (Real-time NoSQL Table)      |
+| • Avro / Parquet / ORC (ডেটা প্যাকিং করার কার্টন বা Serialization)     |
++-----------------------------------------------------------------------+
+                                   ^
++-----------------------------------------------------------------------+
+| 1st Floor: GATEKEEPERS (বাইরে থেকে ডেটা ভেতরে আনার দারোয়ান)             |
+| • Flume (অগোছালো Live Log আনে) • Sqoop (SQL DB থেকে ডেটা আনে)        |
+| • Chukwa (সার্ভারের Health/Hardware Log আনে)                           |
++-----------------------------------------------------------------------+</pre>
+
+      <!-- SVG: 5-Story Bank Building of Hadoop Ecosystem -->
+      <svg class="clock-svg" viewBox="0 0 760 320" role="img" aria-label="5-Story Hadoop Ecosystem Architecture">
+        <rect x="0" y="0" width="760" height="320" rx="10" fill="#f7f4ee"/>
+        <text x="380" y="24" text-anchor="middle" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="13" font-weight="700" fill="#0c1e33">৫ তলা ব্যাংক ভবন — ১৪টি Hadoop Ecosystem টুলের ভিজ্যুয়াল ম্যাপ</text>
+
+        <!-- 5th Floor -->
+        <rect x="40" y="36" width="680" height="46" rx="6" fill="#0c1e33" stroke="#c4a35a" stroke-width="1.5"/>
+        <text x="55" y="55" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="11" font-weight="700" fill="#c4a35a">5th Floor: BRAIN &amp; MANAGERS (মেশিন লার্নিং, রুটিন ও পুলিশ)</text>
+        <text x="55" y="72" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="11" fill="#ffffff">• Mahout (ML/AI Brain)   |   • Oozie (Routine Scheduler)   |   • ZooKeeper (Coordination Police)</text>
+
+        <!-- 4th Floor -->
+        <rect x="40" y="90" width="680" height="46" rx="6" fill="#142d4c" stroke="#c4a35a" stroke-width="1.2"/>
+        <text x="55" y="109" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="11" font-weight="700" fill="#e5d5a7">4th Floor: ANALYSTS (রিপোর্ট ও কুয়েরি করার মানুষ)</text>
+        <text x="55" y="126" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="11" fill="#ffffff">• Hive (SQL যারা জানে — HiveQL)   |   • Pig (যারা স্ক্রিপ্ট লেখে — Pig Latin)</text>
+
+        <!-- 3rd Floor -->
+        <rect x="40" y="144" width="680" height="46" rx="6" fill="#1e3f66" stroke="#c4a35a" stroke-width="1.2"/>
+        <text x="55" y="163" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="11" font-weight="700" fill="#e5d5a7">3rd Floor: FACTORY &amp; HR (প্রসেসিং ও রিসোর্স বণ্টন)</text>
+        <text x="55" y="180" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="11" fill="#ffffff">• YARN (HR Manager: CPU/RAM দেয়)   |   • MapReduce (Batch Processing শ্রমিক)</text>
+
+        <!-- 2nd Floor -->
+        <rect x="40" y="198" width="680" height="46" rx="6" fill="#2b547e" stroke="#c4a35a" stroke-width="1.2"/>
+        <text x="55" y="217" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="11" font-weight="700" fill="#e5d5a7">2nd Floor: GODOWN / STORAGE (ডেটা জমা রাখার জায়গা)</text>
+        <text x="55" y="234" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="11" fill="#ffffff">• HDFS (ফাইল গোডাউন)   |   • HBase / Cassandra (Real-time NoSQL)   |   • Avro / Parquet / ORC (Serialization)</text>
+
+        <!-- 1st Floor -->
+        <rect x="40" y="252" width="680" height="48" rx="6" fill="#7a1c1c" stroke="#c4a35a" stroke-width="1.5"/>
+        <text x="55" y="271" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="11" font-weight="700" fill="#e5d5a7">1st Floor: GATEKEEPERS (বাইরে থেকে ডেটা ভেতরে আনার দারোয়ান)</text>
+        <text x="55" y="289" font-family="IBM Plex Sans,Hind Siliguri,sans-serif" font-size="11" fill="#ffffff">• Flume (অগোছালো Live Log আনে)   |   • Sqoop (SQL DB থেকে ডেটা আনে)   |   • Chukwa (সার্ভারের Health/Hardware Log আনে)</text>
+      </svg>
+
+      <ul style="margin-top:.5rem">
+        <li><strong>১ম তলা (দারোয়ান — Data Ingestion):</strong>
+          <ul>
+            <li><strong>Flume:</strong> পানির পাইপের (Flume) মতো ওয়েবসাইটের ক্লিক, এটিএম লগ বা লাইভ স্ট্রিমিং ডেটা টেনে HDFS-এ ঢোকায়।</li>
+            <li><strong>Sqoop (<code>SQL-to-Hadoop</code>):</strong> ব্যাংকের পুরনো রিলেশনাল ডেটাবেস (Oracle/MySQL) থেকে টেবিলের ডেটা HDFS-এ আনে।</li>
+            <li><strong>Chukwa:</strong> বড় ডেটা সেন্টারের সার্ভারগুলোর হার্ডওয়্যার ও সিস্টেম লগ সংগ্রহ করে।</li>
+          </ul>
+        </li>
+        <li><strong>২য় তলা (গোডাউন — Storage &amp; NoSQL):</strong>
+          <ul>
+            <li><strong>HDFS:</strong> বিশাল ফাইল ভেঙে ব্লক আকারে জমা রাখে (কিন্তু এতে রিয়েল-টাইমে ১টি লাইন এডিট করা যায় না—Batch only)।</li>
+            <li><strong>HBase / Cassandra:</strong> যখন ওয়েবসাইটে বা এটিএম-এ <strong>মিলিসেকেন্ডের মধ্যে (Real-time Random Read/Write)</strong> ডেটা খোঁজা বা আপডেট করা লাগে, তখন এই NoSQL ডেটাবেস ব্যবহৃত হয়।</li>
+          </ul>
+        </li>
+        <li><strong>৩য় তলা (এইচআর ও শ্রমিক — Resource &amp; Processing):</strong>
+          <ul>
+            <li><strong>YARN:</strong> কোন কাজে কতটুকু RAM আর CPU লাগবে তা ভাগ করে দেয়।</li>
+            <li><strong>MapReduce:</strong> বিশাল পুরনো ডেটা একসাথে প্রসেস (Batch Processing) করে।</li>
+          </ul>
+        </li>
+        <li><strong>৪র্থ তলা (অ্যানালিস্ট — Query &amp; Scripting):</strong>
+          <ul>
+            <li><strong>Hive:</strong> জাভা কোড না লিখে সাধারণ <strong>SQL (<code>SELECT * FROM...</code>)</strong> লিখে বিগ ডেটা থেকে রিপোর্ট বের করার টুল।</li>
+            <li><strong>Pig:</strong> ডেটা ক্লিনিং ও ETL পাইপলাইন বানানোর স্ক্রিপ্টিং টুল (<code>Pig Latin</code>)।</li>
+          </ul>
+        </li>
+        <li><strong>৫ম তলা (মস্তিষ্ক ও ম্যানেজার — ML &amp; Coordination):</strong>
+          <ul>
+            <li><strong>Mahout:</strong> মেশিন লার্নিং লাইব্রেরি—কোন কাস্টমার কী কিনবে (<strong>Recommendation</strong>) বা কোন এটিএম কবে নষ্ট হবে (<strong>Predictive Maintenance</strong>) তা ভবিষ্যদ্বাণী করে।</li>
+            <li><strong>Oozie:</strong> ঘড়ির অ্যালার্মের মতো—রাত ১২টায় প্রথমে Sqoop চলবে, তারপর MapReduce চলবে, তারপর Hive চলবে—এই ধারাবাহিক রুটিন (<strong>Workflow</strong>) পরিচালনা করে।</li>
+            <li><strong>ZooKeeper:</strong> ১০০০টি সার্ভারের মধ্যে কে নেতা (Master), কে জীবিত আছে আর কে ডাউন হয়ে গেছে তা পাহারা দেয়।</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 1: QUESTIONS 1 TO 8 (10-Mark Exam Standard Answers) ==================== -->
+
+<!-- ===== Q1 ===== -->
+<article class="qa" id="qb8-2-q1">
+  <div class="qa-head">
+    <span class="qn-badge">১</span>
+    <h5>A financial services provider must handle massive streaming and historical log data for fraud analytics and ML-driven maintenance prediction. Identify five Hadoop ecosystem technologies and describe their roles. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box" style="margin:.6rem 0">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> এটিএম বুথ থেকে লাইভ লগ পাইপ দিয়ে আসছে (<strong>Flume</strong>), গোডাউনে জমা হচ্ছে (<strong>HDFS</strong>), রিয়েল-টাইম ফ্রড চেক হচ্ছে (<strong>HBase</strong>), রিসোর্স ম্যানেজার কাজ ভাগ করছে (<strong>YARN</strong>), আর জ্যোতিষী মাহুত (<strong>Mahout</strong>) মেশিন নষ্ট হওয়া ও জালিয়াতি ধরছে!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>F-H-Y-H-M</code></strong> (<strong>F</strong>lume &rarr; <strong>H</strong>DFS &rarr; <strong>Y</strong>ARN/MapReduce &rarr; <strong>H</strong>Base &rarr; <strong>M</strong>ahout).</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Real-Time Log Ingestion</code>, <code>Petabyte Fault-Tolerant Storage</code>, <code>Random Read/Write NoSQL</code>, <code>Cluster Resource Negotiation</code>, <code>Collaborative Filtering &amp; Anomaly Detection</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <p>একটি ব্যাংক বা আর্থিক প্রতিষ্ঠানের দুটি কাজ করতে হবে: (১) এটিএম ও মোবাইল ব্যাংকিং থেকে প্রতি সেকেন্ডে আসা লাইভ লগ এবং পুরনো লেনদেন বিশ্লেষণ করে <strong>জালিয়াতি ধরা (Fraud Analytics)</strong>, এবং (২) এটিএম বা সার্ভার কবে নষ্ট হতে পারে তা <strong>মেশিন লার্নিং দিয়ে আগেভাগেই বলে দেওয়া (ML-driven Maintenance Prediction)</strong>। এর জন্য আমরা নিচের ৫টি Hadoop টুল বেছে নেব:</p>
+    <ol class="steps">
+      <li><strong>Apache Flume (ডেটা সংগ্রহ):</strong> সারাদেশের হাজার হাজার এটিএম বুথ, পিওএস (POS) মেশিন এবং সার্ভার থেকে প্রতি সেকেন্ডে যে স্ট্রিমিং লগ তৈরি হচ্ছে, Flume সেগুলোকে রিয়েল-টাইমে সংগ্রহ করে হ্যাডুপে নিয়ে আসবে। <i>(চাইলে সার্ভার হার্ডওয়্যার লগের জন্য <strong>Chukwa</strong> বা কোর ব্যাংকিং ডেটাবেসের জন্য <strong>Sqoop</strong>-ও উল্লেখ করতে পারেন)</i>।</li>
+      <li><strong>HDFS — Hadoop Distributed File System (ঐতিহাসিক ডেটা সংরক্ষণ):</strong> বিগত ৫–১০ বছরের শত শত টেরাবাইট বা পেটাবাইট ঐতিহাসিক লেনদেনের লগগুলোকে ব্লক আকারে (৩টি করে কপি রেখে) নিরাপদে জমা রাখবে।</li>
+      <li><strong>Apache HBase (রিয়েল-টাইম ফ্রড লুকআপ):</strong> HDFS-এ ডেটা শুধু জমানো যায়, কিন্তু কার্ড সোয়াইপ করার সাথে সাথে ১ সেকেন্ডের মধ্যে কাস্টমারের প্রোফাইল চেক করে কার্ড ব্লক করতে হলে <strong>HBase</strong> (NoSQL Database) লাগবে, কারণ এটি রিয়েল-টাইমে ডেটা পড়তে ও লিখতে পারে।</li>
+      <li><strong>Apache YARN &amp; MapReduce (রিসোর্স ও ব্যাচ প্রসেসিং):</strong> <strong>YARN</strong> ক্লাস্টারের CPU ও RAM বণ্টন করবে যাতে রিয়েল-টাইম ফ্রড চেকিং এবং ব্যাকগ্রাউন্ডের ভারী হিসাব একসাথে নির্বিঘ্নে চলে, আর <strong>MapReduce</strong> পুরনো লগ প্রসেস করে ফ্রডের প্যাটার্ন বের করবে।</li>
+      <li><strong>Apache Mahout (মেশিন লার্নিং ও প্রেডিক্টিভ মেইনটেন্যান্স):</strong> এটি হ্যাডুপের মেশিন লার্নিং ইঞ্জিন। এটি ঐতিহাসিক লেনদেনের ওপর ক্লাসিফিকেশন ও অ্যানোমালি ডিটেকশন চালিয়ে <strong>জালিয়াতি (Fraud)</strong> ধরবে এবং সার্ভার/এটিএম-এর এরর লগ বিশ্লেষণ করে কোন মেশিনটি কবে নষ্ট হতে পারে (<strong>Predictive Maintenance</strong>) তা পূর্বাভাস দেবে।</li>
+    </ol>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>1. Architectural Overview for Financial Analytics</strong></p>
+    <p>A modern financial services provider requires a <strong>Lambda-style Big Data Architecture</strong> capable of ingesting high-velocity streaming logs (ATM, POS, Mobile Banking, and hardware telemetry) alongside petabytes of historical transaction records. To achieve both <strong>real-time fraud analytics</strong> and <strong>ML-driven predictive maintenance</strong>, the following <strong>five (5) Hadoop ecosystem technologies</strong> are selected:</p>
+
+<pre class="diagram">[ATM / POS / Server Logs] 
+        |
+        v
+(1) [Apache Flume] ----(Stream Ingestion)----+
+                                             |
+                                             v
+                                    (2) [ HDFS ] (Historical Log Storage)
+                                         /    \
+              +-------------------------+      +-------------------------+
+              | (Real-Time Lookup)                                       | (Resource &amp; Batch)
+              v                                                          v
+     (3) [Apache HBase]                                      (4) [YARN &amp; MapReduce]
+     (Low-Latency Fraud State)                                (Feature Extraction)
+              \                                                          /
+               +------------------------+      +------------------------+
+                                         \    /
+                                          v  v
+                                 (5) [Apache Mahout]
+                        (Fraud Classification &amp; ML Maintenance)</pre>
+
+    <!-- SVG: Financial Analytics Pipeline -->
+    <svg class="clock-svg" viewBox="0 0 760 220" role="img" aria-label="Financial Fraud Analytics and Predictive Maintenance Pipeline">
+      <rect x="0" y="0" width="760" height="220" rx="10" fill="#f7f4ee"/>
+      <text x="380" y="22" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12.5" font-weight="700" fill="#0c1e33">Financial Services Big Data Pipeline (F-H-Y-H-M Architecture)</text>
+
+      <!-- Source -->
+      <rect x="16" y="80" width="115" height="65" rx="6" fill="#7a1c1c"/>
+      <text x="73" y="103" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#e5d5a7">ATM / POS /</text>
+      <text x="73" y="118" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#ffffff">Server Logs</text>
+      <text x="73" y="134" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">Live + Telemetry</text>
+
+      <line x1="131" y1="112" x2="162" y2="112" stroke="#c4a35a" stroke-width="2.5"/>
+
+      <!-- 1. Flume -->
+      <rect x="162" y="80" width="120" height="65" rx="6" fill="#0c1e33" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="222" y="102" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="700" fill="#c4a35a">1. Apache Flume</text>
+      <text x="222" y="118" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">Source &rarr; Channel</text>
+      <text x="222" y="132" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#e5d5a7">&rarr; Sink Ingestion</text>
+
+      <line x1="282" y1="112" x2="314" y2="112" stroke="#c4a35a" stroke-width="2.5"/>
+
+      <!-- 2. HDFS -->
+      <rect x="314" y="80" width="125" height="65" rx="6" fill="#142d4c" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="376" y="102" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="700" fill="#c4a35a">2. HDFS</text>
+      <text x="376" y="118" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">Petabyte Storage</text>
+      <text x="376" y="132" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#e5d5a7">128MB Blocks (RF=3)</text>
+
+      <!-- Branches to HBase and YARN -->
+      <path d="M 439 98 L 475 65" stroke="#c4a35a" stroke-width="2" fill="none"/>
+      <path d="M 439 126 L 475 158" stroke="#c4a35a" stroke-width="2" fill="none"/>
+
+      <!-- 3. HBase -->
+      <rect x="475" y="34" width="130" height="60" rx="6" fill="#1e3f66" stroke="#c4a35a" stroke-width="1.2"/>
+      <text x="540" y="54" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#e5d5a7">3. Apache HBase</text>
+      <text x="540" y="69" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">Real-Time NoSQL</text>
+      <text x="540" y="83" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">Instant Fraud Lookup</text>
+
+      <!-- 4. YARN & MapReduce -->
+      <rect x="475" y="128" width="130" height="60" rx="6" fill="#2b547e" stroke="#c4a35a" stroke-width="1.2"/>
+      <text x="540" y="148" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#e5d5a7">4. YARN &amp; MR</text>
+      <text x="540" y="163" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">CPU/RAM Scheduling</text>
+      <text x="540" y="177" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">&amp; Feature Extraction</text>
+
+      <!-- Converge to 5. Mahout -->
+      <path d="M 605 65 L 632 98" stroke="#c4a35a" stroke-width="2" fill="none"/>
+      <path d="M 605 158 L 632 126" stroke="#c4a35a" stroke-width="2" fill="none"/>
+
+      <rect x="632" y="75" width="114" height="75" rx="6" fill="#0c1e33" stroke="#c4a35a" stroke-width="2"/>
+      <text x="689" y="96" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#c4a35a">5. Apache Mahout</text>
+      <text x="689" y="112" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#ffffff">• Fraud Detection</text>
+      <text x="689" y="126" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#ffffff">• ML Predictive</text>
+      <text x="689" y="139" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">Maintenance</text>
+    </svg>
+
+    <p><strong>2. Selection and Roles of Five Hadoop Ecosystem Technologies</strong></p>
+
+    <p><strong>① Apache Flume — <i>High-Throughput Streaming Log Ingestion</i></strong></p>
+    <ul>
+      <li><strong>Role in the Pipeline:</strong> Financial systems generate millions of continuous event logs per second from ATM switches, payment gateways, firewall syslog servers, and hardware sensors. <strong>Apache Flume</strong> is a distributed, reliable service designed to efficiently collect, aggregate, and move large amounts of streaming log data into HDFS and HBase.</li>
+      <li><strong>Mechanism:</strong> Using a decoupled <strong>Source &rarr; Channel &rarr; Sink</strong> architecture with transaction-based delivery guarantees, Flume ensures zero log loss even during peak banking hours. <i>(Note: <strong>Apache Sqoop</strong> can complement Flume to import structured customer data from Core Banking RDBMS).</i></li>
+    </ul>
+
+    <p><strong>② HDFS (Hadoop Distributed File System) — <i>Petabyte-Scale Historical Storage</i></strong></p>
+    <ul>
+      <li><strong>Role in the Pipeline:</strong> Fraud detection models and maintenance algorithms require years of historical transaction logs and hardware failure telemetry for training. <strong>HDFS</strong> provides fault-tolerant, high-throughput distributed storage across commodity servers.</li>
+      <li><strong>Mechanism:</strong> HDFS splits massive log files into <code>128 MB</code> blocks and replicates each block across three DataNodes (<strong>Replication Factor = 3</strong>), ensuring high availability and disaster resilience for compliance and audit trails.</li>
+    </ul>
+
+    <p><strong>③ Apache HBase — <i>Real-Time Random Access for Fraud Scoring</i></strong></p>
+    <ul>
+      <li><strong>Role in the Pipeline:</strong> While HDFS excels at sequential batch scans, it cannot perform millisecond-level random lookups when a customer swipes a credit card. <strong>Apache HBase</strong> is a distributed, column-oriented NoSQL database built on top of HDFS that provides <strong>real-time random read/write access</strong>.</li>
+      <li><strong>Mechanism:</strong> HBase stores each customer's recent transaction velocity, geolocation history, and active risk score, enabling the fraud engine to flag or block a suspicious transaction in milliseconds.</li>
+    </ul>
+
+    <p><strong>④ Apache YARN (with MapReduce) — <i>Cluster Resource Management &amp; Batch Feature Engineering</i></strong></p>
+    <ul>
+      <li><strong>Role in the Pipeline:</strong> <strong>YARN (Yet Another Resource Negotiator)</strong> acts as the central operating system of the Hadoop cluster. It dynamically allocates CPU cores and RAM containers across competing workloads so that urgent fraud queries are never starved by heavy background analytics.</li>
+      <li><strong>Mechanism:</strong> Running atop YARN, <strong>MapReduce</strong> processes multi-terabyte historical logs in parallel to extract statistical features (e.g., average daily withdrawal per ATM, mean time between hardware voltage drops).</li>
+    </ul>
+
+    <p><strong>⑤ Apache Mahout — <i>Scalable Machine Learning for Fraud &amp; Predictive Maintenance</i></strong></p>
+    <ul>
+      <li><strong>Role in the Pipeline:</strong> <strong>Apache Mahout</strong> provides distributed machine learning algorithms (Classification, Clustering, and Anomaly Detection) that execute directly over massive datasets stored in HDFS.</li>
+      <li><strong>Dual Financial Application:</strong>
+        <ol class="steps">
+          <li><strong>Fraud Analytics:</strong> Uses Random Forests, Logistic Regression, and K-Means clustering to identify anomalous spending patterns and zero-day money laundering rings.</li>
+          <li><strong>ML-Driven Predictive Maintenance:</strong> Analyzes historical ATM hardware error codes, thermal logs, and cash-dispenser jam frequencies to predict component failure <i>before</i> an outage occurs, minimizing ATM downtime.</li>
+        </ol>
+      </li>
+    </ul>
+  </div>
+</article>
+
+<!-- ===== Q2 ===== -->
+<article class="qa" id="qb8-2-q2">
+  <div class="qa-head">
+    <span class="qn-badge">২</span>
+    <span class="exam-tag">2026-A &amp; 2026-B Exact Repeat!</span>
+    <h5>Design a scalable big data analytics pipeline for an e-commerce platform (real-time logs, petabyte-scale storage, batch and stream processing, near real-time recommendations, large-scale ML). From MapReduce, HDFS, YARN, HBase, ZooKeeper, Pig, Hive, Mahout, Chukwa, Cassandra, Avro, Oozie, Flume and Sqoop select five and explain the role of each. <i>(10 Marks — 2026-A &amp; 2026-B Exact Repeat!)</i></h5>
+  </div>
+
+  <div class="concept-box" style="margin:.6rem 0">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> ই-কমার্স ওয়েবসাইটে কাস্টমারের ক্লিক পাইপ দিয়ে ঢুকছে (<strong>Flume</strong>), গোডাউনে জমা হচ্ছে (<strong>HDFS</strong>), ফ্যাক্টরিতে প্রসেস হচ্ছে (<strong>YARN/MapReduce</strong>), লাইভ কার্ট ও কুয়েরি চলছে (<strong>HBase/Hive</strong>), আর কাস্টমারকে পরের প্রোডাক্ট সাজেস্ট করছে (<strong>Mahout</strong>)!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>F-H-Y-H-M</code></strong> (<strong>F</strong>lume &rarr; <strong>H</strong>DFS &rarr; <strong>Y</strong>ARN &rarr; <strong>H</strong>Base &rarr; <strong>M</strong>ahout).</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Clickstream Ingestion</code>, <code>Distributed Block Storage</code>, <code>Multi-Tenant Resource Scheduling</code>, <code>Low-Latency Serving Layer</code>, <code>Collaborative Filtering Recommendation</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <p>এই প্রশ্নটি ২০২৬ সালের দুটি ব্যাংক পরীক্ষায় হুবহু এসেছে! প্রশ্নে ১৪টি টুলের নাম দিয়ে সেখান থেকে <strong>যেকোনো ৫টি</strong> বেছে নিয়ে একটি ই-কমার্স সাইটের (যেমন Amazon বা Daraz) ৫টি কাজের জন্য পাইপলাইন ডিজাইন করতে বলেছে:</p>
+    <ol class="steps">
+      <li><strong>রিয়েল-টাইম লগ সংগ্রহ (Real-time Logs) &rArr; <code>Flume</code>:</strong> ই-কমার্স সাইটে লক্ষ লক্ষ ইউজার কোন প্রোডাক্টে ক্লিক করছে, কী সার্চ করছে (Clickstream logs)—সেগুলো রিয়েল-টাইমে সংগ্রহ করে পাইপলাইনে ঢোকানোর জন্য আমরা <strong>Flume</strong> নেব।</li>
+      <li><strong>পেটাবাইট স্কেল স্টোরেজ (Petabyte-scale Storage) &rArr; <code>HDFS</code>:</strong> কোটি কোটি প্রোডাক্টের ছবি, রিভিউ, ক্লিক লগ ও অর্ডারের ইতিহাস জমা রাখার জন্য মূল স্টোরেজ হিসেবে <strong>HDFS</strong> নেব।</li>
+      <li><strong>ব্যাচ ও স্ট্রিম প্রসেসিং রিসোর্স ম্যানেজমেন্ট (Batch &amp; Stream Processing) &rArr; <code>YARN</code> (বা <code>MapReduce</code>):</strong> ক্লাস্টারের হাজার হাজার সার্ভারে একই সাথে ব্যাচ প্রসেসিং এবং স্ট্রিম প্রসেসিং চালানোর জন্য রিসোর্স ও জব শিডিউলার হিসেবে <strong>YARN</strong> (বা ব্যাচ প্রসেসিং ইঞ্জিন হিসেবে <strong>MapReduce</strong>) নেব।</li>
+      <li><strong>নিয়ার রিয়েল-টাইম রিকমেন্ডেশন সার্ভিং (Near Real-time Recommendations) &rArr; <code>HBase</code>:</strong> কাস্টমার যখন পেজ ব্রাউজ করছে, তখন মাত্র কয়েক মিলিসেকেন্ডের মধ্যে তার শপিং কার্ট ও প্রস্তুতকৃত প্রোডাক্ট সাজেশন স্ক্রিনে দেখানোর জন্য দ্রুতগতির NoSQL ডেটাবেস <strong>HBase</strong> নেব।</li>
+      <li><strong>লার্জ-স্কেল মেশিন লার্নিং (Large-scale ML) &rArr; <code>Mahout</code>:</strong> কোটি কোটি কাস্টমারের কেনাকাটার ইতিহাস বিশ্লেষণ করে <strong>"যারা মোবাইল কিনেছে তারা ইয়ারফোনও কিনেছে" (Collaborative Filtering)</strong>—এই মেশিন লার্নিং মডেল তৈরির জন্য <strong>Mahout</strong> নেব।</li>
+    </ol>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>1. End-to-End E-Commerce Big Data Pipeline Architecture</strong></p>
+    <p>To satisfy the five core requirements of a hyperscale e-commerce platform—<strong>(i) real-time clickstream ingestion, (ii) petabyte-scale storage, (iii) batch/stream resource processing, (iv) near real-time recommendation serving, and (v) large-scale machine learning</strong>—we select <strong>Flume, HDFS, YARN, HBase, and Mahout</strong> from the given fourteen technologies:</p>
+
+<pre class="diagram">[User Clickstreams / App Logs]
+              |
+              v
+   1. [ Apache Flume ]      (Real-Time Log Ingestion Layer)
+              |
+              v
+   2. [     HDFS     ]      (Petabyte-Scale Distributed Storage Layer)
+              |
+              v
+   3. [ Apache YARN  ]      (Batch &amp; Stream Resource Management Layer)
+        /           \
+       v             v
+4. [Apache Mahout]  5. [Apache HBase]
+(Large-Scale ML     (Near Real-Time Serving Layer for
+ Collaborative       User Profiles, Carts &amp; Instant
+ Filtering)          Product Recommendations)</pre>
+
+    <p><strong>2. Justification and Role of the Five Selected Technologies</strong></p>
+
+    <div class="trace-wrap">
+      <table class="mini">
+        <thead>
+          <tr>
+            <th>Pipeline Stage</th>
+            <th>Selected Tool</th>
+            <th>Primary Role in the E-Commerce Platform</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Real-Time Log Ingestion</strong></td>
+            <td><strong>Apache Flume</strong></td>
+            <td>Collects and aggregates high-velocity user clickstreams, search queries, and page-view logs in real time.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Petabyte-Scale Storage</strong></td>
+            <td><strong>HDFS</strong></td>
+            <td>Provides fault-tolerant, distributed block storage for petabytes of raw logs, order histories, and product catalogs.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Batch &amp; Stream Processing</strong></td>
+            <td><strong>Apache YARN</strong></td>
+            <td>Dynamically schedules CPU/RAM containers across the cluster to run both batch jobs (MapReduce) and stream engines.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Large-Scale Machine Learning</strong></td>
+            <td><strong>Apache Mahout</strong></td>
+            <td>Trains scalable Collaborative Filtering and clustering models on historical purchases to generate recommendations.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Near Real-Time Serving</strong></td>
+            <td><strong>Apache HBase</strong></td>
+            <td>Delivers millisecond-latency random read/write access to serve personalized recommendations to live shoppers.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>① Apache Flume (Real-Time Log Collection Layer)</strong></p>
+    <ul>
+      <li><strong>Why Selected:</strong> An e-commerce website generates massive unstructured event streams (product views, hover time, cart additions, and mobile app telemetry).</li>
+      <li><strong>Role:</strong> <strong>Flume</strong> agents deployed on web servers continuously capture these streaming logs via in-memory/file channels and write them reliably into HDFS and HBase without slowing down the customer-facing web application.</li>
+    </ul>
+
+    <p><strong>② HDFS — Hadoop Distributed File System (Petabyte-Scale Storage Layer)</strong></p>
+    <ul>
+      <li><strong>Why Selected:</strong> Storing petabytes of multi-year clickstreams and order records on traditional SAN/NAS arrays is prohibitively expensive.</li>
+      <li><strong>Role:</strong> <strong>HDFS</strong> scales horizontally across thousands of low-cost commodity servers. By breaking data into <code>128 MB</code> / <code>256 MB</code> blocks with 3-way replication, it guarantees high aggregate I/O bandwidth and zero data loss even if multiple disk drives fail simultaneously.</li>
+    </ul>
+
+    <p><strong>③ Apache YARN (Batch &amp; Stream Processing Resource Layer)</strong></p>
+    <ul>
+      <li><strong>Why Selected:</strong> An e-commerce platform must run nightly batch aggregations alongside continuous near real-time processing on the same hardware cluster.</li>
+      <li><strong>Role:</strong> <strong>YARN</strong> decouples resource management from the processing model. Its <strong>ResourceManager</strong> and <strong>NodeManagers</strong> allocate isolated containers (CPU + Memory) so that <strong>MapReduce</strong> batch jobs, <strong>Hive</strong> analytics, and streaming pipelines coexist with high cluster utilization.</li>
+    </ul>
+
+    <p><strong>④ Apache Mahout (Large-Scale Machine Learning Layer)</strong></p>
+    <ul>
+      <li><strong>Why Selected:</strong> Generating personalized product suggestions across millions of users and millions of SKUs requires distributed matrix factorization.</li>
+      <li><strong>Role:</strong> <strong>Mahout</strong> runs scalable <strong>User-Based and Item-Based Collaborative Filtering</strong> (e.g., Alternating Least Squares — ALS), K-Means customer segmentation, and Frequent Itemset Mining (Market Basket Analysis) over HDFS data to predict what a shopper is most likely to buy next.</li>
+    </ul>
+
+    <p><strong>⑤ Apache HBase (Near Real-Time Recommendation Serving Layer)</strong></p>
+    <ul>
+      <li><strong>Why Selected:</strong> HDFS and MapReduce have high latency (seconds to minutes) and cannot directly answer a live web page request when a user logs in.</li>
+      <li><strong>Role:</strong> <strong>HBase</strong> acts as the low-latency NoSQL serving store. Pre-computed recommendation lists from Mahout, along with the user's live session clicks, are stored in HBase indexed by <code>User_ID</code>. When a customer opens the homepage, the web server queries HBase in <strong>&lt; 10 ms</strong> to display near real-time personalized recommendations.</li>
+    </ul>
+
+    <p><i>(Note: If the examiner also asks how theRemaining tools fit: <strong>Sqoop</strong> imports order tables from RDBMS; <strong>Hive/Pig</strong> run SQL analytics and ETL; <strong>Oozie</strong> schedules the pipeline; <strong>ZooKeeper</strong> coordinates HBase/YARN; and <strong>Avro</strong> serializes records).</i></p>
+  </div>
+</article>
+
+<!-- ===== Q3 ===== -->
+<article class="qa" id="qb8-2-q3">
+  <div class="qa-head">
+    <span class="qn-badge">৩</span>
+    <h5>Explain HDFS architecture: NameNode, DataNode, Secondary NameNode, block size, replication and fault tolerance. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box" style="margin:.6rem 0">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> একটি বিশাল লাইব্রেরির <strong>হেড লাইব্রেরিয়ান (<code>NameNode</code>)</strong> খাতায় লিখে রাখে কোন বই কোন আলমারিতে আছে; <strong>আলমারিগুলো (<code>DataNodes</code>)</strong> আসল বইয়ের পাতা (<code>128 MB Blocks</code>) ৩ জায়গায় ফটোকপি (<code>Replication = 3</code>) করে রাখে; আর <strong>সহকারী (<code>Secondary NameNode</code>)</strong> প্রতি ঘণ্টায় লাইব্রেরিয়ানের খাতাটা ফেয়ার করে দেয়!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>N-D-S-B-R-F</code></strong> (<strong>N</strong>ameNode &rarr; <strong>D</strong>ataNode &rarr; <strong>S</strong>econdary NameNode &rarr; <strong>B</strong>lock Size <code>128MB</code> &rarr; <strong>R</strong>eplication <code>3</code> &rarr; <strong>F</strong>ault Tolerance).</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Master-Slave Architecture</code>, <code>FsImage &amp; EditLogs</code>, <code>Checkpointing</code>, <code>Rack-Aware Replication (3x)</code>, <code>Heartbeat (3s) &amp; Block Report</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <p><strong>HDFS (Hadoop Distributed File System)</strong> একটি <strong>Master-Slave</strong> আর্কিটেকচারে কাজ করে। এর ৬টি মূল অংশ নিচে সহজভাবে বুঝে নিন:</p>
+    <ol class="steps">
+      <li><strong>NameNode (মাস্টার / হেড ক্লার্ক):</strong> এটি কখনো আসল ডেটা বা ফাইল নিজের ভেতর রাখে না! এটি শুধু ফাইলের <strong>Metadata</strong> (ফাইলের নাম কী, ফাইলটি কয়টি টুকরো বা ব্লকে ভাগ হয়েছে, এবং কোন ব্লক কোন DataNode-এ আছে) নিজের RAM-এ ও দুটি ফাইলে (<strong><code>FsImage</code></strong> ও <strong><code>EditLogs</code></strong>) লিখে রাখে।</li>
+      <li><strong>DataNode (স্লেভ / গোডাউন শ্রমিক):</strong> ক্লাস্টারের শত শত সাধারণ সার্ভার হলো DataNode। এদের হার্ডডিস্কেই আসল ফাইলের টুকরোগুলো (Blocks) জমা থাকে। এরা প্রতি <strong>৩ সেকেন্ড পর পর</strong> NameNode-কে একটি <strong><code>Heartbeat</code></strong> সিগন্যাল পাঠিয়ে জানায়—"আমি বেঁচে আছি!"</li>
+      <li><strong>Secondary NameNode (সহকারী হিসাবরক্ষক — <i>সতর্কতা: এটি কিন্তু Backup NameNode নয়!</i>):</strong> অনেকেই নামের কারণে একে ব্যাকআপ ভাবে, কিন্তু তা ভুল! এর কাজ হলো প্রতি ঘণ্টায় NameNode-এর মূল খাতা (<code>FsImage</code>) এবং নতুন কাজের তালিকা (<code>EditLogs</code>) একসাথে জোড়া লাগিয়ে (<strong>Checkpointing</strong>) খাতাটা হালনাগাদ রাখা, যাতে NameNode রিস্টার্ট নিলে দ্রুত চালু হতে পারে।</li>
+      <li><strong>Block Size (ব্লক সাইজ):</strong> সাধারণ উইন্ডোজ বা লিনাক্সে ডিস্কের ব্লক সাইজ হয় মাত্র <code>4 KB</code>, কিন্তু HDFS-এ ডিফল্ট ব্লক সাইজ বিশাল—<strong><code>128 MB</code></strong> (Hadoop 2/3-তে; আর Hadoop 1-এ ছিল <code>64 MB</code>)। কেন এত বড়? যাতে লাখ লাখ ছোট ব্লকের ঠিকানা রাখতে গিয়ে NameNode-এর RAM ভরে না যায় এবং ডিস্কের Seek Time কমে।</li>
+      <li><strong>Replication (৩টি ফটোকপি):</strong> ডেটা সুরক্ষার জন্য প্রতিটি ব্লকের ডিফল্ট <strong>৩টি কপি (Replication Factor = 3)</strong> রাখা হয় (<strong>Rack Awareness Policy</strong>: ১ম কপি একই নোডে, ২য় কপি অন্য একটি র‍্যাকের নোডে, আর ৩য় কপি ওই দ্বিতীয় র‍্যাকেরই আরেকটি নোডে)।</li>
+      <li><strong>Fault Tolerance (নষ্ট হলে কীভাবে সামলায়):</strong> কোনো DataNode থেকে <strong>১০ মিনিট ৩০ সেকেন্ড</strong> কোনো Heartbeat না এলে NameNode ধরে নেয় ওটা মারা গেছে। সাথে সাথে সে অন্য ভালো DataNode-এ থাকা কপিগুলো থেকে স্বয়ংক্রিয়ভাবে আরেকটি নতুন কপি তৈরি করে আবার ৩টি কপি পূর্ণ করে ফেলে!</li>
+    </ol>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>1. HDFS Master-Slave Architecture Diagram</strong></p>
+    <p>The <strong>Hadoop Distributed File System (HDFS)</strong> follows a <strong>Master/Worker (Master-Slave)</strong> architecture designed to run on commodity hardware with high aggregate throughput and built-in fault tolerance.</p>
+
+<pre class="diagram">                    +-----------------------------------+
+                    |      NameNode (Master)            |
+                    |  • Stores Metadata in RAM         |
+                    |  • FsImage + EditLogs             |
+                    +-----------------------------------+
+                       /              |               \
+       (Checkpointing)/    (Metadata  |    (Heartbeats \
+      FsImage+EditLog/       Ops)     |    &amp; Block Rpts)\
+                    v                 v                  v
++-----------------------+    +-----------------+    +-----------------------+
+| Secondary NameNode    |    |     Client      |    |   DataNode Daemons    |
+| (Checkpoint Helper -  |    | (Direct Block   |---&gt;| [Rack 1: DN1, DN2]    |
+|  NOT a Hot Standby!)  |    |  Read/Write)    |    | [Rack 2: DN3, DN4]    |
++-----------------------+    +-----------------+    | (128 MB Blocks, RF=3) |
+                                                    +-----------------------+</pre>
+
+    <!-- SVG: HDFS Architecture & Rack-Aware Replication -->
+    <svg class="clock-svg" viewBox="0 0 760 270" role="img" aria-label="HDFS Master-Slave Architecture and Rack-Aware Replication">
+      <rect x="0" y="0" width="760" height="270" rx="10" fill="#f7f4ee"/>
+      <text x="380" y="22" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="13" font-weight="700" fill="#0c1e33">HDFS Architecture &amp; 3-Way Rack-Aware Block Replication (Default Block = 128 MB, RF = 3)</text>
+
+      <!-- NameNode -->
+      <rect x="250" y="36" width="260" height="62" rx="8" fill="#0c1e33" stroke="#c4a35a" stroke-width="2"/>
+      <text x="380" y="56" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="700" fill="#c4a35a">NameNode (Master Daemon)</text>
+      <text x="380" y="73" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" fill="#ffffff">RAM Metadata: File &rarr; Blocks &rarr; DataNodes</text>
+      <text x="380" y="89" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#e5d5a7">Disk Persistence: FsImage + EditLogs</text>
+
+      <!-- Secondary NameNode -->
+      <rect x="20" y="42" width="185" height="52" rx="6" fill="#1e3f66" stroke="#c4a35a" stroke-width="1.2"/>
+      <text x="112" y="62" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="700" fill="#e5d5a7">Secondary NameNode</text>
+      <text x="112" y="79" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">Hourly Checkpointing (Not Standby)</text>
+      <line x1="205" y1="68" x2="250" y2="68" stroke="#c4a35a" stroke-width="2" stroke-dasharray="4,2"/>
+
+      <!-- Client -->
+      <rect x="555" y="42" width="185" height="52" rx="6" fill="#142d4c" stroke="#c4a35a" stroke-width="1.2"/>
+      <text x="647" y="62" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="700" fill="#e5d5a7">HDFS Client</text>
+      <text x="647" y="79" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">Splits File into 128 MB Blocks</text>
+      <line x1="510" y1="68" x2="555" y2="68" stroke="#c4a35a" stroke-width="2"/>
+
+      <!-- Rack 1 -->
+      <rect x="60" y="132" width="290" height="122" rx="8" fill="#142d4c" stroke="#0c1e33" stroke-width="1.5"/>
+      <text x="205" y="151" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="700" fill="#c4a35a">RACK 1 (Local Rack)</text>
+
+      <rect x="78" y="162" width="120" height="78" rx="6" fill="#2b547e"/>
+      <text x="138" y="180" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#ffffff">DataNode 1</text>
+      <rect x="93" y="190" width="90" height="22" rx="4" fill="#c4a35a"/>
+      <text x="138" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#0c1e33">Replica 1 (B1)</text>
+      <text x="138" y="228" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">Heartbeat (3s)</text>
+
+      <rect x="212" y="162" width="120" height="78" rx="6" fill="#1e3f66"/>
+      <text x="272" y="180" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#ffffff">DataNode 2</text>
+      <text x="272" y="206" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#e5d5a7">Other Blocks</text>
+      <text x="272" y="228" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">Heartbeat (3s)</text>
+
+      <!-- Rack 2 -->
+      <rect x="410" y="132" width="290" height="122" rx="8" fill="#142d4c" stroke="#0c1e33" stroke-width="1.5"/>
+      <text x="555" y="151" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="700" fill="#c4a35a">RACK 2 (Remote Rack — Rack Awareness)</text>
+
+      <rect x="428" y="162" width="120" height="78" rx="6" fill="#2b547e"/>
+      <text x="488" y="180" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#ffffff">DataNode 3</text>
+      <rect x="443" y="190" width="90" height="22" rx="4" fill="#c4a35a"/>
+      <text x="488" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#0c1e33">Replica 2 (B1)</text>
+      <text x="488" y="228" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">Heartbeat (3s)</text>
+
+      <rect x="562" y="162" width="120" height="78" rx="6" fill="#2b547e"/>
+      <text x="622" y="180" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#ffffff">DataNode 4</text>
+      <rect x="577" y="190" width="90" height="22" rx="4" fill="#c4a35a"/>
+      <text x="622" y="205" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#0c1e33">Replica 3 (B1)</text>
+      <text x="622" y="228" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">Heartbeat (3s)</text>
+
+      <!-- Replication Pipeline Arrows -->
+      <path d="M 183 201 L 443 201" stroke="#7a1c1c" stroke-width="2" fill="none"/>
+      <path d="M 533 201 L 577 201" stroke="#7a1c1c" stroke-width="2" fill="none"/>
+      <line x1="320" y1="98" x2="205" y2="132" stroke="#0c1e33" stroke-width="1.5" stroke-dasharray="3,3"/>
+      <line x1="440" y1="98" x2="555" y2="132" stroke="#0c1e33" stroke-width="1.5" stroke-dasharray="3,3"/>
+    </svg>
+
+    <div class="fault-bars" style="margin:.6rem 0">
+      <div class="fb-row"><span>OS Block Size (ext4/NTFS)</span><div class="fb"><i style="width:4%"></i></div><b>4 KB</b></div>
+      <div class="fb-row"><span>HDFS Block (Hadoop 1.x)</span><div class="fb"><i style="width:50%"></i></div><b>64 MB</b></div>
+      <div class="fb-row"><span>HDFS Block (Hadoop 2.x/3.x)</span><div class="fb"><i style="width:100%"></i></div><b>128 MB (Default)</b></div>
+    </div>
+
+    <p><strong>2. Core Architectural Components &amp; Mechanisms</strong></p>
+
+    <p><strong>① NameNode (The Master Daemon)</strong></p>
+    <ul>
+      <li><strong>Role:</strong> Acts as the central arbiter and namespace manager of the file system. <strong>It never stores actual user data.</strong></li>
+      <li><strong>Metadata Management:</strong> Keeps the entire directory tree, file permissions, and the mapping of <strong>File &rarr; Blocks &rarr; DataNodes</strong> entirely in <strong>RAM</strong> for ultra-fast lookup.</li>
+      <li><strong>Persistence Files:</strong>
+        <ul>
+          <li><strong><code>FsImage</code>:</strong> Complete snapshot of the file system metadata at a specific point in time.</li>
+          <li><strong><code>EditLogs</code>:</strong> Transaction log recording every recent modification (file creation, deletion, replication factor change) since the last <code>FsImage</code>.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>② DataNode (The Worker / Slave Daemon)</strong></p>
+    <ul>
+      <li><strong>Role:</strong> The workhorses of HDFS deployed on every slave machine in the cluster. They store and retrieve actual data blocks on their local Linux disks (<code>ext4</code>/<code>xfs</code>) upon instruction from the NameNode or Client.</li>
+      <li><strong>Periodic Reporting:</strong>
+        <ul>
+          <li><strong>Heartbeat (Every <code>3 seconds</code>):</strong> Sent to the NameNode to confirm that the DataNode is alive.</li>
+          <li><strong>Block Report (Every <code>6 hours</code> by default):</strong> A comprehensive list of all blocks verified on that DataNode.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>③ Secondary NameNode (The Checkpointing Assistant)</strong></p>
+    <ul>
+      <li><strong>Crucial Distinction:</strong> The Secondary NameNode is <strong>NOT a backup or failover standby</strong> for the NameNode.</li>
+      <li><strong>Role (Checkpointing):</strong> Over time, the <code>EditLogs</code> on the NameNode grow massive, which would cause an extremely slow startup if the NameNode reboots. Periodically (default: every <code>1 hour</code> or <code>1 million</code> transactions), the Secondary NameNode pulls the <code>FsImage</code> and <code>EditLogs</code> from the active NameNode, merges them into a fresh, compact <strong><code>FsImage</code></strong> in its own memory, and sends it back to the NameNode. <i>(Note: In Hadoop 2+, true High Availability is achieved using an <strong>Active/Standby NameNode</strong> pair via ZooKeeper and Quorum Journal Manager).</i></li>
+    </ul>
+
+    <p><strong>④ HDFS Block Size (<code>128 MB</code> / <code>64 MB</code>)</strong></p>
+    <ul>
+      <li><strong>Concept:</strong> HDFS splits large files into fixed-size chunks called <strong>Blocks</strong>—defaulting to <strong><code>128 MB</code></strong> in Hadoop 2.x/3.x (and <code>64 MB</code> in Hadoop 1.x), compared to just <code>4 KB</code> in traditional OS file systems.</li>
+      <li><strong>Why So Large?</strong>
+        <ol class="steps">
+          <li><strong>Minimizes Seek Time:</strong> Makes disk transfer time significantly larger than disk head seek time, enabling sequential streaming at full disk bandwidth.</li>
+          <li><strong>Reduces NameNode RAM Overhead:</strong> Each block metadata object consumes roughly <code>150 bytes</code> of NameNode RAM. Larger blocks mean fewer total blocks to track for petabytes of data.</li>
+        </ol>
+      </li>
+      <li><i>(Note: If a <code>50 MB</code> file is stored in a <code>128 MB</code> block-size system, it only occupies <strong><code>50 MB</code></strong> of actual physical disk space, not <code>128 MB</code>).</i></li>
+    </ul>
+
+    <p><strong>⑤ Replication &amp; Rack Awareness (<code>Default RF = 3</code>)</strong></p>
+    <ul>
+      <li>By default, HDFS replicates each block <strong>three times (<code>Replication Factor = 3</code>)</strong> using a <strong>Rack-Aware Placement Policy</strong> to balance reliability and network bandwidth:
+        <ul>
+          <li><strong>1st Replica:</strong> Placed on the local DataNode where the client is writing (or a random node if external).</li>
+          <li><strong>2nd Replica:</strong> Placed on a different DataNode in a <strong>different remote rack</strong> (protects against entire rack switch/power failure).</li>
+          <li><strong>3rd Replica:</strong> Placed on a <strong>different DataNode within the same remote rack</strong> as the 2nd replica (reduces cross-rack network traffic).</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>⑥ Fault Tolerance Mechanism</strong></p>
+    <ul>
+      <li><strong>Node Failure Detection:</strong> If the NameNode does not receive a Heartbeat from a DataNode for <strong><code>10 minutes and 30 seconds</code></strong> (2 missed block report intervals + 10 heartbeats), it marks the DataNode as <strong>Dead</strong>.</li>
+      <li><strong>Self-Healing Re-Replication:</strong> The NameNode immediately identifies all blocks that were stored on the dead node (now under-replicated with only 2 copies) and instructs surviving DataNodes holding valid replicas to copy those blocks to other healthy nodes, automatically restoring the replication factor back to <code>3</code>.</li>
+      <li><strong>Data Corruption Detection:</strong> Every block is stored with <strong><code>CRC-32</code> checksums</strong>; if a client detects a corrupted block during read, it transparently fetches the block from another replica and notifies the NameNode to replace the bad replica.</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ===== Q4 ===== -->
+<article class="qa" id="qb8-2-q4">
+  <div class="qa-head">
+    <span class="qn-badge">৪</span>
+    <h5>Explain MapReduce with the word-count example and describe its phases. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box" style="margin:.6rem 0">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> ক্লাসের ৩ জন ছাত্রকে ৩ পৃষ্ঠা কাগজ দেওয়া হলো (<strong>Input Split</strong>); প্রত্যেকে নিজের কাগজে প্রতিটি শব্দের পাশে <code>1</code> লিখল (<strong>Map: <code>(word, 1)</code></strong>); এরপর একই শব্দগুলো এক জায়গায় জড়ো করা হলো (<strong>Shuffle &amp; Sort: <code>(word, [1, 1, 1])</code></strong>); আর শেষে যোগ করে মোট সংখ্যা বের হলো (<strong>Reduce: <code>(word, 3)</code></strong>)!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>I-M-C-S-R-O</code></strong> (<strong>I</strong>nput Split &rarr; <strong>M</strong>ap &rarr; <strong>C</strong>ombine &rarr; <strong>S</strong>huffle &amp; Sort &rarr; <strong>R</strong>educe &rarr; <strong>O</strong>utput).</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Key-Value Pairs &lt;k, v&gt;</code>, <code>Data Locality</code>, <code>Combiner (Mini-Reducer)</code>, <code>Shuffle and Sort Phase</code>, <code>Parallel Aggregation</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <p><strong>MapReduce</strong> হলো হ্যাডুপের মূল প্রসেসিং কৌশল, যা যেকোনো বিশাল কাজকে <strong><code>&lt;Key, Value&gt;</code> জোড়ায়</strong> ভাগ করে দুটি মূল ধাপে (Map ও Reduce) সমাধান করে। এর সবচেয়ে বিখ্যাত উদাহরণ হলো <strong>Word Count</strong> (একটি ফাইলে কোন শব্দ কতবার আছে তা গোনা)।</p>
+    <p>ধরুন আমাদের কাছে ২ লাইনের একটি ফাইল আছে:</p>
+    <ul>
+      <li>লাইন ১: <code>"Dear Bear River"</code></li>
+      <li>লাইন ২: <code>"Car Car River"</code></li>
+    </ul>
+    <p><strong>MapReduce যে ৫টি ধাপে এটি গুনবে:</strong></p>
+    <ol class="steps">
+      <li><strong>Input Split &amp; RecordReader:</strong> ফাইলটিকে লাইনে বা ব্লকে ভাগ করে প্রতিটি প্রসেসরকে (Mapper) দেয়।</li>
+      <li><strong>Map Phase (প্রত্যেকের পাশে <code>1</code> বসানো):</strong> প্রতিটি Mapper তার লাইনের শব্দগুলো ভেঙে প্রতিটি শব্দের পাশে <code>1</code> বসিয়ে দেয়:
+        <ul>
+          <li>Mapper 1 দেয়: <code>(Dear, 1), (Bear, 1), (River, 1)</code></li>
+          <li>Mapper 2 দেয়: <code>(Car, 1), (Car, 1), (River, 1)</code></li>
+        </ul>
+      </li>
+      <li><strong>Combiner Phase (ঐচ্ছিক লোকাল যোগ / Mini-Reducer):</strong> নেটওয়ার্কের চাপ কমানোর জন্য Mapper 2 নিজের ভেতরেই দুটি <code>(Car, 1)</code> যোগ করে <code>(Car, 2)</code> বানিয়ে ফেলে।</li>
+      <li><strong>Shuffle and Sort Phase (একই শব্দ এক জায়গায় সাজানো):</strong> এটি সবচেয়ে জাদুকরী ধাপ! হ্যাডুপ স্বয়ংক্রিয়ভাবে সব Mapper থেকে একই শব্দগুলোকে একসাথে জড়ো করে এবং বর্ণানুক্রমে (Alphabetically) সাজিয়ে লিস্ট বানায়:
+        <ul>
+          <li><code>(Bear, [1])</code>, <code>(Car, [1, 1])</code>, <code>(Dear, [1])</code>, <code>(River, [1, 1])</code></li>
+        </ul>
+      </li>
+      <li><strong>Reduce Phase (চূড়ান্ত যোগফল):</strong> এবার Reducer লিস্টের ভেতরের সংখ্যাগুলো যোগ করে চূড়ান্ত রেজাল্ট HDFS-এ সেভ করে:
+        <ul>
+          <li><code>Bear: 1</code>, <code>Car: 2</code>, <code>Dear: 1</code>, <code>River: 2</code>।</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>1. Overview of the MapReduce Programming Model</strong></p>
+    <p><strong>MapReduce</strong> is a distributed, parallel data-processing paradigm designed to process massive datasets across large clusters of commodity nodes. Every computation in MapReduce is expressed solely in terms of <strong><code>&lt;Key, Value&gt;</code> pairs</strong> through two primary user-defined functions:</p>
+    <ol class="steps">
+      <li><strong><code>Map(k1, v1) -&gt; list(k2, v2)</code>:</strong> Filters, transforms, and tokenizes raw input splits in parallel.</li>
+      <li><strong><code>Reduce(k2, list(v2)) -&gt; list(k3, v3)</code>:</strong> Aggregates, summarizes, or joins intermediate values sharing the same key.</li>
+    </ol>
+
+    <p><strong>2. Step-by-Step Execution Phases with the "Word Count" Example</strong></p>
+    <p>Suppose we have an input file stored in HDFS containing two lines of text:</p>
+    <ul>
+      <li><strong>Split 1:</strong> <code>"Dear Bear River"</code></li>
+      <li><strong>Split 2:</strong> <code>"Car Car River"</code></li>
+    </ul>
+
+<pre class="diagram">INPUT SPLITS       MAP PHASE           SHUFFLE &amp; SORT          REDUCE PHASE       FINAL OUTPUT
++---------------+  +---------------+   +------------------+    +---------------+  +------------+
+| "Dear Bear    |-&gt;| (Dear, 1)     |--&gt;| (Bear,  [1])     |---&gt;| (Bear, 1)     |  | Bear, 1    |
+|  River"       |  | (Bear, 1)     |   |                  |    |               |  | Car, 2     |
++---------------+  | (River, 1)    |   | (Car,   [1, 1])  |---&gt;| (Car, 2)      |-&gt;| Dear, 1    |
+                   +---------------+   |                  |    |               |  | River, 2   |
++---------------+  +---------------+   | (Dear,  [1])     |---&gt;| (Dear, 1)     |  +------------+
+| "Car Car      |-&gt;| (Car, 1)      |--&gt;|                  |    |               |
+|  River"       |  | (Car, 1)      |   | (River, [1, 1])  |---&gt;| (River, 2)    |
++---------------+  | (River, 1)    |   +------------------+    +---------------+
+                   +---------------+</pre>
+
+    <!-- SVG: MapReduce Word-Count Pipeline -->
+    <svg class="clock-svg" viewBox="0 0 760 220" role="img" aria-label="MapReduce Word Count Execution Pipeline">
+      <rect x="0" y="0" width="760" height="220" rx="10" fill="#f7f4ee"/>
+      <text x="380" y="22" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12.5" font-weight="700" fill="#0c1e33">MapReduce Word Count Execution Flow (I-M-C-S-R-O Phases)</text>
+
+      <!-- Phase 1: Input Splits -->
+      <rect x="14" y="46" width="124" height="62" rx="6" fill="#0c1e33"/>
+      <text x="76" y="66" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#c4a35a">Split 1 (128MB)</text>
+      <text x="76" y="84" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">"Dear Bear River"</text>
+
+      <rect x="14" y="126" width="124" height="62" rx="6" fill="#0c1e33"/>
+      <text x="76" y="146" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#c4a35a">Split 2 (128MB)</text>
+      <text x="76" y="164" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">"Car Car River"</text>
+
+      <!-- Phase 2: Map -->
+      <rect x="164" y="42" width="136" height="70" rx="6" fill="#142d4c" stroke="#c4a35a" stroke-width="1.2"/>
+      <text x="232" y="59" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#e5d5a7">Mapper 1</text>
+      <text x="232" y="75" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">(Dear, 1), (Bear, 1)</text>
+      <text x="232" y="90" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">(River, 1)</text>
+
+      <rect x="164" y="122" width="136" height="70" rx="6" fill="#142d4c" stroke="#c4a35a" stroke-width="1.2"/>
+      <text x="232" y="139" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#e5d5a7">Mapper 2 (+Combiner)</text>
+      <text x="232" y="155" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">(Car, 1), (Car, 1)</text>
+      <text x="232" y="170" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#c4a35a">&rarr; (Car, 2), (River, 1)</text>
+
+      <!-- Phase 3/4: Shuffle & Sort -->
+      <rect x="330" y="42" width="155" height="150" rx="6" fill="#1e3f66" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="407" y="62" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="700" fill="#c4a35a">Shuffle &amp; Sort</text>
+      <text x="407" y="86" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">(Bear, [1])</text>
+      <text x="407" y="110" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">(Car, [1, 1])</text>
+      <text x="407" y="134" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">(Dear, [1])</text>
+      <text x="407" y="158" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">(River, [1, 1])</text>
+      <text x="407" y="179" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8.5" fill="#e5d5a7">Grouped by Key</text>
+
+      <!-- Phase 5: Reduce -->
+      <rect x="512" y="42" width="110" height="150" rx="6" fill="#2b547e" stroke="#c4a35a" stroke-width="1.2"/>
+      <text x="567" y="62" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="700" fill="#e5d5a7">Reducers</text>
+      <text x="567" y="86" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">(Bear, 1)</text>
+      <text x="567" y="110" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">(Car, 2)</text>
+      <text x="567" y="134" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">(Dear, 1)</text>
+      <text x="567" y="158" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">(River, 2)</text>
+
+      <!-- Final HDFS Output -->
+      <rect x="646" y="56" width="100" height="122" rx="6" fill="#7a1c1c" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="696" y="76" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" font-weight="700" fill="#e5d5a7">HDFS Output</text>
+      <text x="696" y="98" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">Bear : 1</text>
+      <text x="696" y="116" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">Car : 2</text>
+      <text x="696" y="134" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">Dear : 1</text>
+      <text x="696" y="152" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" fill="#ffffff">River : 2</text>
+
+      <!-- Connecting Lines -->
+      <line x1="138" y1="77" x2="164" y2="77" stroke="#c4a35a" stroke-width="2"/>
+      <line x1="138" y1="157" x2="164" y2="157" stroke="#c4a35a" stroke-width="2"/>
+      <line x1="300" y1="77" x2="330" y2="95" stroke="#c4a35a" stroke-width="2"/>
+      <line x1="300" y1="157" x2="330" y2="140" stroke="#c4a35a" stroke-width="2"/>
+      <line x1="485" y1="117" x2="512" y2="117" stroke="#c4a35a" stroke-width="2"/>
+      <line x1="622" y1="117" x2="646" y2="117" stroke="#c4a35a" stroke-width="2"/>
+    </svg>
+
+    <p><strong>Phase 1: Input Splitting &amp; RecordReader</strong></p>
+    <ul>
+      <li>HDFS data blocks (<code>128 MB</code> each) are logically divided into <strong>Input Splits</strong>. One Mapper task is spawned per Input Split on the same node where the block resides (<strong>Data Locality</strong>).</li>
+      <li>The <code>RecordReader</code> converts each split into <code>&lt;Byte_Offset, Line_Text&gt;</code> pairs and feeds them to the <code>map()</code> function.</li>
+    </ul>
+
+    <p><strong>Phase 2: The Map Phase</strong></p>
+    <ul>
+      <li>Each Mapper executes in parallel, tokenizing its assigned line into individual words and emitting an intermediate <code>&lt;word, 1&gt;</code> key-value pair for every occurrence:
+        <ul>
+          <li><strong>Mapper 1 Output:</strong> <code>&lt;"Dear", 1&gt;, &lt;"Bear", 1&gt;, &lt;"River", 1&gt;</code></li>
+          <li><strong>Mapper 2 Output:</strong> <code>&lt;"Car", 1&gt;, &lt;"Car", 1&gt;, &lt;"River", 1&gt;</code></li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>Phase 3: Combiner &amp; Partitioner Phase (Local Optimization)</strong></p>
+    <ul>
+      <li><strong>Combiner ("Mini-Reducer"):</strong> An optional local aggregation step that runs on the Mapper node's local disk <i>before</i> network transfer to reduce bandwidth (e.g., Mapper 2 combines two <code>&lt;"Car", 1&gt;</code> into <code>&lt;"Car", 2&gt;</code>).</li>
+      <li><strong>Partitioner:</strong> Uses a hash function (<code>hash(key) mod R</code>, where <i>R</i> is the number of Reducers) to guarantee that all occurrences of the same key (e.g., <code>"River"</code>) from all Mappers are routed to the exact same Reducer.</li>
+    </ul>
+
+    <p><strong>Phase 4: Shuffle and Sort Phase (The Bridge)</strong></p>
+    <ul>
+      <li><strong>Shuffle:</strong> Intermediate outputs from all Mappers are transferred across the network (via HTTP) to their designated Reducer nodes.</li>
+      <li><strong>Sort &amp; Group:</strong> The framework automatically performs an external merge-sort by key and groups all values associated with identical keys into an iterable list:
+        <ul>
+          <li><code>&lt;"Bear", [1]&gt;</code>, <code>&lt;"Car", [1, 1]&gt;</code>, <code>&lt;"Dear", [1]&gt;</code>, <code>&lt;"River", [1, 1]&gt;</code></li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>Phase 5: The Reduce Phase &amp; OutputWriter</strong></p>
+    <ul>
+      <li>The <code>reduce()</code> function iterates through the list of values for each unique key, sums them up, and writes the final output back to HDFS via the <code>RecordWriter</code>:
+        <ul>
+          <li><code>&lt;"Bear", 1&gt;</code>, <code>&lt;"Car", 2&gt;</code>, <code>&lt;"Dear", 1&gt;</code>, <code>&lt;"River", 2&gt;</code></li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>3. MapReduce Word-Count Pseudo-Code (Exam Bonus)</strong></p>
+<pre class="diagram"># MAP FUNCTION
+function map(String line_offset, String line_text):
+    for each word in line_text.split(" "):
+        emitIntermediate(word, 1)
+
+# REDUCE FUNCTION
+function reduce(String word, Iterator&lt;Int&gt; values):
+    int sum = 0
+    for each val in values:
+        sum = sum + val
+    emit(word, sum)</pre>
+  </div>
+</article>
+
+<!-- ===== Q5 ===== -->
+<article class="qa" id="qb8-2-q5">
+  <div class="qa-head">
+    <span class="qn-badge">৫</span>
+    <h5>Explain YARN: ResourceManager, NodeManager and ApplicationMaster. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box" style="margin:.6rem 0">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> একটি নির্মাণ কোম্পানির <strong>এমডি (<code>ResourceManager</code>)</strong> পুরো কোম্পানির বাজেট নিয়ন্ত্রণ করেন; প্রতিটি বিল্ডিং সাইটের <strong>সাইট ইঞ্জিনিয়ার (<code>NodeManager</code>)</strong> ওই সাইটের শ্রমিক ও মেশিন দেখে রাখেন; আর প্রতিটি নতুন প্রজেক্টের জন্য ১ জন করে <strong>প্রজেক্ট ম্যানেজার (<code>ApplicationMaster</code>)</strong> নিয়োগ হয়, যে এমডির কাছ থেকে রিসোর্স চেয়ে কাজ শেষ করে বিদায় নেয়!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>RM - NM - AM - C</code></strong> (<strong>R</strong>esourceManager [Global] &rarr; <strong>N</strong>odeManager [Per-Node] &rarr; <strong>A</strong>pplicationMaster [Per-Job] &rarr; <strong>C</strong>ontainer [CPU+RAM]).</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Yet Another Resource Negotiator</code>, <code>Scheduler &amp; ApplicationsManager</code>, <code>Per-Application Lifecycle</code>, <code>Resource Container (CPU + RAM)</code>, <code>Hadoop 2.0 Decoupling</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <p>Hadoop 1.0-তে <code>JobTracker</code> নামে একাই একজন ম্যানেজার ছিল যে রিসোর্স বণ্টন এবং জব মনিটরিং দুটোই করত—ফলে ৪০০০ নোডের বেশি হলে সে হ্যাং হয়ে যেত এবং MapReduce ছাড়া অন্য কিছু (যেমন Spark বা স্ট্রিমিং) চালানো যেত না। এই সমস্যা দূর করতে Hadoop 2.0-তে <strong>YARN (Yet Another Resource Negotiator)</strong> আনা হয়, যা কাজটিকে ৩ জন কর্মকর্তার মধ্যে ভাগ করে দেয়:</p>
+    <ol class="steps">
+      <li><strong>ResourceManager (পুরো ক্লাস্টারের বস — প্রতি ক্লাস্টারে ১টি):</strong>
+        <ul>
+          <li>সে পুরো ক্লাস্টারের কোথায় কতটুকু RAM ও CPU খালি আছে তার হিসাব রাখে। এর ভেতরে দুটি অংশ থাকে:
+            <ul>
+              <li><strong>Scheduler:</strong> শুধু রিসোর্স (Container) ভাগ করে দেয় (FIFO, Capacity, বা Fair Scheduler নীতিতে)।</li>
+              <li><strong>ApplicationsManager (AsM):</strong> নতুন কোনো কাজ (Job) এলে তার জন্য প্রথম কন্টেইনারটি বরাদ্দ করে সেখানে একজন <strong>ApplicationMaster</strong> চালু করে দেয়।</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><strong>NodeManager (প্রতিটি সার্ভারের কেয়ারটেকার — প্রতি DataNode-এ ১টি):</strong>
+        <ul>
+          <li>প্রতিটি স্লেভ সার্ভারে ১টি করে NodeManager থাকে। সে ওই নির্দিষ্ট সার্ভারের CPU ও RAM দিয়ে কন্টেইনার তৈরি করে, কন্টেইনারগুলো যাতে নির্ধারিত মেমরির বেশি খরচ না করে তা পাহারা দেয় এবং ResourceManager-কে নিয়মিত রিপোর্ট দেয়।</li>
+        </ul>
+      </li>
+      <li><strong>ApplicationMaster (প্রতিটি কাজের নিজস্ব প্রজেক্ট ম্যানেজার — প্রতি Job-এ ১টি):</strong>
+        <ul>
+          <li>আপনি যখনই একটি MapReduce বা Spark জব সাবমিট করবেন, সাথে সাথে শুধুমাত্র আপনার ওই কাজটির জন্য ১টি <strong>ApplicationMaster</strong> তৈরি হবে। সে ResourceManager-এর কাছ থেকে প্রয়োজনীয় সংখ্যক <strong>Container (যেমন 4 GB RAM + 2 CPU Cores)</strong> চেয়ে নেয়, NodeManager দিয়ে কাজগুলো চালায়, এবং কাজ শেষ হলে নিজেও ডিলিট হয়ে যায়!</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>1. Introduction to Apache YARN</strong></p>
+    <p>Introduced in Hadoop 2.0, <strong>YARN (Yet Another Resource Negotiator)</strong> is the architectural center and cluster operating system of Hadoop. It overcomes the <code>JobTracker</code> bottleneck of Hadoop 1.x by <strong>decoupling cluster resource management from job lifecycle scheduling</strong>, allowing multiple processing engines (MapReduce, Apache Spark, Apache Flink, Hive/Tez) to run simultaneously on the same HDFS dataset.</p>
+
+<pre class="diagram">+---------------+       1. Submit Job       +-----------------------------------+
+|    Client     |--------------------------&gt;|     ResourceManager (Master)      |
++---------------+                           |  +-------------+ +--------------+ |
+                                            |  |  Scheduler  | | AppsManager  | |
+                                            |  +-------------+ +--------------+ |
+                                            +-----------------------------------+
+                                               /               |               \
+                          2. Launch AM        /                | 3. Negotiate   \ 4. Heartbeats
+                             Container       v                 |    Containers   v
++---------------------------------------------------+          |   +-----------------------------------+
+|               Worker Node 1                       |          |   |           Worker Node 2           |
+|  +---------------+    +------------------------+  |          |   |  +---------------+  +-----------+ |
+|  |  NodeManager  |---&gt;|   ApplicationMaster    |--+----------+   |  |  NodeManager  |  | Container | |
+|  +---------------+    |     (Per-Job Boss)     |-----------------+&gt;| (Per-Machine) |-&gt;| (Map/Red  | |
+|                       +------------------------+  4. Launch Task |  +---------------+  |   Task)   | |
+|                       +------------------------+     Containers  |                     +-----------+ |
+|                       | Container (Task/Spark) |                 |                                   |
+|                       +------------------------+                 +-----------------------------------+
++---------------------------------------------------+</pre>
+
+    <div class="cmp-grid" style="margin:.6rem 0">
+      <div class="cmp-card phys">
+        <strong>ResourceManager (Global Master)</strong>
+        One per cluster. Houses the <b>Scheduler</b> (allocates CPU/RAM queues) and <b>ApplicationsManager</b> (bootstraps ApplicationMasters).
+      </div>
+      <div class="cmp-card virt">
+        <strong>NodeManager (Per-Node Agent)</strong>
+        One per worker server. Manages local <b>Containers</b> (vCores + RAM), monitors resource limits, and sends heartbeats to RM.
+      </div>
+      <div class="cmp-card">
+        <strong>ApplicationMaster (Per-Job Boss)</strong>
+        One per submitted job. Negotiates containers from RM Scheduler, launches tasks via NodeManagers, and handles task failover.
+      </div>
+    </div>
+
+    <p><strong>2. Deep-Dive into Core YARN Components</strong></p>
+
+    <p><strong>① ResourceManager (RM) — <i>The Global Cluster Master (One per Cluster)</i></strong></p>
+    <p>The <strong>ResourceManager</strong> is the ultimate authority that arbitrates all available compute resources (CPU vCores and Memory) across the entire cluster. It consists of two internal sub-components:</p>
+    <ul>
+      <li><strong>a) The Scheduler:</strong> A pure pluggable scheduler (supporting <strong>Capacity Scheduler</strong>, <strong>Fair Scheduler</strong>, and <strong>FIFO</strong>) that allocates resources to competing applications based on queues and shares. It performs no monitoring or tracking of task status.</li>
+      <li><strong>b) The ApplicationsManager (AsM):</strong> Responsible for accepting client job submissions, negotiating the very first container to launch the <strong>ApplicationMaster</strong>, and restarting the ApplicationMaster container if it fails.</li>
+    </ul>
+
+    <p><strong>② NodeManager (NM) — <i>The Per-Node Agent (One per Worker Server)</i></strong></p>
+    <p>The <strong>NodeManager</strong> is the slave daemon running on every individual worker machine (co-located with the HDFS DataNode).</p>
+    <ul>
+      <li><strong>Responsibilities:</strong>
+        <ol class="steps">
+          <li>Manages abstract resource slices called <strong>Containers</strong> (e.g., <code>Container = 2 vCores + 4 GB RAM</code>) on its local machine.</li>
+          <li>Launches and kills task processes inside containers upon instruction from the ApplicationMaster.</li>
+          <li>Monitors local container resource consumption (killing any container that exceeds its allocated memory limit) and sends periodic health <strong>Heartbeats</strong> to the ResourceManager.</li>
+        </ol>
+      </li>
+    </ul>
+
+    <p><strong>③ ApplicationMaster (AM) — <i>The Per-Job Lifecycle Manager (One per Application)</i></strong></p>
+    <p>Unlike Hadoop 1.x where a single JobTracker managed all jobs, YARN spawns a dedicated <strong>ApplicationMaster</strong> instance for <strong>each submitted application (job)</strong>.</p>
+    <ul>
+      <li><strong>Responsibilities:</strong>
+        <ol class="steps">
+          <li>Negotiates dynamic resource <strong>Containers</strong> from the ResourceManager's Scheduler based on the specific needs of its job.</li>
+          <li>Communicates with <strong>NodeManagers</strong> to launch, monitor, and track the progress of individual Map, Reduce, or Spark tasks inside those granted containers.</li>
+          <li>Handles <strong>task-level fault tolerance</strong> (requesting replacement containers if a task fails) and de-registers itself upon job completion.</li>
+        </ol>
+      </li>
+    </ul>
+
+    <p><strong>3. Summary of YARN Job Execution Flow (4 Steps)</strong></p>
+    <ol class="steps">
+      <li><strong>Job Submission:</strong> The Client submits an application to the <strong>ResourceManager</strong>.</li>
+      <li><strong>AM Initialization:</strong> The <code>ApplicationsManager</code> allocates a container on a <strong>NodeManager</strong> and launches the job's <strong>ApplicationMaster (AM)</strong>.</li>
+      <li><strong>Resource Negotiation:</strong> The <strong>AM</strong> calculates how many Map/Reduce tasks are needed and requests resource <strong>Containers</strong> from the RM <code>Scheduler</code>.</li>
+      <li><strong>Task Execution &amp; Termination:</strong> Once granted, the <strong>AM</strong> instructs the respective <strong>NodeManagers</strong> to execute the tasks inside the containers, monitors them until completion, and then shuts down, freeing all resources.</li>
+    </ol>
+  </div>
+</article>
+
+<!-- ===== Q6 ===== -->
+<article class="qa" id="qb8-2-q6">
+  <div class="qa-head">
+    <span class="qn-badge">৬</span>
+    <h5>What is the role of ZooKeeper? <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box" style="margin:.6rem 0">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> চিড়িয়াখানায় যেমন ১০০টা বাঘ-সিংহ যাতে মারামারি না করে সেজন্য ১ জন <strong>রেলওয়ে গার্ড বা পুলিশ (<code>ZooKeeper</code>)</strong> থাকে—সে ঠিক করে দেয় কে বর্তমান নেতা (<strong>Leader Election</strong>), কোন ফাইল কে এডিট করবে (<strong>Distributed Lock</strong>), এবং কে মারা গেছে (<strong>Failure Detection</strong>)!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>C-L-N-S-H</code></strong> (<strong>C</strong>onfiguration Management, <strong>L</strong>eader Election, <strong>N</strong>aming Service, <strong>S</strong>ynchronization/Locks, <strong>H</strong>igh Availability Failover).</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Distributed Coordination Service</code>, <code>ZNodes (Hierarchical Namespace)</code>, <code>Ephemeral Nodes</code>, <code>Split-Brain Prevention (Quorum)</code>, <code>Automatic Master Failover</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <p>যখন শত শত বা হাজার হাজার সার্ভার একসাথে কাজ করে (যেমন HBase, Kafka, বা Hadoop High Availability), তখন তাদের মধ্যে সমন্বয় করার জন্য একজন <strong>"রেফারি বা ট্রাফিক পুলিশ"</strong> দরকার হয়—যার নাম <strong>Apache ZooKeeper</strong>। এর ৫টি প্রধান কাজ হলো:</p>
+    <ol class="steps">
+      <li><strong>Leader Election (কে নেতা হবে তা ঠিক করা ও অটোমেটিক ফেইলওভার):</strong> ধরা যাক ক্লাস্টারে ২টি NameNode আছে—একটি <code>Active</code> (নেতা) আর অন্যটি <code>Standby</code> (সহকারী)। হঠাৎ যদি Active NameNode ক্র্যাশ করে, তবে <strong>ZooKeeper</strong> মুহূর্তের মধ্যে তা টের পায় এবং Standby NameNode-কে নতুন নেতা (Active) ঘোষণা করে।</li>
+      <li><strong>Split-Brain সমস্যা প্রতিরোধ:</strong> কখনো নেটওয়ার্ক সমস্যার কারণে যেন দুজনই নিজেকে নেতা দাবি করে ডেটা নষ্ট না করে (<strong>Split-Brain</strong>), সেজন্য ZooKeeper বিজোড় সংখ্যক সার্ভারের (<code>3, 5, 7</code>) <strong>Quorum (সংখ্যাগরিষ্ঠের ভোট)</strong> ও Fencing পদ্ধতি ব্যবহার করে।</li>
+      <li><strong>Distributed Locking &amp; Synchronization (তালা দেওয়া):</strong> একই সময়ে দুটি সার্ভার যাতে একই ফাইল বা HBase টেবিলের মেটাডেটা এডিট করে নষ্ট না করে, সেজন্য ZooKeeper লক (Lock) দেয়।</li>
+      <li><strong>Configuration Management (কেন্দ্রীয় নোটিশ বোর্ড):</strong> ১০০০টি সার্ভারে আলাদা করে কনফিগারেশন ফাইল আপডেট না করে শুধু ZooKeeper-এর নোটিশ বোর্ডে (<code>ZNode</code>-এ) আপডেট করে দিলেই সব সার্ভার সাথে সাথে নতুন নিয়ম জেনে যায়।</li>
+      <li><strong>Naming Registry &amp; Heartbeat Tracking:</strong> কোন সার্ভারের আইপি কী এবং কে জীবিত আছে তা <strong><code>Ephemeral ZNode</code></strong> (সার্ভার বন্ধ হলেই যে নোড আপনাআপনি মুছে যায়) দিয়ে ট্র্যাক করে।</li>
+    </ol>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>1. Overview of Apache ZooKeeper</strong></p>
+    <p><strong>Apache ZooKeeper</strong> is a centralized, high-performance <strong>distributed coordination and synchronization service</strong> for large-scale distributed systems (including Hadoop HDFS High Availability, YARN, HBase, and Apache Kafka). In a distributed cluster where hundreds of nodes communicate over an unreliable network, ZooKeeper prevents race conditions, deadlocks, and data inconsistency.</p>
+
+<pre class="diagram">                +-----------------------------------------------+
+                |       ZooKeeper Ensemble (Odd Quorum: 3/5)    |
+                |   [ZK Follower 1]  [ZK Leader]  [ZK Follower 2]|
+                |         Hierarchical In-Memory ZNodes         |
+                |          /hbase/master  |  /hadoop-ha/active   |
+                +-----------------------------------------------+
+                   ^                     ^                    ^
+     1. Ephemeral  |       2. Watch      |      3. Automatic  |
+        Session    |          Events     |         Failover   |
+                   v                     v                    v
+        +-------------------+   +-------------------+   +-------------------+
+        | Active NameNode / |   | Standby NameNode/ |   | HBase RegionServer|
+        |   HBase Master    |   | Backup HMaster    |   | / YARN RM         |
+        +-------------------+   +-------------------+   +-------------------+</pre>
+
+    <p><strong>2. Internal Architecture: ZNodes and Ensemble Quorum</strong></p>
+    <ul>
+      <li><strong>ZNodes (Data Model):</strong> ZooKeeper maintains a shared, hierarchical tree namespace in RAM (similar to a Linux file system, e.g., <code>/hadoop-ha/active-namenode</code>), where each node is called a <strong><code>ZNode</code></strong> (storing up to <code>1 MB</code> of metadata/status).
+        <ul>
+          <li><strong>Persistent ZNodes:</strong> Remain in ZooKeeper until explicitly deleted (used for configuration data).</li>
+          <li><strong>Ephemeral ZNodes:</strong> Exist only as long as the client server's session is active; if the server crashes, ZooKeeper automatically deletes its Ephemeral ZNode!</li>
+          <li><strong>Sequential ZNodes:</strong> Automatically append a monotonically increasing counter (used for distributed locks and leader queues).</li>
+        </ul>
+      </li>
+      <li><strong>ZooKeeper Ensemble (Quorum):</strong> ZooKeeper itself runs on an <strong>odd number of servers (2<i>F</i> + 1, typically 3, 5, or 7)</strong> using the <strong>ZAB (ZooKeeper Atomic Broadcast)</strong> consensus protocol. A cluster of 5 ZooKeeper nodes can tolerate up to 2 node failures while maintaining a majority quorum of 3.</li>
+    </ul>
+
+    <p><strong>3. Five Critical Roles of ZooKeeper in the Hadoop Ecosystem</strong></p>
+
+    <p><strong>① Leader Election &amp; Automatic High-Availability (HA) Failover</strong></p>
+    <ul>
+      <li>In Hadoop 2/3, HDFS uses an <strong>Active NameNode</strong> and a <strong>Standby NameNode</strong>. The Active NameNode holds an <strong>Ephemeral ZNode</strong> lock in ZooKeeper.</li>
+      <li>If the Active NameNode crashes, its session expires, the Ephemeral ZNode is automatically deleted, and ZooKeeper's <code>ZKFailoverController (ZKFC)</code> immediately triggers a <strong>Watch notification</strong> to promote the Standby NameNode to Active within seconds.</li>
+    </ul>
+
+    <p><strong>② Split-Brain Prevention (Fencing)</strong></p>
+    <ul>
+      <li>If an Active NameNode merely freezes due to a long JVM garbage collection pause or network partition, both NameNodes might try to write to HDFS simultaneously (<strong>Split-Brain Syndrome</strong>), corrupting metadata.</li>
+      <li>ZooKeeper enforces strict <strong>Quorum Fencing</strong> so that only one node can hold the active lease at any instant.</li>
+    </ul>
+
+    <p><strong>③ Distributed Synchronization (Locks, Barriers, and Queues)</strong></p>
+    <ul>
+      <li>Coordinates concurrent access to shared distributed resources using sequential ZNodes, ensuring mutual exclusion without deadlocks across thousands of worker nodes.</li>
+    </ul>
+
+    <p><strong>④ Centralized Configuration Management</strong></p>
+    <ul>
+      <li>Stores global cluster configuration parameters (e.g., database IP addresses, security policies, feature flags). When an administrator updates a ZNode, ZooKeeper pushes real-time <strong>Watch Events</strong> to all subscribed worker nodes simultaneously.</li>
+    </ul>
+
+    <p><strong>⑤ Naming Service &amp; Group Membership (HBase Coordination)</strong></p>
+    <ul>
+      <li>In <strong>Apache HBase</strong>, clients query ZooKeeper first to find the location of the <code>hbase:meta</code> catalog table and the active <code>HMaster</code>. ZooKeeper also tracks live <code>RegionServers</code> via ephemeral nodes and alerts the <code>HMaster</code> immediately if any RegionServer goes down.</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ===== Q7 ===== -->
+<article class="qa" id="qb8-2-q7">
+  <div class="qa-head">
+    <span class="qn-badge">৭</span>
+    <h5>Compare Hive, Pig and HBase and say when to use each. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box" style="margin:.6rem 0">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong>
+        <ul>
+          <li><strong>Hive:</strong> ব্যাংকের ডেটা অ্যানালিস্ট যে জাভা জানে না, শুধু <strong>SQL (<code>HiveQL</code>)</strong> লিখে মাসিক রিপোর্ট বের করে!</li>
+          <li><strong>Pig:</strong> ডেটা ইঞ্জিনিয়ার যে অগোছালো লগ পরিষ্কার করার জন্য ধাপে ধাপে <strong>পাইপলাইন স্ক্রিপ্ট (<code>Pig Latin</code>)</strong> লেখে (এটি একটি <strong>শূকর/Pig</strong> যা যেকোনো কাঁচা/অগোছালো ডেটা খেতে পারে)!</li>
+          <li><strong>HBase:</strong> এটিএম বা ওয়েবসাইটের পেছনের <strong>লাইভ ডেটাবেস (NoSQL)</strong> যা মিলিসেকেন্ডের মধ্যে ডেটা খুঁজে দেয় বা আপডেট করে!</li>
+        </ul>
+      </li>
+      <li><strong>Mnemonic:</strong> <strong><code>Hive = SQL Warehouse</code></strong>, <strong><code>Pig = ETL Data-Flow Script</code></strong>, <strong><code>HBase = Real-Time NoSQL DB</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Declarative HiveQL (Schema-on-Read)</code>, <code>Procedural Pig Latin (ETL)</code>, <code>Column-Family NoSQL Store</code>, <code>Batch Latency vs Real-Time Random I/O</code>, <code>Metastore</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <p>পরীক্ষায় এই ৩টির পার্থক্য প্রায়ই আসে। মাত্র ৩টি লাইনে এদের চরিত্র মনে রাখুন:</p>
+    <ol class="steps">
+      <li><strong>Apache Hive (ডেটা ওয়্যারহাউস ও SQL রিপোর্টিং টুল):</strong>
+        <ul>
+          <li><strong>কী:</strong> ফেসবুক এটি তৈরি করেছিল যাতে যারা জাভা MapReduce কোড লিখতে পারে না কিন্তু <strong>SQL</strong> জানে, তারা যেন সহজেই বিগ ডেটা বিশ্লেষণ করতে পারে। এর ভাষাকে বলে <strong><code>HiveQL</code> (HQL)</strong>।</li>
+          <li><strong>কখন ব্যবহার করবেন:</strong> যখন আপনার ডেটা মোটামুটি গোছানো (Structured) এবং আপনি বিগত কয়েক মাসের ডেটার ওপর <strong>Batch Analytics বা BI Reporting</strong> করতে চান (যেমন—<i>"গত মাসে কোন ব্রাঞ্চে কত লোন দেওয়া হয়েছে?"</i>)। এটি কিন্তু কোনো রিয়েল-টাইম ডেটাবেস নয়!</li>
+        </ul>
+      </li>
+      <li><strong>Apache Pig (প্রোগ্রামারদের ETL ও ডেটা ক্লিনিং টুল):</strong>
+        <ul>
+          <li><strong>কী:</strong> ইয়াহু (Yahoo) এটি তৈরি করেছিল। এটি <strong><code>Pig Latin</code></strong> নামের একটি ধাপে ধাপে চলা স্ক্রিপ্টিং ভাষা (Procedural Data-Flow Language) ব্যবহার করে।</li>
+          <li><strong>কখন ব্যবহার করবেন:</strong> যখন আপনার ডেটা খুবই অগোছালো (Unstructured/Semi-structured ওয়েব লগ বা JSON) এবং ডেটা ওয়্যারহাউসে ঢোকানোর আগে সেগুলোকে পরিষ্কার, ফিল্টার ও জয়েন (<strong>ETL — Extract, Transform, Load</strong>) করার দরকার হয়।</li>
+        </ul>
+      </li>
+      <li><strong>Apache HBase (রিয়েল-টাইম NoSQL ডেটাবেস):</strong>
+        <ul>
+          <li><strong>কী:</strong> Google-এর Bigtable-এর অনুকরণে তৈরি একটি <strong>Column-oriented NoSQL Database</strong> যা HDFS-এর ওপর বসে কাজ করে।</li>
+          <li><strong>কখন ব্যবহার করবেন:</strong> Hive বা Pig দিয়ে ১টি রেকর্ড খুঁজতে বা আপডেট করতে কয়েক মিনিট লেগে যায়। যখন আপনার <strong>মিলিসেকেন্ডের মধ্যে রিয়েল-টাইম ডেটা পড়া বা আপডেট (<code>Random Read/Write</code>)</strong> করা দরকার (যেমন কাস্টমারের লাইভ ব্যালেন্স, শপিং কার্ট বা ফেসবুক মেসেঞ্জার চ্যাট স্টোর করা), তখন <strong>HBase</strong> ব্যবহার করবেন।</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>1. Architectural Positioning of Hive, Pig, and HBase</strong></p>
+    <p>While all three technologies operate atop <strong>HDFS</strong>, they serve fundamentally different layers of the Big Data stack:</p>
+    <ul>
+      <li><strong>Apache Hive:</strong> A declarative <strong>Data Warehousing &amp; SQL Analytics</strong> engine (originally developed by Facebook).</li>
+      <li><strong>Apache Pig:</strong> A procedural <strong>Data-Flow Scripting &amp; ETL</strong> platform (originally developed by Yahoo!).</li>
+      <li><strong>Apache HBase:</strong> A distributed <strong>Column-Family NoSQL Database</strong> for real-time random read/write access (modeled after Google Bigtable).</li>
+    </ul>
+
+    <div class="cmp-grid" style="margin:.6rem 0">
+      <div class="cmp-card phys">
+        <strong>Apache Hive (SQL Warehouse)</strong>
+        Declarative <code>HiveQL</code>, strict Schema-on-Read via Metastore, high-latency batch BI reporting for Data Analysts.
+      </div>
+      <div class="cmp-card virt">
+        <strong>Apache Pig (ETL Scripting)</strong>
+        Procedural <code>Pig Latin</code> data-flow scripts, optional schema, cleanses raw unstructured logs for Data Engineers.
+      </div>
+      <div class="cmp-card">
+        <strong>Apache HBase (Real-Time NoSQL)</strong>
+        Wide-column key-value store, millisecond random Read/Write by RowKey, powers live OLTP/fraud apps.
+      </div>
+    </div>
+
+    <p><strong>2. Comprehensive Comparison Table: Hive vs. Pig vs. HBase</strong></p>
+
+    <div class="trace-wrap">
+      <table class="mini">
+        <thead>
+          <tr>
+            <th>Feature / Dimension</th>
+            <th>Apache Hive</th>
+            <th>Apache Pig</th>
+            <th>Apache HBase</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Core Category</strong></td>
+            <td>Distributed Data Warehouse Engine</td>
+            <td>Procedural Data-Flow / ETL Scripting Platform</td>
+            <td>Distributed Column-Oriented NoSQL Database</td>
+          </tr>
+          <tr>
+            <td><strong>2. Language / Interface</strong></td>
+            <td><strong><code>HiveQL</code> (HQL)</strong> — Declarative SQL-like language</td>
+            <td><strong><code>Pig Latin</code></strong> — Procedural step-by-step scripting</td>
+            <td>Java API, REST, Thrift, or HBase Shell (<code>get</code>, <code>put</code>, <code>scan</code>)</td>
+          </tr>
+          <tr>
+            <td><strong>3. Target Audience</strong></td>
+            <td>Data Analysts, BI Developers, SQL Users</td>
+            <td>Data Engineers, ETL Pipeline Developers</td>
+            <td>Backend Engineers, Real-Time Application Developers</td>
+          </tr>
+          <tr>
+            <td><strong>4. Schema Requirement</strong></td>
+            <td><strong>Strict Schema-on-Read</strong> (managed in relational <code>Hive Metastore</code>)</td>
+            <td><strong>Optional / Flexible Schema</strong> (handles raw, messy tuples)</td>
+            <td><strong>Schema-less Columns</strong> (only Column Families are pre-defined)</td>
+          </tr>
+          <tr>
+            <td><strong>5. Data Types Handled</strong></td>
+            <td>Primarily Structured &amp; Semi-structured tables</td>
+            <td>Structured, Semi-structured, and deeply Unstructured logs</td>
+            <td>Key-Value / Wide-Column sparse matrices</td>
+          </tr>
+          <tr>
+            <td><strong>6. Processing Mode</strong></td>
+            <td><strong>Batch Processing</strong> (compiles to MapReduce, Tez, or Spark)</td>
+            <td><strong>Batch Processing</strong> (compiles to MapReduce/Tez DAGs)</td>
+            <td><strong>Real-Time Interactive Processing</strong> (direct HDFS/MemStore I/O)</td>
+          </tr>
+          <tr>
+            <td><strong>7. Latency</strong></td>
+            <td>High (Minutes to Hours)</td>
+            <td>High (Minutes to Hours)</td>
+            <td><strong>Ultra-Low (Milliseconds)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>8. Random Read/Write</strong></td>
+            <td>Not designed for point updates (<code>Append-mostly</code> analytics)</td>
+            <td>No random access (sequential batch pipelines only)</td>
+            <td><strong>Full Random Read, Write, Update, and Delete</strong> by RowKey</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>3. When to Use Each Technology (Practical Selection Guide)</strong></p>
+
+    <p><strong>① When to Use Apache Hive:</strong></p>
+    <ul>
+      <li><strong>Use Case:</strong> Historical Business Intelligence (BI) reporting, ad-hoc SQL querying, and executive dashboards (via Tableau/PowerBI over JDBC/ODBC).</li>
+      <li><strong>Banking Example:</strong> Generating a monthly regulatory compliance report for Bangladesh Bank summarizing total transaction volumes across 500 branches over the past 5 years using standard <code>SELECT ... GROUP BY</code> queries.</li>
+    </ul>
+
+    <p><strong>② When to Use Apache Pig:</strong></p>
+    <ul>
+      <li><strong>Use Case:</strong> Complex <strong>ETL (Extract, Transform, Load) pipelines</strong>, data cleansing, log parsing, and multi-stage data preparation before loading data into Hive.</li>
+      <li><strong>Banking Example:</strong> Ingesting raw, corrupted, multi-format firewall and ATM switch text logs, filtering out malformed lines, joining them with IP geolocation files, and transforming them into clean structured tables.</li>
+    </ul>
+
+    <p><strong>③ When to Use Apache HBase:</strong></p>
+    <ul>
+      <li><strong>Use Case:</strong> High-throughput, <strong>low-latency OLTP-like lookups</strong>, live user session tracking, real-time fraud scoring, and time-series sensor storage.</li>
+      <li><strong>Banking Example:</strong> Storing and querying a customer's real-time mobile banking session state or checking the last 10 card swipes within <code>5 milliseconds</code> during a live POS payment authorization.</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ===== Q8 ===== -->
+<article class="qa" id="qb8-2-q8">
+  <div class="qa-head">
+    <span class="qn-badge">৮</span>
+    <h5>Compare HBase and Cassandra. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box" style="margin:.6rem 0">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong>
+        <ul>
+          <li><strong>HBase:</strong> এক বস-ওয়ালা (<strong>Master-Slave</strong>) অফিস—বস (<code>HMaster</code> + <code>ZooKeeper</code>) সব জানে এবং সবার কাছে একদম সঠিক/একই হিসাব থাকে (<strong>CP = Consistency</strong>), কিন্তু বস ডাউন হলে একটু সময় লাগে।</li>
+          <li><strong>Cassandra:</strong> বস-বিহীন গোলটেবিল (<strong>Peer-to-Peer Ring</strong>)—সবাই সমান! তাই কোনো সার্ভার কখনো ডাউন হয় না (<strong>AP = Always Available, Zero Single Point of Failure</strong>), এবং লেখা (Write) হয় রকেটের গতিতে!</li>
+        </ul>
+      </li>
+      <li><strong>Mnemonic:</strong> <strong><code>HBase = Master-Slave + CP (Strong Consistency)</code></strong> vs <strong><code>Cassandra = Peer-to-Peer Ring + AP (High Availability)</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>CAP Theorem (CP vs AP)</code>, <code>Master-Slave vs Masterless Peer-to-Peer Ring</code>, <code>Gossip Protocol</code>, <code>HDFS Dependency vs Built-in Local Storage</code>, <code>CQL (Cassandra Query Language)</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <p><strong>HBase</strong> এবং <strong>Cassandra</strong> দুটোই বিখ্যাত Column-oriented NoSQL ডেটাবেস, কিন্তু এদের ভেতরের গঠন সম্পূর্ণ আলাদা:</p>
+    <ol class="steps">
+      <li><strong>আর্কিটেকচার (Master-Slave বনাম Masterless Ring):</strong>
+        <ul>
+          <li><strong>HBase</strong> চলে <strong>Master-Slave</strong> পদ্ধতিতে (এতে <code>HMaster</code> এবং <code>RegionServer</code> থাকে)। এর কাজ চালানোর জন্য নিচে <strong>HDFS</strong> এবং উপরে <strong>ZooKeeper</strong> থাকা বাধ্যতামূলক।</li>
+          <li><strong>Cassandra</strong> চলে <strong>Peer-to-Peer (Masterless Ring)</strong> পদ্ধতিতে—এখানে কোনো বস নেই, রিংয়ের প্রতিটি সার্ভারই সমান! তাই এতে কোনো <strong>Single Point of Failure (SPOF) নেই</strong> এবং এর জন্য HDFS বা ZooKeeper কিছুই লাগে না (নিজস্ব স্টোরেজ ও <strong>Gossip Protocol</strong> ব্যবহার করে)।</li>
+        </ul>
+      </li>
+      <li><strong>CAP Theorem (Consistency বনাম Availability):</strong>
+        <ul>
+          <li><strong>HBase হলো <code>CP</code> (Consistency + Partition Tolerance):</strong> এটি সবসময় শতভাগ সঠিক ডেটা (<strong>Strong Consistency</strong>) দেয়। মানে আপনি ডেটা আপডেট করার পরের মুহূর্তেই যে কেউ পড়লে নতুন ডেটাই পাবে (ব্যাংকের ব্যালেন্সের জন্য আদর্শ)।</li>
+          <li><strong>Cassandra হলো <code>AP</code> (Availability + Partition Tolerance):</strong> এর লক্ষ্য হলো সার্ভার যেন কখনোই ডাউন না হয় (<strong>Always Available</strong>) এবং আলট্রা-ফাস্ট Write স্পিড দেয়। তবে এতে ডেটা সব নোডে পৌঁছাতে কয়েক মিলিসেকেন্ড সময় লাগতে পারে (<strong>Eventual / Tunable Consistency</strong>)।</li>
+        </ul>
+      </li>
+      <li><strong>কুয়েরি ভাষা:</strong> HBase-এ কোনো SQL-এর মতো ভাষা নেই (<code>get/put</code> শেল বা API দিয়ে চালাতে হয়); কিন্তু Cassandra-তে <strong><code>CQL</code> (Cassandra Query Language)</strong> আছে যা দেখতে হুবহু SQL-এর মতো!</li>
+    </ol>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>1. Architectural Overview: HBase vs. Apache Cassandra</strong></p>
+    <p>Both <strong>Apache HBase</strong> and <strong>Apache Cassandra</strong> are wide-column NoSQL databases inspired by Google's <i>Bigtable</i>, designed to handle petabytes of sparse data across distributed clusters. However, <strong>Cassandra</strong> also incorporates Amazon <i>Dynamo's</i> masterless ring architecture, leading to fundamental differences in availability, consistency, and infrastructure dependencies.</p>
+
+<pre class="diagram">      APACHE HBASE (Master-Slave / CP)            APACHE CASSANDRA (Peer-to-Peer Ring / AP)
+    +----------------------------------+                   [Node 1] &lt;---&gt; [Node 2]
+    |   HMaster + ZooKeeper Quorum     |                      ^               ^
+    +----------------------------------+                      |   (Gossip     |
+         /            |            \                          |   Protocol)   |
+        v             v             v                         v               v
+  [RegionSrv 1] [RegionSrv 2] [RegionSrv 3]                [Node 4] &lt;---&gt; [Node 3]
+  +--------------------------------------+              (No Master, No HDFS/ZooKeeper,
+  |     Underlying Storage: HDFS         |               Zero Single Point of Failure)
+  +--------------------------------------+</pre>
+
+    <!-- SVG: HBase (Master-Slave CP) vs Cassandra (Peer-to-Peer Ring AP) -->
+    <svg class="clock-svg" viewBox="0 0 760 245" role="img" aria-label="HBase Master-Slave CP vs Cassandra Peer-to-Peer Ring AP">
+      <rect x="0" y="0" width="760" height="245" rx="10" fill="#f7f4ee"/>
+
+      <!-- Left Panel: HBase -->
+      <rect x="18" y="14" width="350" height="218" rx="8" fill="#ffffff" stroke="#0c1e33" stroke-width="1.5"/>
+      <text x="193" y="34" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="700" fill="#0c1e33">Apache HBase — Master-Slave (CP System)</text>
+
+      <rect x="78" y="46" width="230" height="40" rx="6" fill="#0c1e33"/>
+      <text x="193" y="64" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="700" fill="#c4a35a">HMaster + ZooKeeper Quorum</text>
+      <text x="193" y="79" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">Central Coordinator &amp; Region Assignment</text>
+
+      <rect x="34" y="108" width="96" height="44" rx="5" fill="#1e3f66"/>
+      <text x="82" y="128" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#ffffff">RegionServer 1</text>
+      <text x="82" y="142" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">MemStore + WAL</text>
+
+      <rect x="145" y="108" width="96" height="44" rx="5" fill="#1e3f66"/>
+      <text x="193" y="128" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#ffffff">RegionServer 2</text>
+      <text x="193" y="142" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">MemStore + WAL</text>
+
+      <rect x="256" y="108" width="96" height="44" rx="5" fill="#1e3f66"/>
+      <text x="304" y="128" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#ffffff">RegionServer 3</text>
+      <text x="304" y="142" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" fill="#e5d5a7">MemStore + WAL</text>
+
+      <line x1="150" y1="86" x2="82" y2="108" stroke="#c4a35a" stroke-width="1.5"/>
+      <line x1="193" y1="86" x2="193" y2="108" stroke="#c4a35a" stroke-width="1.5"/>
+      <line x1="236" y1="86" x2="304" y2="108" stroke="#c4a35a" stroke-width="1.5"/>
+
+      <rect x="34" y="172" width="318" height="44" rx="6" fill="#2b547e"/>
+      <text x="193" y="192" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="700" fill="#e5d5a7">Underlying HDFS Storage (HFiles)</text>
+      <text x="193" y="207" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#ffffff">Strong Consistency (CP) • Dependent on HDFS &amp; ZK</text>
+
+      <!-- Right Panel: Cassandra -->
+      <rect x="392" y="14" width="350" height="218" rx="8" fill="#ffffff" stroke="#7a1c1c" stroke-width="1.5"/>
+      <text x="567" y="34" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="700" fill="#7a1c1c">Apache Cassandra — Peer-to-Peer Ring (AP System)</text>
+
+      <!-- Ring Circle -->
+      <circle cx="567" cy="128" r="64" fill="none" stroke="#c4a35a" stroke-width="3" stroke-dasharray="6,3"/>
+      <text x="567" y="124" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#0c1e33">Gossip Protocol</text>
+      <text x="567" y="138" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9.5" fill="#7a1c1c">Zero SPOF • CQL</text>
+
+      <rect x="527" y="44" width="80" height="30" rx="5" fill="#7a1c1c"/>
+      <text x="567" y="63" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#ffffff">Peer Node 1</text>
+
+      <rect x="640" y="113" width="80" height="30" rx="5" fill="#7a1c1c"/>
+      <text x="680" y="132" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#ffffff">Peer Node 2</text>
+
+      <rect x="527" y="182" width="80" height="30" rx="5" fill="#7a1c1c"/>
+      <text x="567" y="201" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#ffffff">Peer Node 3</text>
+
+      <rect x="414" y="113" width="80" height="30" rx="5" fill="#7a1c1c"/>
+      <text x="454" y="132" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="700" fill="#ffffff">Peer Node 4</text>
+    </svg>
+
+    <p><strong>2. Detailed Technical Comparison: HBase vs. Cassandra</strong></p>
+
+    <div class="trace-wrap">
+      <table class="mini">
+        <thead>
+          <tr>
+            <th>Comparison Parameter</th>
+            <th>Apache HBase</th>
+            <th>Apache Cassandra</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Core Architecture</strong></td>
+            <td><strong>Master-Slave Architecture</strong> (<code>HMaster</code> + <code>RegionServers</code>).</td>
+            <td><strong>Masterless Peer-to-Peer Ring</strong> (All nodes play an identical role).</td>
+          </tr>
+          <tr>
+            <td><strong>2. CAP Theorem Classification</strong></td>
+            <td><strong><code>CP</code> System</strong> (Prioritizes <strong>Strong Consistency</strong> and Partition Tolerance).</td>
+            <td><strong><code>AP</code> System</strong> (Prioritizes <strong>High Availability</strong> and Partition Tolerance with Tunable Consistency).</td>
+          </tr>
+          <tr>
+            <td><strong>3. Single Point of Failure (SPOF)</strong></td>
+            <td>If a RegionServer crashes, its regions are unavailable for a few seconds until reassigned by <code>HMaster</code>.</td>
+            <td><strong>Zero SPOF</strong> — Any node in the ring can accept any read/write request immediately via consistent hashing.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Storage &amp; Coordination Dependency</strong></td>
+            <td><strong>Dependent:</strong> Requires <strong>HDFS</strong> for underlying block storage and <strong>ZooKeeper</strong> for cluster coordination.</td>
+            <td><strong>Self-Contained:</strong> Uses its own built-in local disk storage engine and internal <strong>Gossip Protocol</strong> for node discovery.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Read vs. Write Performance</strong></td>
+            <td>Optimized for <strong>Consistent Reads</strong> and range scans (single authoritative RegionServer per row key).</td>
+            <td>Optimized for <strong>Ultra-Fast Writes</strong> (append-only CommitLog + Memtable on any coordinator node without locks).</td>
+          </tr>
+          <tr>
+            <td><strong>6. Query Language</strong></td>
+            <td>Low-level <strong>HBase Shell (<code>get</code>, <code>put</code>, <code>scan</code>)</strong>, Java API, or external Apache Phoenix for SQL.</td>
+            <td>Built-in <strong><code>CQL</code> (Cassandra Query Language)</strong> — rich SQL-like syntax (<code>SELECT, INSERT, CREATE KEYSPACE</code>).</td>
+          </tr>
+          <tr>
+            <td><strong>7. Data Replication</strong></td>
+            <td>Handled externally at the storage layer by <strong>HDFS DataNode replication</strong>.</td>
+            <td>Handled natively by Cassandra across multiple nodes and multiple geographic data centers (<code>NetworkTopologyStrategy</code>).</td>
+          </tr>
+          <tr>
+            <td><strong>8. Best Financial/Enterprise Use Case</strong></td>
+            <td>When <strong>Strong Consistency</strong> is non-negotiable (e.g., real-time ledger state, instant fraud counters on an existing Hadoop/HDFS cluster).</td>
+            <td>When <strong>100% Write Availability &amp; Multi-Datacenter Active-Active</strong> operation are paramount (e.g., IoT telemetry, ATM transaction logging, messaging apps like Discord/Netflix).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>3. Summary Decision Rule for System Architects</strong></p>
+    <ul>
+      <li><strong>Choose HBase</strong> if your organization already maintains a large <strong>Hadoop (HDFS + YARN + ZooKeeper)</strong> cluster, requires <strong>strict immediate consistency (<code>CP</code>)</strong>, and performs heavy range scans integrated with MapReduce/Spark jobs.</li>
+      <li><strong>Choose Cassandra</strong> if you need a standalone, <strong>always-on (<code>AP</code>) database</strong> with <strong>multi-datacenter active-active replication</strong>, blindingly fast write throughput, and SQL-like developer ergonomics via <strong>CQL</strong>.</li>
+    </ul>
+  </div>
+</article>
+
+<p class="one-line" style="margin-top:1rem"><i>(Part 1-এর প্রথম ৮টি প্রশ্ন এখানে শেষ হলো। আপনি বললেই আমি <strong>Part 2: Questions 9 to 16</strong>—অর্থাৎ <code>Flume vs Sqoop vs Chukwa</code>, <code>Oozie</code>, <code>Avro/Parquet/ORC</code>, <code>Mahout vs Spark MLlib</code>, <code>Node Failure &amp; Data Locality</code>, <code>Hadoop 1 vs 2</code>, <code>Branch Transaction MapReduce Code</code> এবং <code>ATM Fraud Dashboard Data Flow</code> ঠিক একইভাবে তৈরি করে দেবো!)</i></p>
         <div class="q"><b>9.</b> Compare Flume, Sqoop and Chukwa.</div>
         <div class="q"><b>10.</b> Explain Oozie workflows and coordinators.</div>
         <div class="q"><b>11.</b> What are Avro, Parquet and ORC? Why does serialization matter?</div>
@@ -64484,16 +65818,963 @@ VARCHAR(8) --&gt; [ Len=3 (1B) | 'B' | 'D' | 'T' ]                   (Consumes o
         <div class="q"><b>5.</b> What is inflation? How does a central bank control it?</div>
         <div class="q"><b>6.</b> What is financial inclusion and why does it matter?</div>
 
-  <h3 class="sec" id="qb13">প্রশ্নব্যাংক ১৩: মিশ্র হাইব্রিড প্রশ্ন (2026-ধাঁচ: ধারণা + হিসাব)</h3>
+  
+<h4 class="sub" id="qb13">প্রশ্নব্যাংক ১৩ (মিশ্র হাইব্রিড প্রশ্ন: ধারণা + হিসাব — Part 1: Q1–Q8)</h4>
 
-        <div class="q"><b>1.</b> Distinguish preventive and corrective maintenance with an example each, and calculate the reliability of a series system of four components, each with reliability 0.98.</div>
-        <div class="q"><b>2.</b> At which OSI layer does a Layer 3 switch operate and what is its PDU? Summarize 192.168.8.0/24 through 192.168.11.0/24.</div>
-        <div class="q"><b>3.</b> Which ACID property prevents a half-completed transfer? Write the SQL constraint to enforce a minimum balance of 500.</div>
-        <div class="q"><b>4.</b> What is a page fault? Compute the effective access time for a fault rate of 0.0005, memory access 100 ns and fault service time 10 ms.</div>
-        <div class="q"><b>5.</b> Explain RAID 6 and compute the usable capacity for six 8 TB drives.</div>
-        <div class="q"><b>6.</b> Explain Zero-Day vulnerabilities and name two controls that still help against them.</div>
-        <div class="q"><b>7.</b> What is a cookie? Which attribute stops JavaScript from reading it and which one mitigates CSRF?</div>
-        <div class="q"><b>8.</b> What is thrashing? How can the working-set model prevent it?</div>
+<div class="q"><b>1.</b> Distinguish preventive and corrective maintenance with an example each, and calculate the reliability of a series system of four components, each with reliability 0.98. <i>(10 Marks)</i></div>
+<div class="q"><b>2.</b> At which OSI layer does a Layer 3 switch operate and what is its PDU? Summarize 192.168.8.0/24 through 192.168.11.0/24. <i>(10 Marks)</i></div>
+<div class="q"><b>3.</b> Which ACID property prevents a half-completed transfer? Write the SQL constraint to enforce a minimum balance of 500. <i>(10 Marks)</i></div>
+<div class="q"><b>4.</b> What is a page fault? Compute the effective access time for a fault rate of 0.0005, memory access 100 ns and fault service time 10 ms. <i>(10 Marks)</i></div>
+<div class="q"><b>5.</b> Explain RAID 6 and compute the usable capacity for six 8 TB drives. <i>(10 Marks)</i></div>
+<div class="q"><b>6.</b> Explain Zero-Day vulnerabilities and name two controls that still help against them. <i>(10 Marks)</i></div>
+<div class="q"><b>7.</b> What is a cookie? Which attribute stops JavaScript from reading it and which one mitigates CSRF? <i>(10 Marks)</i></div>
+<div class="q"><b>8.</b> What is thrashing? How can the working-set model prevent it? <i>(10 Marks)</i></div>
+
+<!-- ===== INTRO & NO-CALCULATOR SHORTCUTS ===== -->
+<div class="concept-box">
+  <div class="cb-title">⚡ প্রথমে কনসেপ্ট ও "No-Calculator" শর্টকাট ট্রিকস (প্রথম ৮টি প্রশ্নের জন্য)</div>
+  <p>এই <strong>প্রশ্নব্যাংক ১৩ (মিশ্র হাইব্রিড প্রশ্ন: ধারণা + হিসাব)</strong> সেকশনটি আপনার পরীক্ষার জন্য <strong>সোনার খনি</strong>! কারণ ২০২৬ সালের দুটি ব্যাংক পরীক্ষাতেই (2026-A এবং 2026-B) প্রশ্নকর্তারা হুবহু এই <strong>"১টি ছোট থিওরি + ১টি ছোট অংক/কোড"</strong> ফরম্যাটেই প্রশ্ন করেছেন।</p>
+  <p>যেহেতু পরীক্ষার হলে <strong>ক্যালকুলেটর নেওয়া সম্পূর্ণ নিষিদ্ধ</strong>, তাই প্রথমে এই ৮টি প্রশ্নের অংকগুলো <strong>ক্যালকুলেটর ছাড়া ৫ সেকেন্ডে করার জাদুকরী ট্রিকস</strong> দেখে নিন, তারপর আমরা ১ থেকে ৮ নম্বর প্রশ্নের পূর্ণাঙ্গ উত্তরে যাব।</p>
+
+  <div class="concept-item">
+    <span class="badge-n">১</span>
+    <div>
+      <strong>প্রশ্ন ১-এর অংক (0.98<sup>4</sup> ক্যালকুলেটর ছাড়া কীভাবে করবেন?):</strong>
+      <ul>
+        <li>৪টি যন্ত্র Series-এ আছে, প্রতিটির রিলায়েবিলিটি <i>0.98</i> (অর্থাৎ নষ্ট হওয়ার চান্স <i>0.02</i>)।</li>
+        <li><strong>ক্যালকুলেটর ছাড়া শর্টকাট:</strong> <i>(1 &minus; 0.02)<sup>4</sup> &approx; 1 &minus; 4(0.02) + 6(0.0004) = 1 &minus; 0.08 + 0.0024 = <b>0.9224</b></i> বা <strong><i>92.24%</i></strong>! (একদম নিখুঁত মান: <i>0.98 &times; 0.98 = 0.9604</i>, আর <i>0.9604 &times; 0.9604 = <b>0.922368 &approx; 92.24%</b></i>)।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept-item">
+    <span class="badge-n">২</span>
+    <div>
+      <strong>প্রশ্ন ২-এর অংক (<code>192.168.8.0/24</code> থেকে <code>11.0/24</code> Summarization):</strong>
+      <ul>
+        <li>নেটওয়ার্ক কয়টি? ৮, ৯, ১০, ১১ &rArr; মোট <strong>৪টি</strong> ধারাবাহিক <code>/24</code> নেটওয়ার্ক।</li>
+        <li><strong>ক্যালকুলেটর ছাড়া শর্টকাট:</strong> <i>4 = 2<sup>2</sup></i>, তাই <code>/24</code> থেকে <i>2</i> বিয়োগ করুন &rArr; <i>24 &minus; 2 = <b>/22</b></i>! উত্তর হবে প্রথম আইপিটি দিয়ে <strong><code>192.168.8.0/22</code></strong>।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept-item">
+    <span class="badge-n">৩</span>
+    <div>
+      <strong>প্রশ্ন ৪-এর অংক (Page Fault EAT হিসাব):</strong>
+      <ul>
+        <li>একক (Unit) এক রাখলেই অংক শেষ! মেমোরি সময় <i>= 100 ns</i>, আর ফল্ট সময় <i>= 10 ms = <b>10,000,000 ns</b></i> (মিলি থেকে ন্যানো মানে <i>10<sup>6</sup></i> বা ১০ লক্ষ দিয়ে গুণ)।</li>
+        <li><i>0.0005 &times; 10,000,000 = 5 &times; 1000 = <b>5,000 ns</b></i>। এর সাথে মেমোরির <i>99.95 ns</i> যোগ করলে <i>= <b>5,099.95 ns</b></i>!</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept-item">
+    <span class="badge-n">৪</span>
+    <div>
+      <strong>প্রশ্ন ৫-এর অংক (RAID 6 Usable Capacity):</strong>
+      <ul>
+        <li>RAID 5-এ ১টি ডিস্ক বাদ যায় <i>(N &minus; 1)</i>, আর <strong>RAID 6-এ ২টি ডিস্ক প্যারিটিতে বাদ যায় <i>(N &minus; 2)</i></strong>।</li>
+        <li>৬টি <code>8 TB</code> ডিস্ক হলে: <i>(6 &minus; 2) &times; 8 TB = 4 &times; 8 = <b>32 TB</b></i>!</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="one-line"><strong>📝 PART 1: QUESTIONS 1 TO 8 (10-Mark Exam Standard Answers)</strong></p>
+</div>
+
+<!-- ===== Q1 ===== -->
+<article class="qa" id="qb13-q1">
+  <div class="qa-head">
+    <span class="qn-badge">১</span>
+    <h5>Question 1: Distinguish preventive and corrective maintenance with an example each, and calculate the reliability of a series system of four components, each with reliability 0.98. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> সার্ভার নষ্ট হওয়ার আগে ফ্যান পরিষ্কার ও ব্যাটারি চেক করা হলো <strong>Preventive (টিকা নেওয়া)</strong>; আর হার্ডডিস্ক পুড়ে যাওয়ার পর নতুন লাগানো হলো <strong>Corrective (অপারেশন করা)</strong>! Series মানে চেইনের ৪টি আংটা—সবগুলো ভালো থাকতে হবে (<i>0.98<sup>4</sup> = 92.24%</i>)।</li>
+      <li><strong>Mnemonic:</strong> <strong><code>Preventive = Before Failure (Proactive)</code></strong> vs <strong><code>Corrective = After Failure (Reactive)</code></strong>; <strong><code>Series = Multiply</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Proactive Scheduled Servicing</code>, <code>Reactive Fault Restoration</code>, <code>MTBF vs MTTR</code>, <code>Series System Reliability</code>, <code>Single Point of Failure (SPOF)</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও অংক)</span>
+    <ul>
+      <li><strong>১ম অংশ (Preventive বনাম Corrective Maintenance):</strong>
+        <ul>
+          <li><strong>Preventive Maintenance (প্রতিরোধমূলক — নষ্ট হওয়ার আগে):</strong> কোনো যন্ত্র বা সার্ভার ডাউন হওয়ার আগেই রুটিনমাফিক পরীক্ষা ও পরিচর্যা করা, যাতে ভবিষ্যতে হঠাৎ নষ্ট না হয়। <em>উদাহরণ:</em> প্রতি মাসে ডেটা সেন্টারের সার্ভারের ধুলো পরিষ্কার করা, OS সিকিউরিটি প্যাচ আপডেট দেওয়া এবং UPS-এর ব্যাটারি ভোল্টেজ টেস্ট করা।</li>
+          <li><strong>Corrective Maintenance (সংশোধনমূলক — নষ্ট হওয়ার পরে):</strong> কোনো যন্ত্র বা সফটওয়্যার নষ্ট বা ক্র্যাশ করার পর সেটিকে মেরামত বা বদলে আবার চালু করা। <em>উদাহরণ:</em> ব্যাংকের কোনো সার্ভারের হার্ডডিস্ক বা পাওয়ার সাপ্লাই (PSU) পুড়ে যাওয়ার পর নতুন হার্ডডিস্ক লাগিয়ে RAID রিবিল্ড করা।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (Series Reliability অংক):</strong>
+        <ul>
+          <li><strong>সূত্র:</strong> Series সিস্টেমে সবগুলো যন্ত্র একসাথে ভালো থাকতে হয়, তাই মোট রিলায়েবিলিটি সবগুলোর গুণফল: <i>R<sub>s</sub> = R<sub>1</sub> &times; R<sub>2</sub> &times; R<sub>3</sub> &times; R<sub>4</sub> = R<sup>4</sup></i>।</li>
+          <li><strong>ক্যালকুলেটর ছাড়া হিসাব:</strong>
+            <ul>
+              <li>প্রথমে ২টি গুণ করুন: <i>0.98 &times; 0.98 = 0.9604</i> (<i>98<sup>2</sup> = (100 &minus; 2)<sup>2</sup> = 10000 &minus; 400 + 4 = 9604</i>)।</li>
+              <li>এবার <i>0.9604 &times; 0.9604 = <b>0.92236816 &approx; 0.9224</b></i> বা <strong><i>92.24%</i></strong>।</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Distinction Between Preventive and Corrective Maintenance</strong></p>
+    <p>In enterprise IT and data center operations, system maintenance is broadly classified into <strong>Preventive (Proactive)</strong> and <strong>Corrective (Reactive)</strong> maintenance:</p>
+
+    <div class="trace-wrap">
+      <table class="mini">
+        <thead>
+          <tr>
+            <th>Comparison Feature</th>
+            <th>Preventive Maintenance (PM)</th>
+            <th>Corrective Maintenance (CM)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Core Definition</strong></td>
+            <td>Proactive, scheduled servicing performed <strong>before</strong> a system fault or failure occurs to prevent downtime.</td>
+            <td>Reactive repair or replacement performed <strong>after</strong> a hardware or software failure has already occurred.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Primary Objective</strong></td>
+            <td>To maximize <strong>MTBF</strong> (Mean Time Between Failures) and reduce the probability of unexpected outages.</td>
+            <td>To minimize <strong>MTTR</strong> (Mean Time To Repair) and restore failed services to normal operation as quickly as possible.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Scheduling &amp; Downtime</strong></td>
+            <td>Planned in advance during off-peak maintenance windows; zero unplanned downtime.</td>
+            <td>Unscheduled and emergency-driven; often results in costly unplanned business downtime.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Cost &amp; Risk Impact</strong></td>
+            <td>Low predictable operational cost; extends hardware lifespan.</td>
+            <td>High emergency repair cost, SLA penalty risk, and potential data/revenue loss.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Banking IT Example</strong></td>
+            <td>Monthly cleaning of server rack air filters, periodic UPS battery load testing, and applying scheduled OS security patches.</td>
+            <td>Replacing a burned-out server Power Supply Unit (PSU), swapping a failed RAID hard drive, or fixing a crashed database table.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>Part B: Reliability Calculation of the 4-Component Series System</strong></p>
+
+    <p><strong>1. System Model &amp; Formula</strong><br>
+    In a <strong>Series System</strong>, all components are connected in a single chain such that the failure of any single component causes the entire system to fail:</p>
+
+<pre class="diagram">Input ---&gt; [ R1 = 0.98 ] ---&gt; [ R2 = 0.98 ] ---&gt; [ R3 = 0.98 ] ---&gt; [ R4 = 0.98 ] ---&gt; Output</pre>
+
+    <svg class="clock-svg" viewBox="0 0 680 95" role="img" aria-label="4-Component Series Reliability Model">
+      <rect x="5" y="5" width="670" height="85" rx="8" fill="#f7f4ee" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="35" y="52" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#0c1e33">Input</text>
+      <line x1="70" y1="48" x2="105" y2="48" stroke="#0c1e33" stroke-width="2"/>
+      <rect x="105" y="25" width="105" height="45" rx="6" fill="#0c1e33" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="157" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#e5d5a7">Component 1</text>
+      <text x="157" y="61" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">R₁ = 0.98</text>
+      <line x1="210" y1="48" x2="235" y2="48" stroke="#0c1e33" stroke-width="2"/>
+      <rect x="235" y="25" width="105" height="45" rx="6" fill="#142d4c" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="287" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#e5d5a7">Component 2</text>
+      <text x="287" y="61" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">R₂ = 0.98</text>
+      <line x1="340" y1="48" x2="365" y2="48" stroke="#0c1e33" stroke-width="2"/>
+      <rect x="365" y="25" width="105" height="45" rx="6" fill="#1e3f66" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="417" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#e5d5a7">Component 3</text>
+      <text x="417" y="61" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">R₃ = 0.98</text>
+      <line x1="470" y1="48" x2="495" y2="48" stroke="#0c1e33" stroke-width="2"/>
+      <rect x="495" y="25" width="105" height="45" rx="6" fill="#2b547e" stroke="#c4a35a" stroke-width="1.5"/>
+      <text x="547" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#e5d5a7">Component 4</text>
+      <text x="547" y="61" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#ffffff">R₄ = 0.98</text>
+      <line x1="600" y1="48" x2="625" y2="48" stroke="#0c1e33" stroke-width="2"/>
+      <text x="650" y="52" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#7a1c1c">92.24%</text>
+    </svg>
+
+    <p>For <i>n</i> independent components connected in series, the overall system reliability <i>R</i><sub>series</sub> is the product of their individual reliabilities:</p>
+    <p style="text-align:center"><i>R</i><sub>series</sub> = <i>R</i><sub>1</sub> &times; <i>R</i><sub>2</sub> &times; <i>R</i><sub>3</sub> &times; &hellip; &times; <i>R<sub>n</sub></i> = (<i>R</i>)<sup><i>n</i></sup></p>
+
+    <p><strong>2. Step-by-Step Calculation</strong></p>
+    <ul>
+      <li><strong>Given:</strong>
+        <ul>
+          <li>Number of components, <i>n = 4</i></li>
+          <li>Reliability of each component, <i>R = 0.98</i></li>
+        </ul>
+      </li>
+      <li><strong>Step 1 (Reliability of first pair):</strong>
+        <p style="text-align:center"><i>R</i><sub>1,2</sub> = 0.98 &times; 0.98 = 0.9604</p>
+      </li>
+      <li><strong>Step 2 (Total reliability of all 4 components):</strong>
+        <p style="text-align:center"><i>R</i><sub>series</sub> = (0.98)<sup>4</sup> = (0.9604) &times; (0.9604) = <b>0.92236816</b></p>
+      </li>
+      <li><strong>Step 3 (Percentage Form):</strong>
+        <p style="text-align:center"><i>R</i><sub>series</sub> &approx; <b>0.9224</b> &quad; or &quad; <b>92.24%</b></p>
+      </li>
+    </ul>
+
+    <div class="fault-bars">
+      <div class="fb-row"><span>1 Component (R¹)</span><div class="fb"><i style="width:98%"></i></div><b>98.00%</b></div>
+      <div class="fb-row"><span>2 Components (R²)</span><div class="fb"><i style="width:96.04%"></i></div><b>96.04%</b></div>
+      <div class="fb-row"><span>4 Components (R⁴)</span><div class="fb"><i style="width:92.24%"></i></div><b>92.24%</b></div>
+    </div>
+
+    <div class="concept-box" style="margin-top:.6rem">
+      <p class="one-line"><strong>Conclusion:</strong> Even though each component is <i>98%</i> reliable individually, connecting four of them in series reduces the overall system reliability to <strong><i>92.24%</i></strong> (an failure probability of <i>7.76%</i>).</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===== Q2 ===== -->
+<article class="qa" id="qb13-q2">
+  <div class="qa-head">
+    <span class="qn-badge">২</span>
+    <h5>Question 2: At which OSI layer does a Layer 3 switch operate and what is its PDU? Summarize 192.168.8.0/24 through 192.168.11.0/24. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> <strong>Layer 3 Switch</strong> হলো একের ভেতর দুই—একই VLAN-এ থাকলে সে সুইচ (Layer 2, Frame), আর ভিন্ন VLAN-এ গেলে সে রাউটার (<strong>Layer 3, Packet</strong>)! ৪টি সাবনেট (<code>8, 9, 10, 11</code>) একসাথে জোড়া দিলে <code>/24</code> থেকে ২ কমে <strong><code>192.168.8.0/22</code></strong> হয়।</li>
+      <li><strong>Mnemonic:</strong> <strong><code>L3 Switch = Network Layer (Packet) + ASIC Hardware Speed</code></strong>; <strong><code>4 Subnets = 2^2 -&gt; /24 - 2 = /22</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Network Layer (Layer 3)</code>, <code>Packet (L3 PDU) &amp; Frame (L2 PDU)</code>, <code>Hardware ASIC Routing (SVI)</code>, <code>Route Summarization (Supernetting)</code>, <code>Longest Common Prefix (/22)</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও অংক)</span>
+    <ul>
+      <li><strong>১ম অংশ (Layer 3 Switch-এর OSI Layer ও PDU):</strong>
+        <ul>
+          <li>একটি <strong>Layer 3 Switch (Multilayer Switch)</strong> মূলত OSI মডেলের <strong>Layer 3 (Network Layer)</strong> এবং <strong>Layer 2 (Data Link Layer)</strong> উভয় লেয়ারেই কাজ করে। তবে এর প্রধান বৈশিষ্ট্য যেহেতু ইন্টার-ভিল্যান রাউটিং (Inter-VLAN Routing), তাই এর সর্বোচ্চ কার্যক্ষম লেয়ার হলো <strong>Layer 3 (Network Layer)</strong>।</li>
+          <li><strong>PDU (Protocol Data Unit):</strong> Layer 3-তে রাউটিং করার সময় এর PDU হলো <strong>Packet</strong> (এবং Layer 2-তে সুইচিং করার সময় এর PDU হলো <strong>Frame</strong>)। এটি সাধারণ রাউটারের চেয়ে অনেক দ্রুত কারণ এটি সফটওয়্যারের বদলে বিশেষ হার্ডওয়্যার চিপ (<strong>ASIC</strong>) দিয়ে রাউটিং করে।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (<code>192.168.8.0/24</code> থেকে <code>192.168.11.0/24</code> Route Summarization):</strong>
+        <ul>
+          <li>প্রথম দুটি অকটেট (<code>192.168</code>) সবার সমান। তৃতীয় অকটেটগুলো (<code>8, 9, 10, 11</code>) ৮-বিট বাইনারিতে লিখি:
+            <ul>
+              <li><code>8</code> &nbsp;<i>= <b>000010</b>00</i></li>
+              <li><code>9</code> &nbsp;<i>= <b>000010</b>01</i></li>
+              <li><code>10</code> <i>= <b>000010</b>10</i></li>
+              <li><code>11</code> <i>= <b>000010</b>11</i></li>
+            </ul>
+          </li>
+          <li>দেখুন, বাম দিক থেকে প্রথম <strong>৬টি বিট (<code>000010</code>)</strong> চারটি আইপিতেই হুবহু এক!</li>
+          <li>তাহলে নতুন প্রিফিক্স হবে: <i>8 (1st octet) + 8 (2nd octet) + 6 (matching bits) = <b>/22</b></i>।</li>
+          <li><strong>Summarized Route:</strong> <strong><code>192.168.8.0/22</code></strong> (সাবনেট মাস্ক: <code>255.255.252.0</code>)।</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: OSI Layer and PDU of a Layer 3 Switch</strong></p>
+    <ol class="steps">
+      <li><strong>Operating OSI Layer:</strong>
+        <ul>
+          <li>A <strong>Layer 3 Switch (Multilayer Switch)</strong> operates primarily up to <strong>OSI Layer 3 (Network Layer)</strong> while retaining full <strong>Layer 2 (Data Link Layer)</strong> switching capabilities.</li>
+          <li>Unlike a traditional router that uses CPU-based software routing, a Layer 3 switch performs high-speed <strong>Inter-VLAN Routing</strong> and IP forwarding directly in hardware using specialized <strong>ASIC (Application-Specific Integrated Circuit)</strong> chips and Switched Virtual Interfaces (<strong>SVIs</strong>).</li>
+        </ul>
+      </li>
+      <li><strong>Protocol Data Unit (PDU):</strong>
+        <ul>
+          <li>At <strong>Layer 3 (Network Layer)</strong> during IP routing/forwarding, its PDU is the <strong>Packet</strong>.</li>
+          <li>At <strong>Layer 2 (Data Link Layer)</strong> during intra-VLAN MAC switching, its PDU is the <strong>Frame</strong>.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <p><strong>Part B: Route Summarization (Supernetting) of <code>192.168.8.0/24</code> – <code>192.168.11.0/24</code></strong></p>
+
+    <p><strong>1. List of Contiguous Networks</strong><br>
+    We are asked to summarize four contiguous <code>/24</code> networks into a single aggregated route:</p>
+    <ol class="steps">
+      <li><code>192.168.8.0/24</code></li>
+      <li><code>192.168.9.0/24</code></li>
+      <li><code>192.168.10.0/24</code></li>
+      <li><code>192.168.11.0/24</code></li>
+    </ol>
+
+    <p><strong>2. Step-by-Step Binary Conversion of the 3rd Octet</strong><br>
+    Since the first two octets (<code>192.168.</code>) are identical across all four networks (<i>8 + 8 = 16 bits</i>), we convert the <strong>3rd octet</strong> (<code>8, 9, 10, 11</code>) into 8-bit binary to find the longest common bit pattern:</p>
+
+<pre class="diagram">Network Address      1st &amp; 2nd Octet     3rd Octet (Binary)      4th Octet
+---------------------------------------------------------------------------
+192.168.8.0/24   -&gt;  192.168.          0 0 0 0 1 0 | 0 0       .00000000
+192.168.9.0/24   -&gt;  192.168.          0 0 0 0 1 0 | 0 1       .00000000
+192.168.10.0/24  -&gt;  192.168.          0 0 0 0 1 0 | 1 0       .00000000
+192.168.11.0/24  -&gt;  192.168.          0 0 0 0 1 0 | 1 1       .00000000
+                                       \_________/   \__/
+                                       6 Matching    2 Host/Subnet
+                                          Bits       Bits (Vary)</pre>
+
+    <div class="trace-wrap">
+      <table class="trace sm">
+        <tr>
+          <th class="lab">Subnet</th>
+          <th>Octet 1–2 (16 bits)</th>
+          <th colspan="6">3rd Octet: 6 Matching Bits</th>
+          <th colspan="2">Varying</th>
+          <th>4th Octet</th>
+        </tr>
+        <tr>
+          <td class="lab">192.168.8.0/24</td>
+          <td>192.168.</td>
+          <td class="h">0</td><td class="h">0</td><td class="h">0</td><td class="h">0</td><td class="h">1</td><td class="h">0</td>
+          <td class="f">0</td><td class="f">0</td>
+          <td>.0</td>
+        </tr>
+        <tr>
+          <td class="lab">192.168.9.0/24</td>
+          <td>192.168.</td>
+          <td class="h">0</td><td class="h">0</td><td class="h">0</td><td class="h">0</td><td class="h">1</td><td class="h">0</td>
+          <td class="f">0</td><td class="f">1</td>
+          <td>.0</td>
+        </tr>
+        <tr>
+          <td class="lab">192.168.10.0/24</td>
+          <td>192.168.</td>
+          <td class="h">0</td><td class="h">0</td><td class="h">0</td><td class="h">0</td><td class="h">1</td><td class="h">0</td>
+          <td class="f">1</td><td class="f">0</td>
+          <td>.0</td>
+        </tr>
+        <tr>
+          <td class="lab">192.168.11.0/24</td>
+          <td>192.168.</td>
+          <td class="h">0</td><td class="h">0</td><td class="h">0</td><td class="h">0</td><td class="h">1</td><td class="h">0</td>
+          <td class="f">1</td><td class="f">1</td>
+          <td>.0</td>
+        </tr>
+      </table>
+    </div>
+
+    <p><strong>3. Calculating the Summary Prefix &amp; Subnet Mask</strong></p>
+    <ul>
+      <li><strong>Total Matching Network Bits (Prefix Length):</strong>
+        <p style="text-align:center">Prefix = 8 bits (1st Octet) + 8 bits (2nd Octet) + 6 bits (3rd Octet) = <b>/22</b></p>
+        <p><em>(Alternative Shortcut: Since <i>4 = 2<sup>2</sup></i> contiguous networks are combined, new prefix <i>= 24 &minus; 2 = <b>/22</b></i>).</em></p>
+      </li>
+      <li><strong>Summary Network Address:</strong> Set all non-matching bits to <code>0</code> &rArr; <code>00001000</code> <i>= 8</i> &rArr; <strong><code>192.168.8.0</code></strong>.</li>
+      <li><strong>Summary Subnet Mask (<code>/22</code>):</strong> <code>11111111.11111111.11111100.00000000</code> <i>= <b>255.255.252.0</b></i>.</li>
+    </ul>
+
+    <div class="concept-box" style="margin-top:.6rem">
+      <div class="cb-title">Final Answer</div>
+      <ul>
+        <li><strong>OSI Layer &amp; PDU:</strong> <strong>Layer 3 (Network Layer)</strong>; PDU is <strong>Packet</strong> (and <strong>Frame</strong> at Layer 2).</li>
+        <li><strong>Summarized Route:</strong> <strong><code>192.168.8.0/22</code></strong> (Subnet Mask: <code>255.255.252.0</code>).</li>
+      </ul>
+    </div>
+  </div>
+</article>
+
+<!-- ===== Q3 ===== -->
+<article class="qa" id="qb13-q3">
+  <div class="qa-head">
+    <span class="qn-badge">৩</span>
+    <h5>Question 3: Which ACID property prevents a half-completed transfer? Write the SQL constraint to enforce a minimum balance of 500. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> এক অ্যাকাউন্ট থেকে টাকা কাটার পর কারেন্ট চলে গেল, কিন্তু অন্য অ্যাকাউন্টে জমা হলো না—এই "আধা-খ্যাঁচড়া" কাজ আটকে টাকা আগের জায়গায় ফেরত দেয় <strong>Atomicity ("All-or-Nothing")</strong>! আর ব্যালেন্স ৫০০-এর নিচে নামা আটকায় <strong><code>CHECK (balance &gt;= 500)</code></strong>।</li>
+      <li><strong>Mnemonic:</strong> <strong><code>A = Atomicity = All-or-Nothing (Rollback)</code></strong>; <strong><code>SQL = CHECK (balance &gt;= 500)</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Atomicity (All-or-Nothing Rule)</code>, <code>Transaction Rollback</code>, <code>Undo Log / Recovery Manager</code>, <code>Domain Integrity Constraint</code>, <code>CHECK (balance &gt;= 500)</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও SQL)</span>
+    <ul>
+      <li><strong>১ম অংশ (কোন ACID প্রপার্টি আধা-সম্পন্ন ট্রান্সফার আটকায়?):</strong>
+        <ul>
+          <li>উত্তর হলো <strong>Atomicity (অ্যাটমিসিটি)</strong>। একে <strong>"All-or-Nothing" (হয় পুরোটা হবে, নয়তো কিছুই হবে না)</strong> নিয়ম বলা হয়।</li>
+          <li><em>ব্যাখ্যা:</em> ধরুন কাস্টমার <i>A</i> থেকে কাস্টমার <i>B</i>-তে ১০,০০০ টাকা ট্রান্সফার হচ্ছে। ১ম ধাপে <i>A</i>-এর অ্যাকাউন্ট থেকে টাকা কাটা হলো (<code>DEBIT</code>), কিন্তু ২য় ধাপে <i>B</i>-এর অ্যাকাউন্টে যোগ (<code>CREDIT</code>) হওয়ার আগেই সার্ভার ক্র্যাশ করল। <strong>Atomicity</strong> তখন <code>UNDO Log</code> ব্যবহার করে স্বয়ংক্রিয়ভাবে <strong><code>ROLLBACK</code></strong> চালায় এবং <i>A</i>-এর কাটা টাকা তার অ্যাকাউন্টে ফেরত দেয়, ফলে কখনোই "অর্ধেক ট্রান্সফার" অবস্থায় ডেটাবেস থাকে না।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (ন্যূনতম ব্যালেন্স ৫০০ রাখার SQL Constraint):</strong>
+        <ul>
+          <li>টেবিল তৈরি করার সময় আমরা <code>CHECK</code> কনস্ট্রেইন্ট ব্যবহার করব:<br>
+          <code>balance DECIMAL(15, 2) NOT NULL CHECK (balance &gt;= 500.00)</code>।</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: The ACID Property Preventing Half-Completed Transfers</strong></p>
+    <ol class="steps">
+      <li><strong>Identified ACID Property: <code>Atomicity</code></strong>
+        <ul>
+          <li><strong>Atomicity</strong> is the ACID property that guarantees a database transaction is treated as a single, indivisible logical unit of work following the <strong>"All-or-Nothing" principle</strong>.</li>
+        </ul>
+      </li>
+      <li><strong>How Atomicity Prevents a Half-Completed Bank Transfer:</strong>
+        <ul>
+          <li>A fund transfer of Tk. 5,000 from Account <i>A</i> to Account <i>B</i> consists of two sub-operations:
+            <ol>
+              <li><code>UPDATE Accounts SET balance = balance - 5000 WHERE acc_no = 'A';</code> (Debit)</li>
+              <li><code>UPDATE Accounts SET balance = balance + 5000 WHERE acc_no = 'B';</code> (Credit)</li>
+            </ol>
+          </li>
+          <li>If a hardware crash, power outage, or constraint violation occurs after Step 1 completes but before Step 2 finishes, the DBMS <strong>Transaction Recovery Manager</strong> consults the <strong>Undo Log (Write-Ahead Log)</strong> and executes an automatic <strong><code>ROLLBACK</code></strong>.</li>
+          <li>This reverses Step 1 and restores Account <i>A</i>'s original balance, ensuring that a half-completed transfer never persists in the database.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <p><strong>Part B: SQL Constraint to Enforce a Minimum Balance of 500</strong></p>
+    <p>To enforce that an account balance can never fall below <code>500</code> during <code>INSERT</code> or <code>UPDATE</code> operations, we use a SQL <strong><code>CHECK</code> constraint</strong> (along with <code>NOT NULL</code>):</p>
+
+    <p><strong>Option 1: Defining the Constraint During Table Creation (<code>CREATE TABLE</code>)</strong></p>
+<pre class="diagram">CREATE TABLE Bank_Accounts (
+    account_id   INT PRIMARY KEY,
+    holder_name  VARCHAR(100) NOT NULL,
+    balance      DECIMAL(15, 2) NOT NULL,
+    CONSTRAINT chk_min_balance CHECK (balance &gt;= 500.00)
+);</pre>
+
+    <p><strong>Option 2: Adding the Constraint to an Existing Table (<code>ALTER TABLE</code>)</strong></p>
+<pre class="diagram">ALTER TABLE Bank_Accounts
+ADD CONSTRAINT chk_min_balance CHECK (balance &gt;= 500.00);</pre>
+
+    <ul>
+      <li><strong>How it Works with Atomicity:</strong> If a user with a balance of <code>800</code> attempts to transfer <code>500</code> (leaving <code>300</code>, which violates <code>balance &gt;= 500.00</code>), the <code>CHECK</code> constraint raises an integrity error and triggers an atomic <code>ROLLBACK</code> of the entire transaction.</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ===== Q4 ===== -->
+<article class="qa" id="qb13-q4">
+  <div class="qa-head">
+    <span class="qn-badge">৪</span>
+    <h5>Question 4: What is a page fault? Compute the effective access time for a fault rate of 0.0005, memory access 100 ns and fault service time 10 ms. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> CPU যেই বইয়ের পাতাটা (<code>Page</code>) খুঁজছে সেটা টেবিলের ওপর (<code>RAM</code>-এ) নেই, আলমারিতে (<code>Hard Disk</code>-এ) পড়ে আছে—এই খুঁজে না পাওয়ার ঘটনাটাই হলো <strong>Page Fault</strong>! আর ডিস্ক থেকে পাতাটা আনতে গিয়ে গড় সময় (<code>100 ns</code> থেকে বেড়ে <code>5,099.95 ns</code>) অনেক বেড়ে যায়!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>EAT = (1 - p) * T_mem + p * T_fault</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Valid-Invalid Bit (i)</code>, <code>OS Page Fault Trap</code>, <code>Demand Paging</code>, <code>Swap Space / Backing Store</code>, <code>Effective Access Time (EAT)</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও অংক)</span>
+    <ul>
+      <li><strong>১ম অংশ (Page Fault কী?):</strong>
+        <ul>
+          <li><strong>Page Fault:</strong> অপারেটিং সিস্টেমে যখন একটি চলমান প্রোগ্রাম (CPU) এমন কোনো মেমোরি পেজ অ্যাক্সেস করতে চায় যা এই মুহূর্তে <strong>RAM (Main Memory)-এ লোড করা নেই</strong> (অর্থাৎ পেজ টেবিলে সেটির Valid-Invalid বিট <strong><code>i</code> বা <code>0</code></strong> হয়ে আছে এবং পেজটি হার্ডডিস্কে আছে), তখন হার্ডওয়্যার অপারেটিং সিস্টেমকে যে সিগন্যাল (Trap/Interrupt) দেয় তাকে <strong>Page Fault</strong> বলে। এরপর OS হার্ডডিস্ক থেকে ওই পেজটি RAM-এ নিয়ে আসে।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (Effective Access Time - EAT অংক):</strong>
+        <ul>
+          <li><strong>দেওয়া আছে:</strong>
+            <ul>
+              <li>Page Fault Rate, <i>p = 0.0005</i></li>
+              <li>Memory Access Time, <i>T</i><sub>mem</sub> <i>= 100 ns</i></li>
+              <li>Page Fault Service Time, <i>T</i><sub>fault</sub> <i>= 10 ms = 10 &times; 10<sup>6</sup> ns = <b>10,000,000 ns</b></i> <em>(কারণ <i>1 ms = 1,000,000 ns</i>)</em>।</li>
+            </ul>
+          </li>
+          <li><strong>সূত্র:</strong>
+            <p style="text-align:center">EAT = (1 &minus; <i>p</i>) &times; <i>T</i><sub>mem</sub> + <i>p</i> &times; <i>T</i><sub>fault</sub></p>
+          </li>
+          <li><strong>ক্যালকুলেটর ছাড়া হিসাব:</strong>
+            <ul>
+              <li>১ম অংশ: <i>(1 &minus; 0.0005) &times; 100 = 0.9995 &times; 100 = <b>99.95 ns</b></i>।</li>
+              <li>২য় অংশ: <i>0.0005 &times; 10,000,000 = (5 / 10,000) &times; 10,000,000 = 5 &times; 1,000 = <b>5,000 ns</b></i>।</li>
+              <li>যোগফল: <i>EAT = 99.95 ns + 5,000 ns = <b>5,099.95 ns</b></i> (বা <i>&approx; <b>5.1 &mu;s</b></i>)।</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Concept of a Page Fault</strong></p>
+    <ol class="steps">
+      <li><strong>Definition:</strong><br>
+      In a <strong>Demand Paging</strong> virtual memory system, a <strong>Page Fault</strong> is a hardware-generated trap (interrupt) raised by the <strong>Memory Management Unit (MMU)</strong> when a running process attempts to access a virtual memory page that is currently <strong>not resident in physical RAM</strong> (i.e., its Page Table Entry has the Valid-Invalid bit set to <strong><code>i</code> / Invalid</strong>).</li>
+      <li><strong>Page Fault Handling Steps by the OS:</strong>
+        <ul>
+          <li><strong>Step 1 (Trap to OS):</strong> The MMU detects the invalid bit and traps to the Operating System kernel.</li>
+          <li><strong>Step 2 (Locate on Backing Store):</strong> The OS locates the missing page on the secondary storage (disk swap space).</li>
+          <li><strong>Step 3 (Page-In via DMA):</strong> The OS finds a free physical frame in RAM (or evicts a victim page using LRU/Clock if RAM is full) and reads the desired page from disk into RAM.</li>
+          <li><strong>Step 4 (Update Page Table &amp; Restart):</strong> The OS updates the Page Table Entry with the new frame number, sets the bit to <strong><code>v</code> (Valid)</strong>, and restarts the interrupted CPU instruction.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <p><strong>Part B: Calculation of Effective Access Time (EAT)</strong></p>
+
+    <p><strong>1. Formula</strong><br>
+    In a demand-paged memory system, the <strong>Effective Access Time (EAT)</strong> is given by:</p>
+    <p style="text-align:center">EAT = (1 &minus; <i>p</i>) &times; <i>T</i><sub>mem</sub> + <i>p</i> &times; <i>T</i><sub>fault</sub></p>
+    <p>Where:</p>
+    <ul>
+      <li><i>p</i> = Page fault rate = <i>0.0005</i></li>
+      <li><i>(1 &minus; p)</i> = Page hit ratio (page found in RAM) = <i>1 &minus; 0.0005 = 0.9995</i></li>
+      <li><i>T</i><sub>mem</sub> = Physical memory access time = <i>100 ns</i></li>
+      <li><i>T</i><sub>fault</sub> = Page fault service time = <i>10 ms</i></li>
+    </ul>
+
+    <p><strong>2. Unit Conversion (Milliseconds to Nanoseconds)</strong><br>
+    Since <i>1 ms = 10<sup>&minus;3</sup> s</i> and <i>1 ns = 10<sup>&minus;9</sup> s</i>, we have <i>1 ms = 10<sup>6</sup> ns = 1,000,000 ns</i>:</p>
+    <p style="text-align:center"><i>T</i><sub>fault</sub> = 10 ms = 10 &times; 10<sup>6</sup> ns = <b>10,000,000 ns</b></p>
+
+    <p><strong>3. Step-by-Step Substitution</strong></p>
+    <p style="text-align:center">
+      EAT = (1 &minus; 0.0005) &times; 100 ns + (0.0005) &times; 10,000,000 ns<br>
+      EAT = (0.9995 &times; 100) ns + ((5 / 10,000) &times; 10,000,000) ns<br>
+      EAT = 99.95 ns + 5,000 ns<br>
+      <b>EAT = 5,099.95 ns</b> &quad; (or &approx; <b>5.10 &mu;s</b>)
+    </p>
+
+    <div class="fault-bars">
+      <div class="fb-row"><span>RAM Hit Time (T_mem)</span><div class="fb"><i style="width:2%"></i></div><b>100 ns</b></div>
+      <div class="fb-row"><span>Fault Penalty (p &times; T_fault)</span><div class="fb"><i style="width:98%"></i></div><b>5,000 ns</b></div>
+      <div class="fb-row"><span>Total EAT</span><div class="fb"><i style="width:100%"></i></div><b>5,099.95 ns</b></div>
+    </div>
+
+    <div class="concept-box" style="margin-top:.6rem">
+      <p class="one-line"><strong>Analytical Insight:</strong> Even a tiny page fault rate of <i>0.05%</i> (<i>0.0005</i>) slows down memory access by <strong>more than <i>50&times;</i></strong> (from <i>100 ns</i> to <i>5,099.95 ns</i>), demonstrating why keeping the page fault rate extremely low is critical.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ===== Q5 ===== -->
+<article class="qa" id="qb13-q5">
+  <div class="qa-head">
+    <span class="qn-badge">৫</span>
+    <h5>Question 5: Explain RAID 6 and compute the usable capacity for six 8 TB drives. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> RAID 5-এ ১টি অতিরিক্ত নিরাপত্তা কপি (Parity) থাকে, আর <strong>RAID 6-এ থাকে ২টি আলাদা নিরাপত্তা কপি (<code>P</code> এবং <code>Q</code> Dual Parity)</strong>! তাই একসাথে <strong>২টি হার্ডডিস্ক পুড়ে গেলেও</strong> ১ বাইট ডেটাও হারায় না! ৬টি ডিস্কের মধ্যে ২টি যায় প্যারিটিতে, বাকি ৪টি থাকে ডেটার জন্য (<i>4 &times; 8 = <b>32 TB</b></i>)।</li>
+      <li><strong>Mnemonic:</strong> <strong><code>RAID 6 = Dual Distributed Parity (P+Q) = (N - 2) * S</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Block-Level Striping</code>, <code>Dual Distributed Parity (P + Q)</code>, <code>Two Simultaneous Drive Failures</code>, <code>Minimum 4 Drives</code>, <code>Storage Efficiency (N-2)/N</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা ও অংক)</span>
+    <ul>
+      <li><strong>১ম অংশ (RAID 6 কী?):</strong>
+        <ul>
+          <li><strong>RAID 6</strong> হলো <strong>Block-level Striping with Double Distributed Parity</strong>।</li>
+          <li>RAID 5-এ মাত্র ১টি প্যারিটি ব্লক থাকে, তাই ১টি ডিস্ক নষ্ট হওয়ার পর নতুন ডিস্ক লাগিয়ে রিবিল্ড করার সময় যদি ২য় আরেকটি ডিস্ক নষ্ট হয়, তবে সব ডেটা চিরতরে হারিয়ে যায়।</li>
+          <li>এই ঝুঁকি দূর করতে <strong>RAID 6</strong> প্রতিটি ডেটা স্ট্রাইপের জন্য <strong>দুটি করে স্বাধীন প্যারিটি ব্লক (<i>P</i> এবং <i>Q</i> Parity)</strong> হিসাব করে সবগুলো ডিস্কে ঘুরিয়ে-ফিরিয়ে (Distributed) রাখে। ফলে <strong>একই সাথে যেকোনো ২টি হার্ডডিস্ক সম্পূর্ণ নষ্ট হয়ে গেলেও</strong> কোনো ডেটা হারায় না! RAID 6 গড়তে কমপক্ষে <strong>৪টি ডিস্ক</strong> লাগে।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (৬টি 8 TB ডিস্কের Usable Capacity হিসাব):</strong>
+        <ul>
+          <li>মোট ডিস্ক সংখ্যা, <i>N = 6</i> এবং প্রতিটি ডিস্কের সাইজ, <i>S = 8 TB</i>।</li>
+          <li>যেহেতু ২টি ডিস্কের সমপরিমাণ জায়গা Dual Parity (<i>P + Q</i>) রাখতে খরচ হয়, তাই:
+            <p style="text-align:center">Usable Capacity = (<i>N</i> &minus; 2) &times; <i>S</i> = (6 &minus; 2) &times; 8 TB = 4 &times; 8 TB = <b>32 TB</b></p>
+            <em>(মোট Raw ক্যাপাসিটি <i>6 &times; 8 = 48 TB</i>-এর মধ্যে <i>32 TB</i> ডেটার জন্য পাওয়া যাবে এবং <i>16 TB</i> প্যারিটিতে যাবে)</em>।
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Explanation of RAID 6 Architecture</strong></p>
+    <ol class="steps">
+      <li><strong>Definition:</strong><br>
+      <strong>RAID 6</strong> stands for <strong>Block-Level Striping with Double Distributed Parity</strong>. It extends RAID 5 by calculating and storing <strong>two independent parity blocks (<i>P</i> and <i>Q</i>)</strong> for every stripe of data, distributed evenly across all member drives in the array.</li>
+    </ol>
+
+<pre class="diagram">          Disk 1    Disk 2    Disk 3    Disk 4    Disk 5    Disk 6
+Stripe 1: [ D1 ]    [ D2 ]    [ D3 ]    [ D4 ]    [ P1 ]    [ Q1 ]
+Stripe 2: [ D5 ]    [ D6 ]    [ D7 ]    [ P2 ]    [ Q2 ]    [ D8 ]
+Stripe 3: [ D9 ]    [ D10]    [ P3 ]    [ Q3 ]    [ D11]    [ D12]
+          (P = XOR Parity, Q = Reed-Solomon Galois Field GF(2^8) Parity)</pre>
+
+    <div class="trace-wrap">
+      <table class="trace sm">
+        <tr>
+          <th class="lab">Stripe</th>
+          <th>Disk 1 (8 TB)</th>
+          <th>Disk 2 (8 TB)</th>
+          <th>Disk 3 (8 TB)</th>
+          <th>Disk 4 (8 TB)</th>
+          <th>Disk 5 (8 TB)</th>
+          <th>Disk 6 (8 TB)</th>
+        </tr>
+        <tr>
+          <td class="lab">Stripe 1</td>
+          <td class="h">D1</td><td class="h">D2</td><td class="h">D3</td><td class="h">D4</td>
+          <td class="f">P1 (XOR)</td><td class="f">Q1 (GF)</td>
+        </tr>
+        <tr>
+          <td class="lab">Stripe 2</td>
+          <td class="h">D5</td><td class="h">D6</td><td class="h">D7</td>
+          <td class="f">P2 (XOR)</td><td class="f">Q2 (GF)</td>
+          <td class="h">D8</td>
+        </tr>
+        <tr>
+          <td class="lab">Stripe 3</td>
+          <td class="h">D9</td><td class="h">D10</td>
+          <td class="f">P3 (XOR)</td><td class="f">Q3 (GF)</td>
+          <td class="h">D11</td><td class="h">D12</td>
+        </tr>
+      </table>
+    </div>
+
+    <ol class="steps" start="2">
+      <li><strong>Key Technical Characteristics of RAID 6:</strong>
+        <ul>
+          <li><strong>Fault Tolerance (2 Drive Failures):</strong> RAID 6 can withstand the <strong>simultaneous failure of any two (2) disks</strong> without losing data. This protects enterprise arrays during long rebuild times of high-capacity (<code>8 TB+</code>) drives where a second Unrecoverable Read Error (URE) often occurs in RAID 5.</li>
+          <li><strong>Minimum Drives Required:</strong> Requires a minimum of <strong>4 drives</strong>.</li>
+          <li><strong>Performance Profile:</strong>
+            <ul>
+              <li><strong>Read Performance:</strong> Very fast (parallel reads across multiple spindles).</li>
+              <li><strong>Write Performance:</strong> Slower than RAID 5 due to the computational and I/O overhead of calculating and writing two parity blocks (<strong>Write Penalty = 6</strong> I/O operations per single random write).</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ol>
+
+    <p><strong>Part B: Usable Capacity Calculation for Six 8 TB Drives</strong></p>
+
+    <p><strong>1. Formula</strong><br>
+    In a RAID 6 array of <i>N</i> identical drives each of capacity <i>S</i>, the equivalent capacity of exactly <strong>2 drives</strong> is consumed by distributed dual parity (<i>P</i> and <i>Q</i>):</p>
+    <p style="text-align:center">Usable Capacity<sub>RAID 6</sub> = (<i>N</i> &minus; 2) &times; <i>S</i></p>
+
+    <p><strong>2. Step-by-Step Calculation</strong></p>
+    <ul>
+      <li><strong>Given:</strong>
+        <ul>
+          <li>Number of drives, <i>N = 6</i></li>
+          <li>Size of each drive, <i>S = 8 TB</i></li>
+        </ul>
+      </li>
+      <li><strong>Total Raw Capacity:</strong>
+        <p style="text-align:center">Raw Capacity = <i>N</i> &times; <i>S</i> = 6 &times; 8 TB = 48 TB</p>
+      </li>
+      <li><strong>Parity Overhead (2 Drives' Worth):</strong>
+        <p style="text-align:center">Parity Overhead = 2 &times; 8 TB = 16 TB</p>
+      </li>
+      <li><strong>Net Usable Capacity:</strong>
+        <p style="text-align:center">Usable Capacity = (6 &minus; 2) &times; 8 TB = 4 &times; 8 TB = <b>32 TB</b></p>
+      </li>
+      <li><strong>Storage Utilization Efficiency:</strong>
+        <p style="text-align:center">Efficiency = (32 TB / 48 TB) &times; 100% = <b>66.67%</b></p>
+      </li>
+    </ul>
+
+    <div class="fault-bars">
+      <div class="fb-row"><span>Total Raw (6 &times; 8 TB)</span><div class="fb"><i style="width:100%"></i></div><b>48 TB (100%)</b></div>
+      <div class="fb-row"><span>Usable Data (4 &times; 8 TB)</span><div class="fb"><i style="width:66.67%"></i></div><b>32 TB (66.67%)</b></div>
+      <div class="fb-row"><span>Dual Parity P+Q (2 &times; 8 TB)</span><div class="fb"><i style="width:33.33%"></i></div><b>16 TB (33.33%)</b></div>
+    </div>
+  </div>
+</article>
+
+<!-- ===== Q6 ===== -->
+<article class="qa" id="qb13-q6">
+  <div class="qa-head">
+    <span class="qn-badge">৬</span>
+    <h5>Question 6: Explain Zero-Day vulnerabilities and name two controls that still help against them. <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> বাড়ির দেয়ালে এমন একটি গোপন ফাটল আছে যা বাড়ির মালিক বা মিস্ত্রি কেউই জানে না, শুধু চোরই প্রথম আবিষ্কার করেছে—ফাটলটা মেরামত করার জন্য মালিকের হাতে <strong>০ দিন (<code>Zero Days</code>)</strong> সময় ছিল! যেহেতু সাধারণ অ্যান্টিভাইরাস এই নতুন চোরের ছবি চেনে না, তাই তাকে ধরতে লাগে <strong>আচরণ দেখে চোর ধরা সিসিটিভি (<code>Behavioral EDR / Anomaly IPS</code>)</strong> এবং <strong>প্রতিটি ঘরে আলাদা তালা (<code>Zero Trust Micro-Segmentation</code>)</strong>!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>Zero-Day = Unpatched + No Signature</code></strong> &rArr; Defend with <strong><code>Behavioral EDR/Sandboxing</code></strong> + <strong><code>Zero Trust / Least Privilege / WAF Virtual Patching</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Unpatched Software Flaw</code>, <code>Zero Days of Vendor Remediation</code>, <code>Signature-Less Detection</code>, <code>Behavioral EDR / Heuristic Sandboxing</code>, <code>Zero Trust Micro-Segmentation</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <ul>
+      <li><strong>১ম অংশ (Zero-Day Vulnerability কী?):</strong>
+        <ul>
+          <li>সফটওয়্যার, অপারেটিং সিস্টেম বা হার্ডওয়্যারের ভেতরে লুকিয়ে থাকা এমন একটি নিরাপত্তা ত্রুটি (Bug/Flaw) যা <strong>সফটওয়্যার নির্মাতা কোম্পানি (যেমন Microsoft বা Oracle) নিজেও এখনো জানে না</strong>, কিন্তু হ্যাকাররা আগেভাগেই খুঁজে বের করে ফেলেছে।</li>
+          <li>যেহেতু নির্মাতা কোম্পানি এই ত্রুটি সম্পর্কে জানেই না, তাই এটি ঠিক করার জন্য কোনো <strong>Patch বা Update বের করার জন্য তাদের হাতে "০ দিন" (Zero Days) সময় ছিল</strong>। সাধারণ অ্যান্টিভাইরাস (Signature-based Antivirus) এই আক্রমণ ধরতে পারে না, কারণ তাদের ডেটাবেসে এই নতুন ম্যালওয়্যারের কোনো আগের নমুনা (Signature) থাকে না।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (Zero-Day আক্রমণ ঠেকাতে সাহায্য করে এমন ২টি কার্যকরী Control):</strong>
+        <ol class="steps">
+          <li><strong>Behavior-Based EDR &amp; AI/Heuristic Anomaly Detection (আচরণভিত্তিক নিরাপত্তা):</strong> ভাইরাসটির নাম বা চেহারা না চিনলেও সে কী <strong>আচরণ</strong> করছে তা দেখা—যেমন হঠাৎ একটি সাধারণ MS Word ফাইল যদি গোপনে PowerShell খুলে হাজার হাজার ফাইল এনক্রিপ্ট করার চেষ্টা করে, তবে <strong>EDR (Endpoint Detection and Response)</strong> বা <strong>Sandboxing</strong> সাথে সাথে প্রসেসটিকে ব্লক করে দেয়।</li>
+          <li><strong>Zero Trust Micro-Segmentation &amp; Principle of Least Privilege (ন্যূনতম ক্ষমতা ও আলাদা জোন):</strong> নেটওয়ার্ককে ছোট ছোট ভাগে (VLAN/Firewall Zone) আলাদা করে রাখা এবং কোনো ইউজার বা অ্যাপ্লিকেশনকে অতিরিক্ত অ্যাডমিন পাওয়ার না দেওয়া। ফলে হ্যাকার জিরো-ডে দিয়ে ১টি পিসিতে ঢুকে পড়লেও মূল ডেটাবেস বা অন্য সার্ভারে যেতে পারে না (<strong>Lateral Movement বন্ধ হয়</strong>)। <em>(এছাড়াও মেমোরি প্রোটেকশন যেমন <strong>ASLR ও DEP</strong> উল্লেখ করতে পারেন)</em>।</li>
+        </ol>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Concept of a Zero-Day Vulnerability</strong></p>
+    <ol class="steps">
+      <li><strong>Definition:</strong><br>
+      A <strong>Zero-Day (0-day) Vulnerability</strong> is a critical, undisclosed security flaw in software, firmware, or hardware that is <strong>unknown to the software vendor and cybersecurity defenders</strong>, meaning the vendor has had <strong>"zero days"</strong> to develop and release a security patch.
+        <ul>
+          <li><strong>Zero-Day Exploit:</strong> The malicious code or technique used by threat actors to exploit this unpatched flaw.</li>
+          <li><strong>Zero-Day Attack:</strong> The active deployment of a zero-day exploit against target systems before a vendor patch exists.</li>
+        </ul>
+      </li>
+    </ol>
+
+<pre class="diagram">[Vulnerability Introduced] ---&gt; [Discovered by Attacker] ---&gt; [Zero-Day Attack Launched] ---&gt; [Vendor Discovers &amp; Releases Patch]
+                                \__________________________________________________________/
+                                       "ZERO-DAY WINDOW" (No Patch &amp; No AV Signature!)</pre>
+
+    <ol class="steps" start="2">
+      <li><strong>Why Traditional Defenses Fail:</strong><br>
+      Conventional <strong>Signature-Based Antivirus (AV)</strong> and static <strong>IDS</strong> rely on matching known malware hashes or byte patterns (IOCs). Because a zero-day exploit has never been seen before, its signature does not exist in any security database, allowing it to bypass signature-based filters completely.</li>
+    </ol>
+
+    <p><strong>Part B: Two Compensating Security Controls That Mitigate Zero-Day Attacks</strong></p>
+    <p>Because patches and signatures are unavailable during a zero-day event, organizations must rely on <strong>proactive, signature-less Defense-in-Depth controls</strong>:</p>
+
+    <div class="cmp-grid" style="margin-top:.5rem">
+      <div class="cmp-card phys">
+        <strong>Control 1: Behavioral EDR / XDR and Automated Sandboxing (Heuristic &amp; Anomaly Detection)</strong>
+        <ul>
+          <li><strong>Mechanism:</strong> Instead of looking for <em>known file signatures</em>, <strong>Endpoint Detection and Response (EDR)</strong> and <strong>Network Anomaly IPS</strong> monitor <strong>Indicators of Attack (IOAs)</strong> and runtime process behavior using heuristics and Machine Learning.</li>
+          <li><strong>How it Stops Zero-Days:</strong> Even if an attacker exploits an unknown vulnerability in a PDF reader or web server, the moment the exploited process attempts abnormal behavior—such as spawning an unauthorized <code>/bin/sh</code> or <code>powershell.exe</code> shell, modifying system registry keys, injecting code into memory, or performing rapid file encryption—the EDR immediately terminates the process and isolates the host.</li>
+        </ul>
+      </div>
+      <div class="cmp-card virt">
+        <strong>Control 2: Zero Trust Micro-Segmentation &amp; Principle of Least Privilege (PoLP)</strong>
+        <ul>
+          <li><strong>Mechanism:</strong> Enforces strict network isolation (via internal firewalls/VLANs) and strips unnecessary administrative/root privileges from services and user accounts, combined with OS exploit protections like <strong>ASLR (Address Space Layout Randomization)</strong> and <strong>DEP (Data Execution Prevention)</strong>.</li>
+          <li><strong>How it Stops Zero-Days:</strong> It contains the <strong>"Blast Radius"</strong>. If a public-facing web server is compromised via a zero-day exploit, the attacker only gains restricted low-privilege access on that single container and is blocked by micro-segmentation from moving laterally to the core banking database.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- ===== Q7 ===== -->
+<article class="qa" id="qb13-q7">
+  <div class="qa-head">
+    <span class="qn-badge">৭</span>
+    <h5>Question 7: What is a cookie? Which attribute stops JavaScript from reading it and which one mitigates CSRF? <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> ওয়েবসাইট হলো এক ভুলে যাওয়া দারোয়ান (<strong>Stateless HTTP</strong>)—তাই প্রথমবার লগইন করার পর সার্ভার আপনার পকেটে একটি <strong>পরিচয়পত্র বা টোকেন (<code>Cookie</code>)</strong> দিয়ে দেয়। হ্যাকারের জাভাস্ক্রিপ্ট (<code>XSS</code>) যেন পকেট থেকে টোকেনটা চুরি করে পড়তে না পারে সেজন্য লাগে <strong><code>HttpOnly</code></strong> তালা; আর পাশের ভুয়া ওয়েবসাইট (<code>CSRF</code>) যেন টোকেনটা ব্যবহার করতে না পারে সেজন্য লাগে <strong><code>SameSite=Strict</code></strong> তালা!</li>
+      <li><strong>Mnemonic:</strong> <strong><code>HttpOnly -&gt; Stops JS / XSS</code></strong>; <strong><code>SameSite -&gt; Stops Cross-Site / CSRF</code></strong>; <strong><code>Secure -&gt; HTTPS Only</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>Stateless HTTP Protocol</code>, <code>Session State Management</code>, <code>HttpOnly Flag (Anti-XSS)</code>, <code>SameSite=Strict/Lax (Anti-CSRF)</code>, <code>Set-Cookie Response Header</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <ul>
+      <li><strong>১ম অংশ (Cookie কী?):</strong>
+        <ul>
+          <li><strong>HTTP Cookie (Web Cookie)</strong> হলো খুব ছোট একটি টেক্সট ডেটা (<code>Key=Value</code> জোড়া, সর্বোচ্চ <code>4 KB</code>), যা কোনো ওয়েব সার্ভার ইউজারের ব্রাউজারে পাঠায় এবং ব্রাউজার নিজের ভেতরে সেভ করে রাখে।</li>
+          <li><strong>কেন লাগে?</strong> কারণ HTTP প্রোটোকল জন্মগতভাবে <strong>Stateless</strong> (আগের ক্লিকে কে লগইন করেছিল তা সে পরের ক্লিকে ভুলে যায়)। তাই ইউজার একবার লগইন করার পর তার <strong>Session ID</strong>, শপিং কার্ট বা থিম প্রেফারেন্স মনে রাখার জন্য প্রতিটি রিকোয়েস্টের সাথে ব্রাউজার এই কুকিটি সার্ভারে দেখায়।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (কোন Attribute জাভাস্ক্রিপ্টকে কুকি পড়া থেকে থামায় এবং কোনটি CSRF আটকায়?):</strong>
+        <ol class="steps">
+          <li><strong>জাভাস্ক্রিপ্টকে কুকি পড়া থেকে থামায় &rArr; <code>HttpOnly</code> Attribute:</strong> কুকিতে <code>HttpOnly</code> ফ্ল্যাগ দেওয়া থাকলে ব্রাউজারের কোনো জাভাস্ক্রিপ্ট কোড (<code>document.cookie</code>) ওই কুকিটি পড়তে বা চুরি করতে পারে না। এটি <strong>XSS (Cross-Site Scripting)</strong> অ্যাটাকের মাধ্যমে সেশন হাইজ্যাকিং পুরোপুরি বন্ধ করে।</li>
+          <li><strong>CSRF (Cross-Site Request Forgery) আটকায় &rArr; <code>SameSite</code> Attribute (<code>SameSite=Strict</code> বা <code>Lax</code>):</strong> এটি ব্রাউজারকে নির্দেশ দেয় যে কুকিটি শুধুমাত্র তখনই পাঠানো যাবে যখন রিকোয়েস্টটি <strong>নিজস্ব ওয়েবসাইট (Same Site)</strong> থেকে আসবে; হ্যাকারের কোনো বাইরের ফিশিং সাইট থেকে গোপনে রিকোয়েস্ট পাঠালে ব্রাউজার কুকিটি পাঠাবে না—ফলে <strong>CSRF অ্যাটাক</strong> ব্যর্থ হয়ে যায়!</li>
+        </ol>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Definition and Purpose of an HTTP Cookie</strong></p>
+    <ol class="steps">
+      <li><strong>What is a Cookie?</strong><br>
+      An <strong>HTTP Cookie</strong> (also called a web cookie or browser cookie) is a small piece of stateful data (up to <strong><code>4 KB</code></strong>, formatted as <code>name=value</code> pairs) sent from a web server to a client's browser via the <strong><code>Set-Cookie</code></strong> HTTP response header. The browser stores it locally and automatically attaches it back to subsequent requests to the same server via the <strong><code>Cookie</code></strong> HTTP request header.</li>
+      <li><strong>Core Purpose:</strong><br>
+      Because the <strong>HTTP protocol is inherently stateless</strong> (each request is independent and the server forgets the client immediately after responding), cookies are essential for:
+        <ul>
+          <li><strong>Session Management:</strong> Maintaining authenticated user login sessions (<code>SESSIONID</code>), online banking tokens, and shopping carts.</li>
+          <li><strong>Personalization:</strong> Remembering user preferences (language, dark/light theme).</li>
+          <li><strong>Tracking &amp; Analytics:</strong> Recording user browsing behavior across pages.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <p><strong>Part B: Security Attributes Stopping JavaScript Access and Mitigating CSRF</strong></p>
+    <p>When setting a sensitive session cookie in a banking or enterprise web application, the server enforces security attributes in the <code>Set-Cookie</code> header:</p>
+
+<pre class="diagram">Set-Cookie: SESSIONID=a8f9d23b91c; Secure; HttpOnly; SameSite=Strict; Path=/</pre>
+
+    <div class="cmp-grid" style="margin-top:.5rem">
+      <div class="cmp-card phys">
+        <strong>1. Attribute That Stops JavaScript from Reading the Cookie: <code>HttpOnly</code></strong>
+        <ul>
+          <li><strong>Role:</strong> The <strong><code>HttpOnly</code></strong> flag instructs the web browser that the cookie must <strong>never be accessible via client-side scripts</strong> such as JavaScript's <code>document.cookie</code> API. The cookie is only sent in HTTP/HTTPS requests to the server.</li>
+          <li><strong>Threat Mitigated:</strong> Directly prevents <strong>Session Hijacking via Cross-Site Scripting (XSS)</strong>. Even if an attacker injects malicious JavaScript into the page, the script cannot read or exfiltrate the user's <code>SESSIONID</code> cookie.</li>
+        </ul>
+      </div>
+      <div class="cmp-card virt">
+        <strong>2. Attribute That Mitigates CSRF (Cross-Site Request Forgery): <code>SameSite</code> (<code>Strict</code> or <code>Lax</code>)</strong>
+        <ul>
+          <li><strong>Role:</strong> The <strong><code>SameSite</code></strong> attribute controls whether the browser sends the cookie along with <strong>cross-site requests</strong> initiated from third-party external domains:
+            <ul>
+              <li><strong><code>SameSite=Strict</code>:</strong> The browser <em>never</em> sends the cookie in any cross-site request (even when clicking an external link). Ideal for high-security online banking actions like fund transfers.</li>
+              <li><strong><code>SameSite=Lax</code>:</strong> Withholds the cookie on cross-site subrequests (e.g., hidden <code>&lt;form&gt; POST</code>, <code>&lt;img&gt;</code>, or <code>&lt;iframe&gt;</code> attacks) while allowing it on top-level safe <code>GET</code> navigations.</li>
+            </ul>
+          </li>
+          <li><strong>Threat Mitigated:</strong> Directly neutralizes <strong>CSRF (Cross-Site Request Forgery)</strong> attacks, where a malicious website tricks a logged-in user's browser into silently submitting an unauthorized fund-transfer request to the bank's server.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="margin-top:.5rem"><em>(Bonus Note: A third attribute, <strong><code>Secure</code></strong>, ensures the cookie is transmitted exclusively over encrypted <strong>HTTPS/TLS</strong> connections, preventing network sniffing).</em></p>
+  </div>
+</article>
+
+<!-- ===== Q8 ===== -->
+<article class="qa" id="qb13-q8">
+  <div class="qa-head">
+    <span class="qn-badge">৮</span>
+    <h5>Question 8: What is thrashing? How can the working-set model prevent it? <i>(10 Marks)</i></h5>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-title">🧠 10-Second Memory Hook</div>
+    <ul>
+      <li><strong>Mental Image:</strong> আপনার পড়ার টেবিলটা খুবই ছোট (অল্প RAM), কিন্তু আপনি একসাথে ২০টা বই খুলে পড়তে বসেছেন—ফলে প্রতি সেকেন্ডে আলমারি থেকে বই নামাতে ও ওঠাতে গিয়েই পুরো সময় চলে যাচ্ছে, ১ লাইনও পড়া হচ্ছে না! এই <strong>"পড়া বাদ দিয়ে শুধু বই টানাটানি (Paging)"</strong> করার ঘটনাকেই বলে <strong>Thrashing</strong>! আর প্রতিটি বই পড়তে ঠিক কয়টি পৃষ্ঠা এই মুহূর্তে দরকার তা মাপার স্কেল হলো <strong>Working-Set Model</strong>।</li>
+      <li><strong>Mnemonic:</strong> <strong><code>Thrashing = Paging Time &gt; Execution Time (CPU Drops)</code></strong>; <strong><code>Working Set: Total Demand D &lt;= Total Frames m</code></strong>.</li>
+      <li><strong>5 Exam Keywords:</strong> <code>High Page Fault Rate</code>, <code>Collapse of CPU Utilization</code>, <code>Degree of Multiprogramming</code>, <code>Locality of Reference</code>, <code>Working-Set Window (Delta)</code>.</li>
+    </ul>
+  </div>
+
+  <div class="ans-bn">
+    <span class="lang bn">🇧🇩 বাংলা সংস্করণ (সহজ ভাষায় মূল ধারণা)</span>
+    <ul>
+      <li><strong>১ম অংশ (Thrashing কী?):</strong>
+        <ul>
+          <li>যখন অপারেটিং সিস্টেমে একসাথে অনেকগুলো প্রোগ্রাম (High Degree of Multiprogramming) চালানো হয়, তখন প্রতিটি প্রোগ্রামের ভাগে খুব অল্প সংখ্যক RAM Frame পড়ে।</li>
+          <li>ফলে প্রোগ্রামগুলো প্রতি মুহূর্তেই <strong>Page Fault</strong> ঘটাতে থাকে এবং অন্য প্রোগ্রামের দরকারি পেজ মুছে দিয়ে নিজের পেজ ডিস্ক থেকে আনতে থাকে। এক পর্যায়ে সিস্টেমটি <strong>আসল কাজ (CPU Execution) করার চেয়ে হার্ডডিস্ক থেকে পেজ আনা-নেওয়া (Swapping/Paging) করতেই বেশি সময় ব্যয় করে</strong> এবং CPU Utilization ধপ করে একদম নিচে নেমে যায়! এই অচল অবস্থাকেই <strong>Thrashing</strong> বলে।</li>
+        </ul>
+      </li>
+      <li><strong>২য় অংশ (Working-Set Model কীভাবে Thrashing প্রতিরোধ করে?):</strong>
+        <ul>
+          <li>বিজ্ঞানী Peter Denning-এর তৈরি <strong>Working-Set Model</strong> মূলত <strong>Locality of Reference</strong> নীতির ওপর কাজ করে।</li>
+          <li>এটি একটি নির্দিষ্ট সময় বা পেজ রেফারেন্স উইন্ডো (<i>&Delta;</i>, যেমন শেষ ১০,০০০টি মেমোরি অ্যাক্সেস) ধরে হিসাব করে যে প্রতিটি প্রসেস <i>P<sub>i</sub></i>-এর এই মুহূর্তে সুষ্ঠুভাবে চলার জন্য ঠিক কয়টি পেজ দরকার—যাকে তার <strong>Working Set Size (<i>WSS<sub>i</sub></i>)</strong> বলে।</li>
+          <li>এরপর OS সব প্রসেসের মোট চাহিদা যোগ করে: <strong>মোট চাহিদা <i>D = &sum; WSS<sub>i</sub></i></strong>।</li>
+          <li><strong>প্রতিরোধের নিয়ম:</strong> যদি দেখা যায় মোট চাহিদা <i>D</i> আমাদের RAM-এর মোট ফ্রেম সংখ্যা <i>m</i>-এর চেয়ে বেশি হয়ে গেছে (<strong><i>D &gt; m</i></strong>, অর্থাৎ Thrashing শুরু হতে যাচ্ছে), তখন OS সবাইকে অল্প অল্প ফ্রেম দিয়ে কষ্ট না দিয়ে <strong>যেকোনো ১টি বা ২টি প্রসেসকে সাময়িকভাবে সাসপেন্ড (Swap out)</strong> করে দেয় এবং সেগুলোর ফ্রেম বাকি প্রসেসগুলোকে দিয়ে দেয়। ফলে <i>D &le; m</i> বজায় থাকে এবং কখনোই Thrashing হয় না!</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="ans-en">
+    <span class="lang en">🇬🇧 English Version (Exact 10-Mark Exam Answer)</span>
+
+    <p><strong>Part A: Concept and Cause of Thrashing</strong></p>
+    <ol class="steps">
+      <li><strong>Definition:</strong><br>
+      In a virtual memory operating system, <strong>Thrashing</strong> is a severe performance degradation state in which a process (or the entire system) spends <strong>more time paging (swapping pages in and out between RAM and disk) than executing actual CPU instructions</strong>.</li>
+    </ol>
+
+<pre class="diagram">   CPU
+Utilization
+    ^
+    |              Peak Performance
+    |                 /-----\
+    |                /       \   &lt;-- Thrashing Cliff!
+    |        /------/         \      (Page Faults explode;
+    |       /                  \      CPU waits for Disk I/O)
+    |------/                    \--------
+    +-----------------------------------------&gt;
+             Degree of Multiprogramming (N)</pre>
+
+    <svg class="clock-svg" viewBox="0 0 640 210" role="img" aria-label="Thrashing Curve: CPU Utilization vs Degree of Multiprogramming">
+      <rect x="5" y="5" width="630" height="200" rx="8" fill="#f7f4ee" stroke="#c4a35a" stroke-width="1.5"/>
+      <!-- Axes -->
+      <line x1="75" y1="165" x2="585" y2="165" stroke="#0c1e33" stroke-width="2"/>
+      <line x1="75" y1="165" x2="75" y2="25" stroke="#0c1e33" stroke-width="2"/>
+      <!-- Axis Labels -->
+      <text x="330" y="192" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#0c1e33">Degree of Multiprogramming (N) &rarr;</text>
+      <text x="25" y="95" text-anchor="middle" transform="rotate(-90 25 95)" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#0c1e33">CPU Utilization</text>
+      <!-- Thrashing Zone Highlight -->
+      <rect x="370" y="25" width="205" height="140" fill="#7a1c1c" fill-opacity="0.1" stroke="#7a1c1c" stroke-dasharray="4,4"/>
+      <text x="472" y="45" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="bold" fill="#7a1c1c">THRASHING ZONE (D &gt; m)</text>
+      <!-- Curve -->
+      <path d="M 75 150 Q 180 120 270 60 Q 330 30 370 50 Q 405 145 450 158 L 560 160" fill="none" stroke="#0c1e33" stroke-width="3.5"/>
+      <!-- Peak Marker -->
+      <circle cx="345" cy="40" r="5" fill="#c4a35a" stroke="#0c1e33" stroke-width="2"/>
+      <text x="285" y="28" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" font-weight="bold" fill="#0c1e33">Optimal Peak (D &le; m)</text>
+      <text x="485" y="135" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#7a1c1c">Page Faults Explode;</text>
+      <text x="485" y="150" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="#7a1c1c">CPU Waits for Disk I/O</text>
+    </svg>
+
+    <ol class="steps" start="2">
+      <li><strong>Root Cause (The Thrashing Cycle):</strong>
+        <ul>
+          <li>As the <strong>Degree of Multiprogramming</strong> increases too far, each active process is allocated fewer physical frames than the minimum required to hold its active locality of pages.</li>
+          <li>Consequently, processes fault continuously, stealing frames from one another. Because every process is queued waiting for the slow paging disk device, <strong>CPU utilization plummets toward zero</strong>, while disk I/O utilization hits <i>100%</i>.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <p><strong>Part B: How the Working-Set Model Prevents Thrashing</strong></p>
+    <p>Proposed by Peter Denning, the <strong>Working-Set Model</strong> prevents thrashing by dynamically tracking how many frames each process actually needs based on the principle of <strong>Locality of Reference</strong>.</p>
+
+    <p><strong>1. Working-Set Window (<i>&Delta;</i>) and Working-Set Size (<i>WSS<sub>i</sub></i>)</strong></p>
+    <ul>
+      <li>The OS defines a fixed sliding window of the most recent <strong><i>&Delta;</i> memory page references</strong> (e.g., <i>&Delta; = 10,000</i> references).</li>
+      <li>The set of unique pages referenced by process <i>P<sub>i</sub></i> during the most recent <i>&Delta;</i> window is called its <strong>Working Set, <i>WS(t, &Delta;)</i></strong>, and the number of pages in this set is its <strong>Working-Set Size (<i>WSS<sub>i</sub></i>)</strong>.</li>
+    </ul>
+
+    <p><strong>2. Total Frame Demand (<i>D</i>) vs. Available Physical Frames (<i>m</i>)</strong><br>
+    The OS continuously computes the total demand for frames across all active processes in the system:</p>
+    <p style="text-align:center"><i>D</i> = &sum;<sub><i>i</i></sub> <i>WSS<sub>i</sub></i></p>
+    <p>Let <strong><i>m</i></strong> be the total number of physical frames available in RAM. Two cases arise:</p>
+
+    <div class="cmp-grid" style="margin-top:.5rem">
+      <div class="cmp-card phys">
+        <strong>Case 1 (<i>D &le; m</i> — Safe State)</strong>
+        There are enough physical frames in RAM to satisfy the full working sets of all active processes. The OS allocates <i>WSS<sub>i</sub></i> frames to each process <i>P<sub>i</sub></i>, and if enough spare frames remain, it can safely initiate another queued process.
+      </div>
+      <div class="cmp-card virt">
+        <strong>Case 2 (<i>D &gt; m</i> — Impending Thrashing Detected!)</strong>
+        The total working-set demand exceeds physical memory capacity. Instead of starving all processes of frames, the OS <strong>selects one or more lower-priority processes, suspends them (swaps them out to disk)</strong>, and redistributes their freed frames among the remaining active processes so that <i>D &le; m</i> is strictly maintained.
+      </div>
+    </div>
+
+    <div class="concept-box" style="margin-top:.6rem">
+      <p class="one-line"><strong>Conclusion:</strong> By guaranteeing that every running process is always allocated enough frames to hold its entire active <strong>Working Set (<i>WSS<sub>i</sub></i>)</strong>, the Working-Set Model keeps page fault rates minimal and <strong>completely prevents thrashing</strong> while maintaining optimal CPU utilization.</p>
+    </div>
+  </div>
+</article>
+
+<div class="concept-box">
+  <p class="one-line"><em>(Part 1-এর প্রথম ৮টি প্রশ্ন (<code>Q1–Q8</code>) এখানে শেষ হলো। আপনি বললেই আমি <strong>Part 2: Questions 9 to 17</strong>—অর্থাৎ <code>Circuit vs Packet Switching &amp; 1MB/8Mbps Math</code>, <code>MTBF/MTTR Availability Math</code>, <code>3 kW Heater at 230V Fuse Math</code>, <code>NAT &amp; PAT 200 Hosts</code>, <code>Symmetric vs Asymmetric Encryption</code>, <code>Fraud Pipeline + 10TB HDFS Math</code>, <code>Type 1 Hypervisor + vCPU Math</code>, <code>RTO/RPO 3 PM Failure Math</code>, এবং <code>3NF + SQL JOIN</code> একইভাবে তৈরি করে দেবো!)</em></p>
+</div>
+
         <div class="q"><b>9.</b> Compare circuit and packet switching and compute the time to send 1 MB (10^6 bytes) over an 8 Mbps link, ignoring overheads.</div>
         <div class="q"><b>10.</b> Explain availability and compute it for MTBF 720 h and MTTR 4 h.</div>
         <div class="q"><b>11.</b> A 3 kW heater runs at 230 V. Find the fuse rating and name a protection device that can be reset.</div>
